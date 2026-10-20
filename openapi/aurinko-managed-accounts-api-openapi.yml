@@ -1,0 +1,372 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Managed accounts API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: Managed accounts
+  x-displayName: Managed accounts
+  description: Manage accounts rely on service accounts for their connections. List, cancel, update, and delete managed accounts associated with service accounts.
+paths:
+  /v1/am/svc_accounts/{accId}/accounts:
+    post:
+      operationId: upsertManagedAccount
+      tags:
+      - Managed accounts
+      summary: Upsert a managed account
+      security:
+      - AppAuth: []
+      parameters:
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: accId
+        description: A service account id
+        required: true
+      - schema:
+          type:
+          - core.client.user.useraccounttype.useraccounttype
+          - 'null'
+          $ref: '#/components/schemas/UserAccountType'
+        in: query
+        name: userAccount
+        required: false
+      - in: query
+        name: userId
+        required: false
+        schema:
+          type:
+          - string
+          - 'null'
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: servicekey
+            $ref: '#/components/schemas/ServiceKey'
+        in: query
+        name: recycleKeys
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: ensureAccess
+        description: When set to true, Aurinko will check if a user has access to the requested resources. Supported only for Google and Office365, and only for Email, Calendar, Contacts and Tasks APIs.
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiAccountInDto'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountSaveResult'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError2'
+components:
+  schemas:
+    ServiceKey:
+      type: string
+      enum:
+      - email
+      - orgId
+      - userId
+      - serverUrl
+      - username
+      - clientOrgId
+      description: Keys that control account re-cycling.
+    UserAccountType:
+      type: string
+      enum:
+      - primary
+      - secondary
+      description: Type of user account. Required if `userId` is provided.
+    ServiceType:
+      type: string
+      enum:
+      - Google
+      - GoogleBot
+      - Office365
+      - EWS
+      - IMAP
+      - Salesforce
+      - Salesflare
+      - Repfabric
+      - MsTeamsBot
+      - Slack
+      - SlackBot
+      - SugarCRM
+      - HighLevel
+      - Hubspot
+      - Zoom
+      - ZoomBot
+      - Webex
+      - WebexBot
+      - Pipedrive
+      - EclipseERP
+      - AutoQuotes
+      - Teamwork
+      - NetSuite
+      - MCTrade
+      - SpecPath
+      - Zoho
+      - Clientify
+      - QuickBooks
+      - ActiveCampaign
+      - Creatio
+      - ConstantContact
+      - Fishbowl
+      - iCloud
+    AccountSaveResult:
+      type: object
+      properties:
+        accountId:
+          type: integer
+          format: int64
+        accessToken:
+          type: string
+        userId:
+          type: string
+        userSession:
+          type: string
+    Scope:
+      type: string
+      enum:
+      - Calendar.Read
+      - Calendar.ReadWrite
+      - Mail.Read
+      - Mail.ReadWrite
+      - Mail.Send
+      - Mail.Drafts
+      - Mail.All
+      - Contacts.Read
+      - Contacts.ReadWrite
+      - Tasks.Read
+      - Tasks.ReadWrite
+      description: Space separated list of scopes
+    ApiAccountInDto:
+      type: object
+      required:
+      - serviceType
+      - active
+      properties:
+        serviceType:
+          $ref: '#/components/schemas/ServiceType'
+        authScopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Scope'
+        authOrgId:
+          type: string
+        authUserId:
+          type: string
+        clientOrgId:
+          type: string
+        serverUrl:
+          type: string
+        loginString:
+          type: string
+          description: This or email field must be specified
+        oauthClientId:
+          type: string
+        active:
+          type: boolean
+          description: The account is always active in the current API version
+        authString1:
+          type: string
+        authString2:
+          type: string
+        password:
+          type: string
+          description: Password for IMAP accounts
+        authObtainedAt:
+          type: string
+          format: date-time
+        authExpiresAt:
+          type: string
+          format: date-time
+        email:
+          type: string
+          description: This or loginString field must be specified
+        name:
+          type: string
+        serverInfo:
+          type: string
+        timezone:
+          type: string
+  responses:
+    UnauthorizedError2:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

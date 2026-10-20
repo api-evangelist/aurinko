@@ -1,0 +1,34 @@
+generated: '2026-10-19'
+method: generated
+generator: extract-docs-artifacts.py skills (local)
+source: openapi/aurinko-openapi.json
+skills:
+- file: skills/aurinko-upsert-and-get-account.md
+  name: aurinko-upsert-and-get-account
+  api: openapi/aurinko-openapi.json
+  operations:
+  - upsertPersonal
+  - getAccount
+- file: skills/aurinko-manage-webhook-subscriptions.md
+  name: aurinko-manage-webhook-subscriptions
+  api: openapi/aurinko-openapi.json
+  operations:
+  - subscribe
+  - getSubscriptions
+  - getSubscription
+  - unsubscribe
+- file: skills/aurinko-manage-contact.md
+  name: aurinko-manage-contact
+  api: openapi/aurinko-openapi.json
+  operations:
+  - createContact
+  - contact
+  - updateContact
+  - deleteContact
+- file: skills/aurinko-create-meeting.md
+  name: aurinko-create-meeting
+  api: openapi/aurinko-openapi.json
+  operations:
+  - create
+  - bookingAccountCreateMeeting
+  - bookingAccountReservationConfirm

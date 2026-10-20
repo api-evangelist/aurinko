@@ -1,0 +1,43 @@
+{
+  "provider": "aurinko",
+  "sources": [
+    "aurinko-openapi.json"
+  ],
+  "outputs": [
+    "aurinko-account-api-openapi.yml",
+    "aurinko-accounts-api-openapi.yml",
+    "aurinko-auth-api-openapi.yml",
+    "aurinko-availability-api-openapi.yml",
+    "aurinko-booking-api-openapi.yml",
+    "aurinko-calsync-api-openapi.yml",
+    "aurinko-calendars-api-openapi.yml",
+    "aurinko-contsync-api-openapi.yml",
+    "aurinko-contacts-api-openapi.yml",
+    "aurinko-drafts-api-openapi.yml",
+    "aurinko-emailfolders-api-openapi.yml",
+    "aurinko-emailsync-api-openapi.yml",
+    "aurinko-emailtracking-api-openapi.yml",
+    "aurinko-events-api-openapi.yml",
+    "aurinko-followuprobot-api-openapi.yml",
+    "aurinko-freebusyschedule-api-openapi.yml",
+    "aurinko-groupbooking-api-openapi.yml",
+    "aurinko-managed-accounts-api-openapi.yml",
+    "aurinko-messages-api-openapi.yml",
+    "aurinko-services-api-openapi.yml",
+    "aurinko-tasklists-api-openapi.yml",
+    "aurinko-tasksync-api-openapi.yml",
+    "aurinko-tasks-api-openapi.yml",
+    "aurinko-user-api-openapi.yml",
+    "aurinko-webhooks-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/aurinko-openapi.json"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "aurinko-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "apis.yml register: written (+25 apis, 25 total)"
+  ],
+  "skipped": []
+}

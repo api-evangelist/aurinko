@@ -1,0 +1,19 @@
+generated: '2026-10-19'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://docs.aurinko.io/getting-started/get-your-developer-api-keys.md
+sources:
+- https://docs.aurinko.io/getting-started/get-your-developer-api-keys.md
+- https://docs.aurinko.io/unified-apis/webhooks-api/authentication.md
+- https://docs.aurinko.io/authentication/oauth-flow.md
+- https://docs.aurinko.io/authentication/oauth-flow/account-oauth-flow.md
+description: Authentication methods for Aurinko APIs as documented.
+schemes:
+- type: http-bearer
+  name: Bearer Token
+  evidence: 'curl -X GET -H ''Authorization: Bearer {access_token}'' https:/api.aurinko.io/v1/account'
+  location: header
+  header: Authorization
+  how_to_obtain: Obtain the token from the Aurinko portal after adding a test account; copy the provided token from the account page.
+docs: https://docs.aurinko.io/getting-started/get-your-developer-api-keys.md
+note: 2 extracted row(s) were dropped because their quote was not on the page.

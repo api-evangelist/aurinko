@@ -1,0 +1,454 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Free Busy Schedule API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: FreeBusySchedule
+  x-displayName: Free/Busy schedule
+  description: Check free/busy status for a calendar or available time slots for a meeting in multiple calendars.
+paths:
+  /v1/calendars/freeBusy:
+    post:
+      operationId: freeBusy
+      tags:
+      - FreeBusySchedule
+      summary: Get the free/busy availability information for a collection of users, or…
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeBusyRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FreeBusySchedulePage'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/calendars/freeBusy \\\n    -d '{\n        \"timeMin\": \"2020-02-03T10:00:00-07:00\",\n        \"timeMax\": \"2020-06-03T10:00:00-07:00\",\n        \"emails\": [\"user1@corp.com\",\"user2@corp.com\"]\n       }'"
+  /v1/calendars/workHours:
+    post:
+      operationId: calendarWorkhours
+      tags:
+      - FreeBusySchedule
+      summary: Get working hours for a collection of users, or resources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkHoursRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkHoursResponse'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/calendars/workHours \\\n    -d '{\n        \"emails\": [\"user1@corp.com\",\"user2@corp.com\"]\n       }'"
+  /v1/calendars/suggestMeetingTimes:
+    post:
+      operationId: suggestMeetingTimes
+      tags:
+      - FreeBusySchedule
+      summary: Suggest meeting times for a collection of users, or resources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuggestMeetingTimesRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuggestMeetingTimesResponse'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/calendars/suggestMeetingTimes \\\n    -d '{\n        \"timeMin\": \"2020-02-03T10:00:00-07:00\",\n        \"timeMax\": \"2020-06-03T10:00:00-07:00\",\n        \"durationMinutes\": 45,\n        \"attendees\": [\n            {\"email\": \"user1@corp.com\"},\n            {\"email\": \"user2@corp.com\"}\n        ],\n        \"defaultTimezone\": \"America/New_York\"\n       }'"
+components:
+  schemas:
+    WorkHoursResponseItem:
+      type: object
+      properties:
+        email:
+          type: string
+        workHours:
+          $ref: '#/components/schemas/WeekWorkSchedule'
+    ShowAs:
+      type: string
+      enum:
+      - free
+      - busy
+      - tentative
+      - outOfOffice
+      - unknown
+    AvailabilityInterval:
+      type: object
+      properties:
+        dateStartInclusive:
+          type: string
+          format: date
+        dateEndInclusive:
+          type: string
+          format: date
+        hours:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingInterval'
+    FreeBusySchedule:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FreeBusyItem'
+        error:
+          type: string
+        workHours:
+          $ref: '#/components/schemas/WeekWorkSchedule'
+    FreeBusyItem:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/ShowAs'
+    TimeInterval:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+    FreeBusySchedulePage:
+      type: object
+      properties:
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/FreeBusySchedule'
+    SuggestMeetingTimesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeInterval'
+        attendees:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeetingAttendee'
+    WeekWorkSchedule:
+      type: object
+      properties:
+        daySchedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayWorkSchedule'
+        timezone:
+          type: string
+    DayOfWeek:
+      type: string
+      enum:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+    AvailabilityIntervals:
+      type: object
+      properties:
+        intervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailabilityInterval'
+    SuggestMeetingTimesRequest:
+      type: object
+      properties:
+        timeMin:
+          type: string
+          format: date-time
+          description: The lower bound of the time interval to search for available meeting times.
+        timeMax:
+          type: string
+          format: date-time
+          description: The upper bound of the time interval to search for available meeting times.
+        durationMinutes:
+          type: integer
+          description: The duration of the meeting to search time for.
+        availabilityStep:
+          type: integer
+          default: 30
+          description: Determines the interval at which new meeting slots are made available throughout the working hours.
+        attendees:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeetingAttendee'
+          description: The attendees to consider when searching for available meeting times.
+        defaultTimezone:
+          type: string
+          description: Timezone (IANA) to use when no timezone information is available for the attendees.
+        defaultWorkHours:
+          $ref: '#/components/schemas/WeekWorkSchedule'
+          description: Work hours to use when no information is available for the attendees.
+        availabilityIntervals:
+          description: the hours of availability for a date range, it have priority over defaultWorkHours.
+          $ref: '#/components/schemas/AvailabilityIntervals'
+        freeStatuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShowAs'
+          default:
+          - free
+          description: The statuses from /freeBusy request to consider as free time for the attendees.
+    MeetingAttendee:
+      type: object
+      properties:
+        email:
+          type: string
+        timezone:
+          type: string
+        workHours:
+          $ref: '#/components/schemas/WeekWorkSchedule'
+        error:
+          type: string
+          readOnly: true
+        busyIntervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeInterval'
+          writeOnly: true
+          description: Busy intervals for the attendee. If set, these intervals will be excluded when searching for available meeting times. Can be combined with `freeIntervals`.
+        freeIntervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeInterval'
+          writeOnly: true
+          description: Free time intervals for the attendee. If set, this parameter will limit the search for available meeting times. Can be combined with `busyIntervals`.
+    FreeBusyRequest:
+      type: object
+      properties:
+        timeMin:
+          type: string
+          format: date-time
+        timeMax:
+          type: string
+          format: date-time
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+    WorkHoursRequest:
+      type: object
+      properties:
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+    DayWorkSchedule:
+      type: object
+      properties:
+        dayOfWeek:
+          $ref: '#/components/schemas/DayOfWeek'
+        workingIntervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingInterval'
+    WorkingInterval:
+      type: object
+      properties:
+        start:
+          type: string
+          pattern: ^\d{2}:\d{2}:\d{2}$
+          example: 09:00:00
+        end:
+          type: string
+          pattern: ^\d{2}:\d{2}:\d{2}$
+          example: '17:00:00'
+    WorkHoursResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkHoursResponseItem'
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

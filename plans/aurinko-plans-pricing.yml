@@ -1,0 +1,36 @@
+generated: '2026-10-19'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://www.aurinko.io/pricing/
+sources:
+- https://www.aurinko.io/pricing/
+- https://docs.aurinko.io/faq/how-does-aurinko-billing-work.md
+name: Yoxel pricing
+audience: developer-api
+pricing_basis: per-seat
+plans:
+- name: Unified API
+  price_text: $1 / account / month
+  price: 1
+  description: Unified API – less than 1Gb data transfers
+- name: BrightSync
+  price_text: $2 / user / month
+  price: 2
+  description: BrightSync – Calendar, Contacts, Tasks only sync
+- name: Unified API (FAQ)
+  price_text: $1 / active account / month
+  price: 1
+  description: Unified API – up to 1 GB traffic
+- name: Email / CRM (FAQ)
+  price_text: $1.50 / active account / month
+  price: 1.5
+  description: Email or CRM – up to 1 GB traffic
+- name: Full Platform (FAQ)
+  price_text: $2 / active account / month
+  price: 2
+  description: Full Platform – unlimited traffic
+- name: Custom
+  price_text: Custom
+  description: Volume, Tiered, Custom pricing depending on your use case and specific needs.
+docs: https://www.aurinko.io/pricing/
+note: 4 extracted row(s) were dropped because their quote was not on the page.

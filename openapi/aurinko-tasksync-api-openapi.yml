@@ -1,0 +1,402 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Task Sync API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: TaskSync
+  x-displayName: Task sync
+  description: Sync/delta methods.
+paths:
+  /v1/tasklists/{taskListId}/sync:
+    post:
+      operationId: taskSyncStart
+      tags:
+      - TaskSync
+      summary: Start a new task sync
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: taskListId
+        description: Task list id
+        required: true
+      - in: query
+        name: skipCompletedBeforeDate
+        description: 'Skip completed tasks before date.
+
+          '
+        required: false
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X POST -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/tasklists/{taskListId}/sync \\\n    -d skipCompletedBeforeDate='2023-05-29T10:58:27Z'"
+  /v1/tasklists/{taskListId}/sync/updated:
+    get:
+      operationId: taskSyncUpdated
+      tags:
+      - TaskSync
+      summary: Request changed tasks (deltas)
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: taskListId
+        description: Task list id
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: deltaToken
+        description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: A token received as nextPageToken from a previous page request
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncTasksPage'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/tasklists/{taskListId}/sync/updated \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
+  /v1/tasklists/{taskListId}/sync/deleted:
+    get:
+      operationId: taskSyncDeleted
+      tags:
+      - TaskSync
+      summary: Request deleted tasks (deltas)
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: taskListId
+        description: Task list id
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: deltaToken
+        description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: A token received as nextPageToken from a previous page request
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletedPage'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/tasklists/{taskListId}/sync/deleted \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
+components:
+  schemas:
+    TaskStatus:
+      type: string
+      enum:
+      - notStarted
+      - inProgress
+      - completed
+      - waitingOnOthers
+      - deferred
+    TaskLink:
+      type: object
+      properties:
+        source:
+          type: string
+        description:
+          type: string
+        link:
+          type: string
+    DeletedPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
+          type: string
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeletedRecord'
+    DeletedRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+    TaskImportance:
+      type: string
+      enum:
+      - low
+      - normal
+      - high
+    SyncStatus:
+      type: object
+      properties:
+        syncUpdatedToken:
+          type: string
+        syncDeletedToken:
+          type: string
+        ready:
+          type: boolean
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        etag:
+          type: string
+        title:
+          type: string
+        lastModifiedTime:
+          type: string
+          format: date-time
+        parentId:
+          type: string
+        position:
+          type: string
+        notes:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        importance:
+          $ref: '#/components/schemas/TaskImportance'
+        due:
+          type: string
+          format: date-time
+        completed:
+          type: string
+          format: date-time
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskLink'
+        startDateTime:
+          type: string
+          format: date-time
+        categories:
+          type: array
+          items:
+            type: string
+        owner:
+          type: string
+        omitted:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - notes
+    SyncTasksPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
+          type: string
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

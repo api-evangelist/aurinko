@@ -1,0 +1,344 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Task Lists API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: TaskLists
+  x-displayName: Task Lists
+  description: TaskLists a container objects for tasks.
+paths:
+  /v1/tasklists:
+    post:
+      operationId: createTaskList
+      tags:
+      - TaskLists
+      summary: Create a task list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskListCreate'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/tasklists \\\n    -d '{ \"title\": \"New task list\" }'"
+    get:
+      operationId: taskListsList
+      tags:
+      - TaskLists
+      summary: Request list of task lists
+      parameters:
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: A token received as nextPageToken from a previous page request (for the first page it must be empty)
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListPage'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X GET https://api.aurinko.io/v1/tasklists"
+  /v1/tasklists/{taskListId}:
+    patch:
+      operationId: updateTaskList
+      tags:
+      - TaskLists
+      summary: Update a task list
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: taskListId
+        description: TaskList id
+        required: true
+      - in: header
+        name: If-Match
+        description: The HTTP entity tag of the resource (ETag). Used for web cache validation.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskListUpdate'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X PATCH https://api.aurinko.io/v1/tasklists \\\n    -d '{ \"title\": \"New task list\" }'"
+    get:
+      operationId: taskList
+      tags:
+      - TaskLists
+      summary: Request a task list by id
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: taskListId
+        description: Task list id
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X GET https://api.aurinko.io/v1/tasklists/{taskListId}"
+    delete:
+      operationId: deleteTaskList
+      tags:
+      - TaskLists
+      summary: Delete a task list by id
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: taskListId
+        description: Task list id
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X DELETE https://api.aurinko.io/v1/tasklists/{taskListId}"
+components:
+  schemas:
+    TaskListPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskList'
+    TaskListUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+    OkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+    TaskList:
+      type: object
+      properties:
+        id:
+          type: string
+        etag:
+          type: string
+        title:
+          type: string
+        owner:
+          type: boolean
+        shared:
+          type: boolean
+        defaultList:
+          type: boolean
+        emailsList:
+          type: boolean
+        lastModifiedTime:
+          type: string
+          format: date-time
+    TaskListCreate:
+      type: object
+      properties:
+        title:
+          type: string
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

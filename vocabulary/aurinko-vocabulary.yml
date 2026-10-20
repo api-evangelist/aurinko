@@ -1,0 +1,441 @@
+generated: '2026-10-20'
+method: derived
+generator: derive-vocabulary.py
+source: openapi/aurinko-openapi.json
+vocabulary:
+  name: Yoxel Domain Vocabulary
+  description: 'Terms declared by Yoxel''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-20'
+  terms:
+  - term: Auth
+    definition: 'Aurinko''s Unified OAuth Flows are backed by providers’ OAuth2 flows (i.e. Google, Office 365, Salesforce, HubSpot,...) or by
+      secure password-based authentications (i.e. MS Exchange, IMAP accounts). The following three flows are supported: 1. Account OAuth - User
+      delegated authorization that produces an Aurinko account and an access token. 2. Service Account OAuth - Admin/Org-level authorization th'
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Errors
+    definition: '## Failing requests API clients must expect and gracefully handle transient errors, such as rate limiting or server errors. We
+      recommend baking 5xx and 429 response handling into your low-level HTTP client so your integration can handle most errors automatically.
+      If a request fails, the error information is returned with the HTTP status code and error details are usually sent as JSON content. For '
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Account
+    definition: An account corresponds to an email address, mailbox, and/or calendar. When connecting to the Aurinko API, a specific access token
+      gives you access to a specific account’s data.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: User
+    definition: '`User` is an Aurinko managed entity that your app can leverage to implement user session management. Multiple regular Aurinko
+      accounts can be linked to a `User` however there is always one primary account that acts as the user id-provider. The `User` sessions allow
+      browser apps to store all their account access tokens securely on the Aurinko servers.'
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Accounts
+    definition: These endpoints allow for account management outside the developer console interface. You can list, cancel, update, and delete
+      accounts associated with your application.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Services
+    definition: Service accounts represent admin/service/organization level connections. List, cancel, update, and delete service accounts associated
+      with your application.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Managed accounts
+    definition: Manage accounts rely on service accounts for their connections. List, cancel, update, and delete managed accounts associated with
+      service accounts.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Calendars
+    definition: Each account connected to Aurino can have zero or more calendars, and each calendar has a collection of individual events.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: CalSync
+    definition: Sync/delta methods.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Events
+    definition: Events are objects within a calendar, generally supporting all features of modern scheduling apps. Using the calendar APIs, your
+      application can schedule events, send meeting invitations, RSVP, and more.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: FreeBusySchedule
+    definition: Check free/busy status for a calendar or available time slots for a meeting in multiple calendars.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Booking
+    definition: Booking profiles allow you to build calendar availability and meeting scheduling apps. List, create, update, and delete booking
+      profiles associated with a calendar (Aurinko account). Gather availability information from a calendar and find time slots when the calendar
+      owner is available. Schedule events for a calendar owner.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: GroupBooking
+    definition: Group Booking profiles allow you to build calendar availability and meeting scheduling for a group of accounts. List, create,
+      update, and delete booking profiles associated with a group. Gather availability information from multiple account calendars and find time
+      slots when at least one user is available. Schedule events for available accounts.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Availability
+    definition: See meeting time availability according to the group booking profile configuration. Book a meeting for an account or one of users
+      in a group.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: EmailSync
+    definition: Sync/delta methods.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Messages
+    definition: Messages contain several pieces of information, such as when a message was sent, the sender's address, to whom it was sent, and
+      the message body. They can also contain files (attachments), calendar event invitations, and more.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Drafts
+    definition: A draft message is a message which has not been sent yet. The drafts endpoints let you create new drafts, read existing drafts,
+      and send drafts.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: EmailFolders
+    definition: List email folders, their attributes, and messages.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: EmailTracking
+    definition: Track email opens.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: FollowUpRobot
+    definition: Follow-up rules allow you to define automatic email follow-up (drip) sequences and email templates. List, create, update, and
+      delete follow-up rules associated with a mailbox account. Check status of a drip sequence for a given email thread, or activate a drip sequence.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Contacts
+    definition: Contacts are objects within an address book, containing several pieces of information, such as email addresses, phone numbers,
+      postal addresses, work place details.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: ContSync
+    definition: Sync/delta methods.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: TaskLists
+    definition: TaskLists a container objects for tasks.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Tasks
+    definition: Tasks a work to be done.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: TaskSync
+    definition: Sync/delta methods.
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: Webhooks
+    definition: 'Webhooks allow your application to receive simple notifications when certain events occur. They essentially tell your application
+      that it can run incremental syncs to obtain the changed records (updated/deleted). ## Prerequisites Gmail notifications require a special
+      configuration, explained in [this article](https://developers.google.com/gmail/api/guides/push). A PubSub PUSH subscription should s'
+    tags:
+    - Resource Group
+    source: openapi/aurinko-openapi.json
+  - term: TaskUpdate
+    definition: 'Object declared by the contract with fields: title, parentId, previousId, notes, status, importance, due, startDateTime, categories.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/TaskUpdate
+  - term: EmailSendError
+    definition: 'Object declared by the contract with fields: failedSteps, errorMessage.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EmailSendError
+  - term: TaskListUpdate
+    definition: 'Object declared by the contract with fields: title.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/TaskListUpdate
+  - term: EmailDraftResponse
+    definition: 'Object declared by the contract with fields: id, webLink.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EmailDraftResponse
+  - term: ContactPhoto
+    definition: 'Object declared by the contract with fields: id, name, mimeType, content.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/ContactPhoto
+  - term: WorkHoursResponseItem
+    definition: 'Object declared by the contract with fields: email, workHours.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/WorkHoursResponseItem
+  - term: DeletedEmailMessage
+    definition: 'Object declared by the contract with fields: id, folderId, internetMessageId, timestamp.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/DeletedEmailMessage
+  - term: TaskCreateResponse
+    definition: 'Object declared by the contract with fields: id, etag, record.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/TaskCreateResponse
+  - term: BookingAttachedAccountsDto
+    definition: 'Object declared by the contract with fields: accountIds.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/BookingAttachedAccountsDto
+  - term: BookingDetachGroupsDto
+    definition: 'Object declared by the contract with fields: groups.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/BookingDetachGroupsDto
+  - term: EmailMessagesPageNext
+    definition: 'Object declared by the contract with fields: nextPageToken, length, records.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EmailMessagesPageNext
+  - term: ServiceType
+    definition: 'Enumeration declared by the contract with values: Google, GoogleBot, Office365, EWS, IMAP, Salesforce, Salesflare, Repfabric,
+      MsTeamsBot, Slack, SlackBot, SugarCRM. (21 more)'
+    tags:
+    - Enumeration
+    source: openapi/aurinko-openapi.json#/components/schemas/ServiceType
+  - term: EmailDeletedPage
+    definition: 'Object declared by the contract with fields: nextPageToken, nextDeltaToken, length, records.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EmailDeletedPage
+  - term: ServiceTypeNonDaemon
+    definition: 'Enumeration declared by the contract with values: Google, Office365, EWS, IMAP, Salesforce, Salesflare, Repfabric, Slack, SugarCRM,
+      HighLevel, Hubspot, Zoom. (16 more)'
+    tags:
+    - Enumeration
+    source: openapi/aurinko-openapi.json#/components/schemas/ServiceTypeNonDaemon
+  - term: UpdateDraftTrackingIn
+    definition: 'Object declared by the contract with fields: context.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/UpdateDraftTrackingIn
+  - term: OutgoingEmailAttachment
+    definition: 'Object declared by the contract with fields: inline, name, mimeType, contentId, content.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/OutgoingEmailAttachment
+  - term: ConfirmReservationOutDto
+    definition: 'Object declared by the contract with fields: id.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/ConfirmReservationOutDto
+  - term: EmailAddress
+    definition: 'Object declared by the contract with fields: name, address, raw.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EmailAddress
+  - term: OrganizationDto
+    definition: 'Object declared by the contract with fields: id, serviceProvider, xid, domain, name, createdAt.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/OrganizationDto
+  - term: CalendarCreate
+    definition: 'Object declared by the contract with fields: name, color, description.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/CalendarCreate
+  - term: GroupBookingInDto
+    definition: 'Object declared by the contract with fields: name, durationMinutes, availabilityStep, startTime, endTime, timeAvailableFor, subject,
+      description, location, workHours, availabilityIntervals, context. (3 more)'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/GroupBookingInDto
+  - term: DripRequestDTO
+    definition: 'Object declared by the contract with fields: status, ruleId, dripAfter, targets, actionVars.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/DripRequestDTO
+  - term: TaskCreate
+    definition: 'Object declared by the contract with fields: title, parentId, previousId, notes, status, importance, due, startDateTime, categories.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/TaskCreate
+  - term: BookingAttachedGroupsPage
+    definition: 'Object declared by the contract with fields: offset, totalSize, done, records.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/BookingAttachedGroupsPage
+  - term: OnlineMeetingDetails
+    definition: 'Object declared by the contract with fields: url, phone, pin, regionCode, sip, infoUrl.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/OnlineMeetingDetails
+  - term: BookingDetachGroupDto
+    definition: 'Object declared by the contract with fields: extId, accountIds.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/BookingDetachGroupDto
+  - term: FreeBusySchedulePage
+    definition: 'Object declared by the contract with fields: records.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/FreeBusySchedulePage
+  - term: EmailTrackingPageNext
+    definition: 'Object declared by the contract with fields: offset, totalSize, done, records.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EmailTrackingPageNext
+  - term: DayWorkSchedule
+    definition: 'Object declared by the contract with fields: dayOfWeek, workingIntervals.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/DayWorkSchedule
+  - term: MeetingAttendee
+    definition: 'Object declared by the contract with fields: email, timezone, workHours, error, busyIntervals, freeIntervals.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/MeetingAttendee
+  - term: BookingRequiredMode
+    definition: 'Enumeration declared by the contract with values: one, all.'
+    tags:
+    - Enumeration
+    source: openapi/aurinko-openapi.json#/components/schemas/BookingRequiredMode
+  - term: FollowupRuleAggregateOut
+    definition: 'Object declared by the contract with fields: id, name, expectThreadResponse, templateBody, templateSubject, actions.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/FollowupRuleAggregateOut
+  - term: EndUserDto
+    definition: 'Object declared by the contract with fields: id, appId, email, name, authOrgId, createdAt, lastActivity, trustedIdentity, externalIdType,
+      accounts.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EndUserDto
+  - term: BookingAttachedDto
+    definition: 'Object declared by the contract with fields: extId, accountIds, required.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/BookingAttachedDto
+  - term: WorkHoursRequest
+    definition: 'Object declared by the contract with fields: emails.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/WorkHoursRequest
+  - term: NativeScope
+    definition: Native scope from provider's API.
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/NativeScope
+  - term: ServiceTypeDaemon
+    definition: 'Enumeration declared by the contract with values: Google, GoogleBot, Office365, EWS, MsTeamsBot, Slack, SlackBot, ZoomBot, MCTrade,
+      Zoho.'
+    tags:
+    - Enumeration
+    source: openapi/aurinko-openapi.json#/components/schemas/ServiceTypeDaemon
+  - term: ContactPhoneNumber
+    definition: 'Object declared by the contract with fields: number, type, canonicalForm.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/ContactPhoneNumber
+  - term: EmailFolderCreate
+    definition: 'Object declared by the contract with fields: name, parentId.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EmailFolderCreate
+  - term: ScheduledDraft
+    definition: 'Object declared by the contract with fields: jobId, sendTime, status, errorMessage.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/ScheduledDraft
+  - term: EmailTrackingEvent
+    definition: 'Object declared by the contract with fields: id, createdAt, eventType, location, userAgent, referrer, remoteAddr, threadId, messageId,
+      internetMessageId, trackingId, trackingThreadId. (4 more)'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/EmailTrackingEvent
+  - term: BodyType
+    definition: 'Enumeration declared by the contract with values: html, text.'
+    tags:
+    - Enumeration
+    source: openapi/aurinko-openapi.json#/components/schemas/BodyType
+  - term: TaskListCreate
+    definition: 'Object declared by the contract with fields: title.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/TaskListCreate
+  - term: UserAccountType
+    definition: Type of user account. Required if `userId` is provided.
+    tags:
+    - Enumeration
+    source: openapi/aurinko-openapi.json#/components/schemas/UserAccountType
+  - term: RewriteHtml
+    definition: 'Object declared by the contract with fields: htmlText, tracking.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/RewriteHtml
+  - term: MeetingResponseType
+    definition: 'Enumeration declared by the contract with values: noResponse, declined, tentative, accepted.'
+    tags:
+    - Enumeration
+    source: openapi/aurinko-openapi.json#/components/schemas/MeetingResponseType
+  - term: SuggestMeetingTimesResponse
+    definition: 'Object declared by the contract with fields: items, attendees.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/SuggestMeetingTimesResponse
+  - term: AccountsPage
+    definition: 'Object declared by the contract with fields: offset, totalSize, done, records.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/AccountsPage
+  - term: TrackingData
+    definition: 'Object declared by the contract with fields: id, messageId, inetMessageId, threadId, sendDate, lastActivityTime, lastRespondedTime,
+      trackReplies, trackOpens, trackingCode, context, location. (4 more)'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/TrackingData
+  - term: TokenStatus
+    definition: '* active - means the token is active and ready for use * invalid - means that Aurinko failed to access provider API with authentication
+      data. Basically it indicates that Aurinko has received a 401 http status from provider and marked this token as non-active. * dead - this
+      is a special variant of "invalid" status that can occur only with OAuth 2.0 accounts. It means that Aurinko failed to refresh '
+    tags:
+    - Enumeration
+    source: openapi/aurinko-openapi.json#/components/schemas/TokenStatus
+  - term: ContactCompany
+    definition: 'Object declared by the contract with fields: name, officeLocation, department, jobTitle, yomiCompanyName.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/ContactCompany
+  - term: MeetingResponse
+    definition: 'Object declared by the contract with fields: response, comment.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/MeetingResponse
+  - term: TaskLink
+    definition: 'Object declared by the contract with fields: source, description, link.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/TaskLink
+  - term: TasksPage
+    definition: 'Object declared by the contract with fields: nextPageToken, length, records.'
+    tags:
+    - Object
+    source: openapi/aurinko-openapi.json#/components/schemas/TasksPage

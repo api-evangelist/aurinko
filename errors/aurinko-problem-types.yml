@@ -1,0 +1,31 @@
+generated: '2026-10-20'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/aurinko-openapi.json
+format: custom
+envelope:
+  media_type: null
+  schema: null
+coverage:
+  operations: 134
+  statuses_declared: 3
+problems:
+- status: 401
+  title: Unauthorized
+  description: Authentication information is missing or invalid
+  operations: 45
+  media_types: []
+  schema: null
+- status: 404
+  title: Not Found
+  description: Contact not found
+  operations: 1
+  media_types: []
+  schema: null
+- status: 408
+  title: Request Timeout
+  description: threadId may be yet unavailable for some IMAP providers
+  operations: 1
+  media_types: []
+  schema: null

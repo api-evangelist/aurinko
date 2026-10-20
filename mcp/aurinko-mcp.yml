@@ -1,0 +1,214 @@
+generated: '2026-10-20'
+method: derived
+generator: derive-mcp-candidate.py
+source:
+- openapi/aurinko-openapi.json
+status: candidate
+deployment:
+  mode: none
+  auth: unknown
+  verified: probed
+note: No MCP server was found. The pre-flight posted tools/list to /mcp on api.aurinko.io, aurinko.io, apirefs.aurinko.io, app.aurinko.io; verdict
+  absent. Candidate tools below are derived from the 134 operation(s) in the provider's own OpenAPI (40 listed); they describe what a server WOULD
+  expose, not one that exists.
+tools:
+- name: free_busy
+  operationId: freeBusy
+  method: POST
+  path: /v1/calendars/freeBusy
+  description: Get the free/busy availability information for a collection of users, or resources
+- name: calendar_workhours
+  operationId: calendarWorkhours
+  method: POST
+  path: /v1/calendars/workHours
+  description: Get working hours for a collection of users, or resources.
+- name: suggest_meeting_times
+  operationId: suggestMeetingTimes
+  method: POST
+  path: /v1/calendars/suggestMeetingTimes
+  description: Suggest meeting times for a collection of users, or resources
+- name: create_calendar
+  operationId: createCalendar
+  method: POST
+  path: /v1/calendars
+  description: Create new calendar
+- name: calendars
+  operationId: calendars
+  method: GET
+  path: /v1/calendars
+  description: Request list of calendars
+- name: update_calendar
+  operationId: updateCalendar
+  method: PATCH
+  path: /v1/calendars/{id}
+  description: Update a calendar
+- name: calendar_by_id
+  operationId: calendarById
+  method: GET
+  path: /v1/calendars/{id}
+  description: Get a calendar
+- name: cal_sync_start
+  operationId: calSyncStart
+  method: POST
+  path: /v1/calendars/{calendarId}/sync
+  description: Start a new calendar sync
+- name: cal_sync_updated
+  operationId: calSyncUpdated
+  method: GET
+  path: /v1/calendars/{calendarId}/sync/updated
+  description: Request changed events (deltas)
+- name: cal_sync_deleted
+  operationId: calSyncDeleted
+  method: GET
+  path: /v1/calendars/{calendarId}/sync/deleted
+  description: Request deleted events (deltas)
+- name: range
+  operationId: range
+  method: GET
+  path: /v1/calendars/{calendarId}/events/range
+  description: Request events in a range
+- name: events_by_ical_uids
+  operationId: eventsByICalUIds
+  method: GET
+  path: /v1/calendars/{calendarId}/events/find
+  description: Request events by ICalUid's
+- name: update_event
+  operationId: updateEvent
+  method: PATCH
+  path: /v1/calendars/{calendarId}/events/{eventId}
+  description: Update an event
+- name: event
+  operationId: event
+  method: GET
+  path: /v1/calendars/{calendarId}/events/{eventId}
+  description: Get an event
+- name: delete_event
+  operationId: deleteEvent
+  method: DELETE
+  path: /v1/calendars/{calendarId}/events/{eventId}
+  description: Delete an event
+- name: series_info
+  operationId: seriesInfo
+  method: GET
+  path: /v1/calendars/{calendarId}/events/{masterId}/series
+  description: Request a series description
+- name: occurrence_by_orig_start
+  operationId: occurrenceByOrigStart
+  method: GET
+  path: /v1/calendars/{calendarId}/events/{masterId}/occurrences/{ost}
+  description: Request an occurrence by original start time
+- name: create_event
+  operationId: createEvent
+  method: POST
+  path: /v1/calendars/{calendarId}/events
+  description: Create a new event
+- name: update_meeting_response
+  operationId: updateMeetingResponse
+  method: PUT
+  path: /v1/calendars/{calendarId}/events/{eventId}/response
+  description: Update meeting response
+- name: attachment
+  operationId: attachment
+  method: GET
+  path: /v1/calendars/{calendarId}/events/{eventId}/attachments/{attachmentId}
+  description: Get an event attachment
+- name: email_sync_start
+  operationId: emailSyncStart
+  method: POST
+  path: /v1/email/sync
+  description: Start a new email sync
+- name: email_sync_updated
+  operationId: emailSyncUpdated
+  method: GET
+  path: /v1/email/sync/updated
+  description: Request changed emails (deltas)
+- name: email_sync_deleted
+  operationId: emailSyncDeleted
+  method: GET
+  path: /v1/email/sync/deleted
+  description: Request deleted emails (deltas)
+- name: send
+  operationId: send
+  method: POST
+  path: /v1/email/messages
+  description: Send a new message
+- name: messages
+  operationId: messages
+  method: GET
+  path: /v1/email/messages
+  description: List email messages
+- name: message
+  operationId: message
+  method: GET
+  path: /v1/email/messages/{messageId}
+  description: Get a message
+- name: message_raw
+  operationId: messageRaw
+  method: GET
+  path: /v1/email/messages/{messageId}/raw
+  description: Get a raw message
+- name: update_message_status
+  operationId: updateMessageStatus
+  method: POST
+  path: /v1/email/messages/{messageId}/status
+  description: Update a message's status
+- name: conversation
+  operationId: conversation
+  method: GET
+  path: /v1/email/conversations/{threadId}
+  description: Get messages in a conversation
+- name: reply
+  operationId: reply
+  method: POST
+  path: /v1/email/messages/{messageId}/reply
+  description: Reply to a message
+- name: email_attachment
+  operationId: emailAttachment
+  method: GET
+  path: /v1/email/messages/{messageId}/attachments/{attachmentId}
+  description: Get a message attachment
+- name: create_folder
+  operationId: createFolder
+  method: POST
+  path: /v1/email/folders
+  description: Create a new email folder
+- name: folders
+  operationId: folders
+  method: GET
+  path: /v1/email/folders
+  description: List email folders
+- name: update_well_known_folders
+  operationId: updateWellKnownFolders
+  method: PATCH
+  path: /v1/email/folders/wellKnown
+  description: Update wellKnown email folders
+- name: well_known_folders
+  operationId: wellKnownFolders
+  method: GET
+  path: /v1/email/folders/wellKnown
+  description: List wellKnown email folders
+- name: folder
+  operationId: folder
+  method: GET
+  path: /v1/email/folders/{folderId}
+  description: Get an email folder
+- name: folder_emails
+  operationId: folderEmails
+  method: GET
+  path: /v1/email/folders/{folderId}/messages
+  description: List email messages in a specified folder
+- name: create_draft
+  operationId: createDraft
+  method: POST
+  path: /v1/email/drafts
+  description: Create a new draft message
+- name: get_draft
+  operationId: getDraft
+  method: GET
+  path: /v1/email/drafts/{draftId}
+  description: Get a draft message
+- name: send_draft
+  operationId: sendDraft
+  method: POST
+  path: /v1/email/drafts/{draftId}/send
+  description: Send a draft message

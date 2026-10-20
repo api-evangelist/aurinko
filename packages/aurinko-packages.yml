@@ -1,0 +1,10 @@
+generated: '2026-10-19'
+method: searched
+source: https://www.npmjs.com/package/aurinko-sdk
+packages:
+  - name: aurinko-sdk
+    registry: npm
+    official: true
+    version: "1.0.1"
+    published: 2026-03-17
+    note: "npm package found via search; version 1.0.1 published 2026-03-17"

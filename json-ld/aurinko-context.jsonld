@@ -1,0 +1,1218 @@
+{
+  "@context": {
+    "@vocab": "https://aurinko.io/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "aurinko": "https://aurinko.io/schema#",
+    "TaskUpdate": "aurinko:TaskUpdate",
+    "title": {
+      "@id": "aurinko:title",
+      "@type": "xsd:string"
+    },
+    "parentId": {
+      "@id": "aurinko:parentId",
+      "@type": "xsd:string"
+    },
+    "previousId": {
+      "@id": "aurinko:previousId",
+      "@type": "xsd:string"
+    },
+    "notes": {
+      "@id": "aurinko:notes",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "aurinko:status",
+      "@type": "@id"
+    },
+    "importance": {
+      "@id": "aurinko:importance",
+      "@type": "@id"
+    },
+    "due": {
+      "@id": "aurinko:due",
+      "@type": "xsd:dateTime"
+    },
+    "startDateTime": {
+      "@id": "aurinko:startDateTime",
+      "@type": "xsd:dateTime"
+    },
+    "categories": {
+      "@id": "aurinko:categories",
+      "@container": "@list"
+    },
+    "EmailSendError": "aurinko:EmailSendError",
+    "failedSteps": {
+      "@id": "aurinko:failedSteps",
+      "@container": "@list"
+    },
+    "errorMessage": {
+      "@id": "aurinko:errorMessage",
+      "@type": "xsd:string"
+    },
+    "TaskListUpdate": "aurinko:TaskListUpdate",
+    "EmailDraftResponse": "aurinko:EmailDraftResponse",
+    "id": {
+      "@id": "aurinko:id",
+      "@type": "xsd:string"
+    },
+    "webLink": {
+      "@id": "aurinko:webLink",
+      "@type": "xsd:string"
+    },
+    "ContactPhoto": "aurinko:ContactPhoto",
+    "name": {
+      "@id": "aurinko:name",
+      "@type": "xsd:string"
+    },
+    "mimeType": {
+      "@id": "aurinko:mimeType",
+      "@type": "xsd:string"
+    },
+    "content": {
+      "@id": "aurinko:content",
+      "@type": "xsd:string"
+    },
+    "WorkHoursResponseItem": "aurinko:WorkHoursResponseItem",
+    "email": {
+      "@id": "aurinko:email",
+      "@type": "xsd:string"
+    },
+    "workHours": {
+      "@id": "aurinko:workHours",
+      "@type": "@id"
+    },
+    "DeletedEmailMessage": "aurinko:DeletedEmailMessage",
+    "folderId": {
+      "@id": "aurinko:folderId",
+      "@type": "xsd:string"
+    },
+    "internetMessageId": {
+      "@id": "aurinko:internetMessageId",
+      "@type": "xsd:string"
+    },
+    "timestamp": {
+      "@id": "aurinko:timestamp",
+      "@type": "xsd:dateTime"
+    },
+    "TaskCreateResponse": "aurinko:TaskCreateResponse",
+    "etag": {
+      "@id": "aurinko:etag",
+      "@type": "xsd:string"
+    },
+    "record": {
+      "@id": "aurinko:record",
+      "@type": "@id"
+    },
+    "BookingAttachedAccountsDto": "aurinko:BookingAttachedAccountsDto",
+    "accountIds": {
+      "@id": "aurinko:accountIds",
+      "@container": "@list"
+    },
+    "BookingDetachGroupsDto": "aurinko:BookingDetachGroupsDto",
+    "groups": {
+      "@id": "aurinko:groups",
+      "@container": "@list"
+    },
+    "EmailMessagesPageNext": "aurinko:EmailMessagesPageNext",
+    "nextPageToken": {
+      "@id": "aurinko:nextPageToken",
+      "@type": "xsd:string"
+    },
+    "length": {
+      "@id": "aurinko:length",
+      "@type": "xsd:integer"
+    },
+    "records": {
+      "@id": "aurinko:records",
+      "@container": "@list"
+    },
+    "ServiceType": "aurinko:ServiceType",
+    "EmailDeletedPage": "aurinko:EmailDeletedPage",
+    "nextDeltaToken": {
+      "@id": "aurinko:nextDeltaToken",
+      "@type": "xsd:string"
+    },
+    "ServiceTypeNonDaemon": "aurinko:ServiceTypeNonDaemon",
+    "UpdateDraftTrackingIn": "aurinko:UpdateDraftTrackingIn",
+    "context": {
+      "@id": "aurinko:context",
+      "@type": "xsd:string"
+    },
+    "OutgoingEmailAttachment": "aurinko:OutgoingEmailAttachment",
+    "inline": {
+      "@id": "aurinko:inline",
+      "@type": "xsd:boolean"
+    },
+    "contentId": {
+      "@id": "aurinko:contentId",
+      "@type": "xsd:string"
+    },
+    "ConfirmReservationOutDto": "aurinko:ConfirmReservationOutDto",
+    "EmailAddress": "aurinko:EmailAddress",
+    "address": {
+      "@id": "aurinko:address",
+      "@type": "xsd:string"
+    },
+    "raw": {
+      "@id": "aurinko:raw",
+      "@type": "xsd:string"
+    },
+    "OrganizationDto": "aurinko:OrganizationDto",
+    "serviceProvider": {
+      "@id": "aurinko:serviceProvider",
+      "@type": "@id"
+    },
+    "xid": {
+      "@id": "aurinko:xid",
+      "@type": "xsd:string"
+    },
+    "domain": {
+      "@id": "aurinko:domain",
+      "@type": "xsd:string"
+    },
+    "createdAt": {
+      "@id": "aurinko:createdAt",
+      "@type": "xsd:dateTime"
+    },
+    "CalendarCreate": "aurinko:CalendarCreate",
+    "color": {
+      "@id": "aurinko:color",
+      "@type": "xsd:string"
+    },
+    "description": {
+      "@id": "aurinko:description",
+      "@type": "xsd:string"
+    },
+    "GroupBookingInDto": "aurinko:GroupBookingInDto",
+    "durationMinutes": {
+      "@id": "aurinko:durationMinutes",
+      "@type": "xsd:integer"
+    },
+    "availabilityStep": {
+      "@id": "aurinko:availabilityStep",
+      "@type": "xsd:integer"
+    },
+    "startTime": {
+      "@id": "aurinko:startTime",
+      "@type": "xsd:dateTime"
+    },
+    "endTime": {
+      "@id": "aurinko:endTime",
+      "@type": "xsd:dateTime"
+    },
+    "timeAvailableFor": {
+      "@id": "aurinko:timeAvailableFor",
+      "@type": "xsd:string"
+    },
+    "subject": {
+      "@id": "aurinko:subject",
+      "@type": "xsd:string"
+    },
+    "location": {
+      "@id": "aurinko:location",
+      "@type": "xsd:string"
+    },
+    "availabilityIntervals": {
+      "@id": "aurinko:availabilityIntervals",
+      "@type": "@id"
+    },
+    "startConference": {
+      "@id": "aurinko:startConference",
+      "@type": "xsd:boolean"
+    },
+    "openMeetingUrl": {
+      "@id": "aurinko:openMeetingUrl",
+      "@type": "xsd:string"
+    },
+    "clientOrgId": {
+      "@id": "aurinko:clientOrgId",
+      "@type": "xsd:string"
+    },
+    "DripRequestDTO": "aurinko:DripRequestDTO",
+    "ruleId": {
+      "@id": "aurinko:ruleId",
+      "@type": "xsd:integer"
+    },
+    "dripAfter": {
+      "@id": "aurinko:dripAfter",
+      "@type": "xsd:dateTime"
+    },
+    "targets": {
+      "@id": "aurinko:targets",
+      "@container": "@list"
+    },
+    "actionVars": {
+      "@id": "aurinko:actionVars"
+    },
+    "TaskCreate": "aurinko:TaskCreate",
+    "BookingAttachedGroupsPage": "aurinko:BookingAttachedGroupsPage",
+    "offset": {
+      "@id": "aurinko:offset",
+      "@type": "xsd:integer"
+    },
+    "totalSize": {
+      "@id": "aurinko:totalSize",
+      "@type": "xsd:integer"
+    },
+    "done": {
+      "@id": "aurinko:done",
+      "@type": "xsd:boolean"
+    },
+    "OnlineMeetingDetails": "aurinko:OnlineMeetingDetails",
+    "url": {
+      "@id": "aurinko:url",
+      "@type": "xsd:string"
+    },
+    "phone": {
+      "@id": "aurinko:phone",
+      "@type": "xsd:string"
+    },
+    "pin": {
+      "@id": "aurinko:pin",
+      "@type": "xsd:string"
+    },
+    "regionCode": {
+      "@id": "aurinko:regionCode",
+      "@type": "xsd:string"
+    },
+    "sip": {
+      "@id": "aurinko:sip",
+      "@type": "xsd:string"
+    },
+    "infoUrl": {
+      "@id": "aurinko:infoUrl",
+      "@type": "xsd:string"
+    },
+    "BookingDetachGroupDto": "aurinko:BookingDetachGroupDto",
+    "extId": {
+      "@id": "aurinko:extId",
+      "@type": "xsd:string"
+    },
+    "FreeBusySchedulePage": "aurinko:FreeBusySchedulePage",
+    "EmailTrackingPageNext": "aurinko:EmailTrackingPageNext",
+    "DayWorkSchedule": "aurinko:DayWorkSchedule",
+    "dayOfWeek": {
+      "@id": "aurinko:dayOfWeek",
+      "@type": "@id"
+    },
+    "workingIntervals": {
+      "@id": "aurinko:workingIntervals",
+      "@container": "@list"
+    },
+    "MeetingAttendee": "aurinko:MeetingAttendee",
+    "timezone": {
+      "@id": "aurinko:timezone",
+      "@type": "xsd:string"
+    },
+    "error": {
+      "@id": "aurinko:error",
+      "@type": "xsd:string"
+    },
+    "busyIntervals": {
+      "@id": "aurinko:busyIntervals",
+      "@container": "@list"
+    },
+    "freeIntervals": {
+      "@id": "aurinko:freeIntervals",
+      "@container": "@list"
+    },
+    "BookingRequiredMode": "aurinko:BookingRequiredMode",
+    "FollowupRuleAggregateOut": "aurinko:FollowupRuleAggregateOut",
+    "expectThreadResponse": {
+      "@id": "aurinko:expectThreadResponse",
+      "@type": "xsd:boolean"
+    },
+    "templateBody": {
+      "@id": "aurinko:templateBody",
+      "@type": "xsd:string"
+    },
+    "templateSubject": {
+      "@id": "aurinko:templateSubject",
+      "@type": "xsd:string"
+    },
+    "actions": {
+      "@id": "aurinko:actions",
+      "@container": "@list"
+    },
+    "EndUserDto": "aurinko:EndUserDto",
+    "appId": {
+      "@id": "aurinko:appId",
+      "@type": "xsd:integer"
+    },
+    "authOrgId": {
+      "@id": "aurinko:authOrgId",
+      "@type": "xsd:string"
+    },
+    "lastActivity": {
+      "@id": "aurinko:lastActivity",
+      "@type": "xsd:dateTime"
+    },
+    "trustedIdentity": {
+      "@id": "aurinko:trustedIdentity",
+      "@type": "xsd:boolean"
+    },
+    "externalIdType": {
+      "@id": "aurinko:externalIdType",
+      "@type": "@id"
+    },
+    "accounts": {
+      "@id": "aurinko:accounts",
+      "@container": "@list"
+    },
+    "BookingAttachedDto": "aurinko:BookingAttachedDto",
+    "required": {
+      "@id": "aurinko:required",
+      "@type": "@id"
+    },
+    "WorkHoursRequest": "aurinko:WorkHoursRequest",
+    "emails": {
+      "@id": "aurinko:emails",
+      "@container": "@list"
+    },
+    "ServiceTypeDaemon": "aurinko:ServiceTypeDaemon",
+    "ContactPhoneNumber": "aurinko:ContactPhoneNumber",
+    "number": {
+      "@id": "aurinko:number",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "aurinko:type",
+      "@type": "xsd:string"
+    },
+    "canonicalForm": {
+      "@id": "aurinko:canonicalForm",
+      "@type": "xsd:string"
+    },
+    "EmailFolderCreate": "aurinko:EmailFolderCreate",
+    "ScheduledDraft": "aurinko:ScheduledDraft",
+    "jobId": {
+      "@id": "aurinko:jobId",
+      "@type": "xsd:integer"
+    },
+    "sendTime": {
+      "@id": "aurinko:sendTime",
+      "@type": "xsd:dateTime"
+    },
+    "EmailTrackingEvent": "aurinko:EmailTrackingEvent",
+    "eventType": {
+      "@id": "aurinko:eventType",
+      "@type": "xsd:string"
+    },
+    "userAgent": {
+      "@id": "aurinko:userAgent",
+      "@type": "xsd:string"
+    },
+    "referrer": {
+      "@id": "aurinko:referrer",
+      "@type": "xsd:string"
+    },
+    "remoteAddr": {
+      "@id": "aurinko:remoteAddr",
+      "@type": "xsd:string"
+    },
+    "threadId": {
+      "@id": "aurinko:threadId",
+      "@type": "xsd:string"
+    },
+    "messageId": {
+      "@id": "aurinko:messageId",
+      "@type": "xsd:string"
+    },
+    "trackingId": {
+      "@id": "aurinko:trackingId",
+      "@type": "xsd:integer"
+    },
+    "trackingThreadId": {
+      "@id": "aurinko:trackingThreadId",
+      "@type": "xsd:string"
+    },
+    "trackingMessageId": {
+      "@id": "aurinko:trackingMessageId",
+      "@type": "xsd:string"
+    },
+    "trackingInternetMessageId": {
+      "@id": "aurinko:trackingInternetMessageId",
+      "@type": "xsd:string"
+    },
+    "trackingCode": {
+      "@id": "aurinko:trackingCode",
+      "@type": "xsd:string"
+    },
+    "BodyType": "aurinko:BodyType",
+    "TaskListCreate": "aurinko:TaskListCreate",
+    "UserAccountType": "aurinko:UserAccountType",
+    "RewriteHtml": "aurinko:RewriteHtml",
+    "htmlText": {
+      "@id": "aurinko:htmlText",
+      "@type": "xsd:string"
+    },
+    "tracking": {
+      "@id": "aurinko:tracking",
+      "@type": "@id"
+    },
+    "MeetingResponseType": "aurinko:MeetingResponseType",
+    "SuggestMeetingTimesResponse": "aurinko:SuggestMeetingTimesResponse",
+    "items": {
+      "@id": "aurinko:items",
+      "@container": "@list"
+    },
+    "attendees": {
+      "@id": "aurinko:attendees",
+      "@container": "@list"
+    },
+    "AccountsPage": "aurinko:AccountsPage",
+    "TrackingData": "aurinko:TrackingData",
+    "inetMessageId": {
+      "@id": "aurinko:inetMessageId",
+      "@type": "xsd:string"
+    },
+    "sendDate": {
+      "@id": "aurinko:sendDate",
+      "@type": "xsd:dateTime"
+    },
+    "lastActivityTime": {
+      "@id": "aurinko:lastActivityTime",
+      "@type": "xsd:dateTime"
+    },
+    "lastRespondedTime": {
+      "@id": "aurinko:lastRespondedTime",
+      "@type": "xsd:dateTime"
+    },
+    "trackReplies": {
+      "@id": "aurinko:trackReplies",
+      "@type": "xsd:boolean"
+    },
+    "trackOpens": {
+      "@id": "aurinko:trackOpens",
+      "@type": "xsd:boolean"
+    },
+    "ignoreOpenClicks": {
+      "@id": "aurinko:ignoreOpenClicks",
+      "@type": "xsd:boolean"
+    },
+    "hasBounced": {
+      "@id": "aurinko:hasBounced",
+      "@type": "xsd:boolean"
+    },
+    "TokenStatus": "aurinko:TokenStatus",
+    "ContactCompany": "aurinko:ContactCompany",
+    "officeLocation": {
+      "@id": "aurinko:officeLocation",
+      "@type": "xsd:string"
+    },
+    "department": {
+      "@id": "aurinko:department",
+      "@type": "xsd:string"
+    },
+    "jobTitle": {
+      "@id": "aurinko:jobTitle",
+      "@type": "xsd:string"
+    },
+    "yomiCompanyName": {
+      "@id": "aurinko:yomiCompanyName",
+      "@type": "xsd:string"
+    },
+    "MeetingResponse": "aurinko:MeetingResponse",
+    "response": {
+      "@id": "aurinko:response",
+      "@type": "@id"
+    },
+    "comment": {
+      "@id": "aurinko:comment",
+      "@type": "xsd:string"
+    },
+    "TaskLink": "aurinko:TaskLink",
+    "source": {
+      "@id": "aurinko:source",
+      "@type": "xsd:string"
+    },
+    "link": {
+      "@id": "aurinko:link",
+      "@type": "xsd:string"
+    },
+    "TasksPage": "aurinko:TasksPage",
+    "ContactRelation": "aurinko:ContactRelation",
+    "FollowupConfig": "aurinko:FollowupConfig",
+    "emailAliases": {
+      "@id": "aurinko:emailAliases",
+      "@container": "@list"
+    },
+    "BookingTimesOutDto": "aurinko:BookingTimesOutDto",
+    "primaryColor": {
+      "@id": "aurinko:primaryColor",
+      "@type": "xsd:string"
+    },
+    "secondaryColor": {
+      "@id": "aurinko:secondaryColor",
+      "@type": "xsd:string"
+    },
+    "additionalFields": {
+      "@id": "aurinko:additionalFields",
+      "@container": "@list"
+    },
+    "nextFromDate": {
+      "@id": "aurinko:nextFromDate",
+      "@type": "xsd:date"
+    },
+    "PreparedAuthToken": "aurinko:PreparedAuthToken",
+    "token": {
+      "@id": "aurinko:token",
+      "@type": "xsd:string"
+    },
+    "BookingSuccessOutDto": "aurinko:BookingSuccessOutDto",
+    "DeletedRecord": "aurinko:DeletedRecord",
+    "Calendar": "aurinko:Calendar",
+    "accessRole": {
+      "@id": "aurinko:accessRole",
+      "@type": "xsd:string"
+    },
+    "primary": {
+      "@id": "aurinko:primary",
+      "@type": "xsd:boolean"
+    },
+    "ContactUrl": "aurinko:ContactUrl",
+    "href": {
+      "@id": "aurinko:href",
+      "@type": "xsd:string"
+    },
+    "EmailDraft": "aurinko:EmailDraft",
+    "message": {
+      "@id": "aurinko:message",
+      "@type": "@id"
+    },
+    "scheduled": {
+      "@id": "aurinko:scheduled",
+      "@type": "@id"
+    },
+    "EmailTrackingEventPageNext": "aurinko:EmailTrackingEventPageNext",
+    "EndUserAccountsPage": "aurinko:EndUserAccountsPage",
+    "ConfirmSlotDeleteOutDto": "aurinko:ConfirmSlotDeleteOutDto",
+    "TaskStatus": "aurinko:TaskStatus",
+    "BookingInDto": "aurinko:BookingInDto",
+    "EmailSendResponse": "aurinko:EmailSendResponse",
+    "processingStatus": {
+      "@id": "aurinko:processingStatus",
+      "@type": "xsd:string"
+    },
+    "processingError": {
+      "@id": "aurinko:processingError",
+      "@type": "@id"
+    },
+    "Sensitivity": "aurinko:Sensitivity",
+    "WorkHoursResponse": "aurinko:WorkHoursResponse",
+    "ApiAccountOutDto": "aurinko:ApiAccountOutDto",
+    "serviceType": {
+      "@id": "aurinko:serviceType",
+      "@type": "@id"
+    },
+    "active": {
+      "@id": "aurinko:active",
+      "@type": "xsd:boolean"
+    },
+    "tokenStatus": {
+      "@id": "aurinko:tokenStatus",
+      "@type": "@id"
+    },
+    "tokenError": {
+      "@id": "aurinko:tokenError",
+      "@type": "xsd:string"
+    },
+    "daemon": {
+      "@id": "aurinko:daemon",
+      "@type": "xsd:boolean"
+    },
+    "loginString": {
+      "@id": "aurinko:loginString",
+      "@type": "xsd:string"
+    },
+    "mailboxAddress": {
+      "@id": "aurinko:mailboxAddress",
+      "@type": "xsd:string"
+    },
+    "name2": {
+      "@id": "aurinko:name2",
+      "@type": "xsd:string"
+    },
+    "serverUrl": {
+      "@id": "aurinko:serverUrl",
+      "@type": "xsd:string"
+    },
+    "serverUrl2": {
+      "@id": "aurinko:serverUrl2",
+      "@type": "xsd:string"
+    },
+    "authUserId": {
+      "@id": "aurinko:authUserId",
+      "@type": "xsd:string"
+    },
+    "tokenIssuedAt": {
+      "@id": "aurinko:tokenIssuedAt",
+      "@type": "xsd:dateTime"
+    },
+    "authScopes": {
+      "@id": "aurinko:authScopes",
+      "@container": "@list"
+    },
+    "authNativeScopes": {
+      "@id": "aurinko:authNativeScopes",
+      "@container": "@list"
+    },
+    "authObtainedAt": {
+      "@id": "aurinko:authObtainedAt",
+      "@type": "xsd:dateTime"
+    },
+    "authExpiresAt": {
+      "@id": "aurinko:authExpiresAt",
+      "@type": "xsd:dateTime"
+    },
+    "userId": {
+      "@id": "aurinko:userId",
+      "@type": "xsd:string"
+    },
+    "WellKnownFoldersOut": "aurinko:WellKnownFoldersOut",
+    "archive": {
+      "@id": "aurinko:archive",
+      "@type": "xsd:string"
+    },
+    "GroupBookingOutDto": "aurinko:GroupBookingOutDto",
+    "EndUserSettingsDto": "aurinko:EndUserSettingsDto",
+    "Event": "aurinko:Event",
+    "calendarId": {
+      "@id": "aurinko:calendarId",
+      "@type": "xsd:string"
+    },
+    "createdTime": {
+      "@id": "aurinko:createdTime",
+      "@type": "xsd:dateTime"
+    },
+    "lastModifiedTime": {
+      "@id": "aurinko:lastModifiedTime",
+      "@type": "xsd:dateTime"
+    },
+    "start": {
+      "@id": "aurinko:start",
+      "@type": "@id"
+    },
+    "end": {
+      "@id": "aurinko:end",
+      "@type": "@id"
+    },
+    "organizer": {
+      "@id": "aurinko:organizer",
+      "@type": "@id"
+    },
+    "meetingInfo": {
+      "@id": "aurinko:meetingInfo",
+      "@type": "@id"
+    },
+    "recurrenceType": {
+      "@id": "aurinko:recurrenceType",
+      "@type": "xsd:string"
+    },
+    "recurrence": {
+      "@id": "aurinko:recurrence",
+      "@type": "@id"
+    },
+    "occurrenceInfo": {
+      "@id": "aurinko:occurrenceInfo",
+      "@type": "@id"
+    },
+    "iCalUid": {
+      "@id": "aurinko:iCalUid",
+      "@type": "xsd:string"
+    },
+    "globalId": {
+      "@id": "aurinko:globalId",
+      "@type": "xsd:string"
+    },
+    "showAs": {
+      "@id": "aurinko:showAs",
+      "@type": "@id"
+    },
+    "sensitivity": {
+      "@id": "aurinko:sensitivity",
+      "@type": "@id"
+    },
+    "htmlLink": {
+      "@id": "aurinko:htmlLink",
+      "@type": "xsd:string"
+    },
+    "hasAttachments": {
+      "@id": "aurinko:hasAttachments",
+      "@type": "xsd:boolean"
+    },
+    "attachments": {
+      "@id": "aurinko:attachments",
+      "@container": "@list"
+    },
+    "omitted": {
+      "@id": "aurinko:omitted",
+      "@container": "@list"
+    },
+    "BookingAvailableProfilesOutDto": "aurinko:BookingAvailableProfilesOutDto",
+    "profileIds": {
+      "@id": "aurinko:profileIds",
+      "@container": "@list"
+    },
+    "WeekWorkSchedule": "aurinko:WeekWorkSchedule",
+    "daySchedules": {
+      "@id": "aurinko:daySchedules",
+      "@container": "@list"
+    },
+    "ApiAccountInDto": "aurinko:ApiAccountInDto",
+    "oauthClientId": {
+      "@id": "aurinko:oauthClientId",
+      "@type": "xsd:string"
+    },
+    "authString1": {
+      "@id": "aurinko:authString1",
+      "@type": "xsd:string"
+    },
+    "authString2": {
+      "@id": "aurinko:authString2",
+      "@type": "xsd:string"
+    },
+    "password": {
+      "@id": "aurinko:password",
+      "@type": "xsd:string"
+    },
+    "serverInfo": {
+      "@id": "aurinko:serverInfo",
+      "@type": "xsd:string"
+    },
+    "TaskUpdateResponse": "aurinko:TaskUpdateResponse",
+    "ContactName": "aurinko:ContactName",
+    "displayName": {
+      "@id": "aurinko:displayName",
+      "@type": "xsd:string"
+    },
+    "prefix": {
+      "@id": "aurinko:prefix",
+      "@type": "xsd:string"
+    },
+    "givenName": {
+      "@id": "aurinko:givenName",
+      "@type": "xsd:string"
+    },
+    "middleName": {
+      "@id": "aurinko:middleName",
+      "@type": "xsd:string"
+    },
+    "familyName": {
+      "@id": "aurinko:familyName",
+      "@type": "xsd:string"
+    },
+    "suffix": {
+      "@id": "aurinko:suffix",
+      "@type": "xsd:string"
+    },
+    "yomiGivenName": {
+      "@id": "aurinko:yomiGivenName",
+      "@type": "xsd:string"
+    },
+    "yomiFamilyName": {
+      "@id": "aurinko:yomiFamilyName",
+      "@type": "xsd:string"
+    },
+    "AvailabilityInterval": "aurinko:AvailabilityInterval",
+    "dateStartInclusive": {
+      "@id": "aurinko:dateStartInclusive",
+      "@type": "xsd:date"
+    },
+    "dateEndInclusive": {
+      "@id": "aurinko:dateEndInclusive",
+      "@type": "xsd:date"
+    },
+    "hours": {
+      "@id": "aurinko:hours",
+      "@container": "@list"
+    },
+    "EmailDraftSendResponse": "aurinko:EmailDraftSendResponse",
+    "BookingUpdateDto": "aurinko:BookingUpdateDto",
+    "Recurrence": "aurinko:Recurrence",
+    "original": {
+      "@id": "aurinko:original",
+      "@type": "xsd:string"
+    },
+    "ical": {
+      "@id": "aurinko:ical"
+    },
+    "simple": {
+      "@id": "aurinko:simple"
+    },
+    "Task": "aurinko:Task",
+    "position": {
+      "@id": "aurinko:position",
+      "@type": "xsd:string"
+    },
+    "completed": {
+      "@id": "aurinko:completed",
+      "@type": "xsd:dateTime"
+    },
+    "links": {
+      "@id": "aurinko:links",
+      "@container": "@list"
+    },
+    "owner": {
+      "@id": "aurinko:owner",
+      "@type": "xsd:string"
+    },
+    "ConversationDripStatus": "aurinko:ConversationDripStatus",
+    "convoId": {
+      "@id": "aurinko:convoId",
+      "@type": "xsd:string"
+    },
+    "rule": {
+      "@id": "aurinko:rule"
+    },
+    "dripStartedAt": {
+      "@id": "aurinko:dripStartedAt",
+      "@type": "xsd:dateTime"
+    },
+    "dripLastNum": {
+      "@id": "aurinko:dripLastNum",
+      "@type": "xsd:integer"
+    },
+    "dripError": {
+      "@id": "aurinko:dripError",
+      "@type": "xsd:string"
+    },
+    "dripEndedAt": {
+      "@id": "aurinko:dripEndedAt",
+      "@type": "xsd:dateTime"
+    },
+    "dripResponder": {
+      "@id": "aurinko:dripResponder",
+      "@type": "xsd:string"
+    },
+    "TaskListPage": "aurinko:TaskListPage",
+    "GroupBookingUpdateDto": "aurinko:GroupBookingUpdateDto",
+    "BookingMeetingInterval": "aurinko:BookingMeetingInterval",
+    "groupXids": {
+      "@id": "aurinko:groupXids",
+      "@container": "@list"
+    },
+    "EventDateTime": "aurinko:EventDateTime",
+    "dateOnly": {
+      "@id": "aurinko:dateOnly",
+      "@type": "xsd:date"
+    },
+    "dateTime": {
+      "@id": "aurinko:dateTime",
+      "@type": "xsd:dateTime"
+    },
+    "TaskList": "aurinko:TaskList",
+    "shared": {
+      "@id": "aurinko:shared",
+      "@type": "xsd:boolean"
+    },
+    "defaultList": {
+      "@id": "aurinko:defaultList",
+      "@type": "xsd:boolean"
+    },
+    "emailsList": {
+      "@id": "aurinko:emailsList",
+      "@type": "xsd:boolean"
+    },
+    "OkResponse": "aurinko:OkResponse",
+    "ServiceKey": "aurinko:ServiceKey",
+    "CreateMeetingDto": "aurinko:CreateMeetingDto",
+    "time": {
+      "@id": "aurinko:time",
+      "@type": "@id"
+    },
+    "substitutionData": {
+      "@id": "aurinko:substitutionData"
+    },
+    "AccountSaveResult": "aurinko:AccountSaveResult",
+    "accountId": {
+      "@id": "aurinko:accountId",
+      "@type": "xsd:integer"
+    },
+    "accessToken": {
+      "@id": "aurinko:accessToken",
+      "@type": "xsd:string"
+    },
+    "userSession": {
+      "@id": "aurinko:userSession",
+      "@type": "xsd:string"
+    },
+    "EmailAttachmentContent": "aurinko:EmailAttachmentContent",
+    "WellKnownFoldersIn": "aurinko:WellKnownFoldersIn",
+    "SubscriptionResponse": "aurinko:SubscriptionResponse",
+    "resource": {
+      "@id": "aurinko:resource",
+      "@type": "xsd:string"
+    },
+    "notificationUrl": {
+      "@id": "aurinko:notificationUrl",
+      "@type": "xsd:string"
+    },
+    "failSince": {
+      "@id": "aurinko:failSince",
+      "@type": "xsd:dateTime"
+    },
+    "failDescription": {
+      "@id": "aurinko:failDescription",
+      "@type": "xsd:string"
+    },
+    "disabledByBilling": {
+      "@id": "aurinko:disabledByBilling",
+      "@type": "xsd:boolean"
+    },
+    "filters": {
+      "@id": "aurinko:filters",
+      "@container": "@list"
+    },
+    "CalendarUpdate": "aurinko:CalendarUpdate",
+    "EmailMessage": "aurinko:EmailMessage",
+    "sentAt": {
+      "@id": "aurinko:sentAt",
+      "@type": "xsd:dateTime"
+    },
+    "receivedAt": {
+      "@id": "aurinko:receivedAt",
+      "@type": "xsd:dateTime"
+    },
+    "sysLabels": {
+      "@id": "aurinko:sysLabels",
+      "@container": "@list"
+    },
+    "keywords": {
+      "@id": "aurinko:keywords",
+      "@container": "@list"
+    },
+    "sysClassifications": {
+      "@id": "aurinko:sysClassifications",
+      "@container": "@list"
+    },
+    "meetingMessageMethod": {
+      "@id": "aurinko:meetingMessageMethod",
+      "@type": "xsd:string"
+    },
+    "from": {
+      "@id": "aurinko:from",
+      "@type": "@id"
+    },
+    "to": {
+      "@id": "aurinko:to",
+      "@container": "@list"
+    },
+    "cc": {
+      "@id": "aurinko:cc",
+      "@container": "@list"
+    },
+    "bcc": {
+      "@id": "aurinko:bcc",
+      "@container": "@list"
+    },
+    "replyTo": {
+      "@id": "aurinko:replyTo",
+      "@container": "@list"
+    },
+    "body": {
+      "@id": "aurinko:body",
+      "@type": "xsd:string"
+    },
+    "bodySnippet": {
+      "@id": "aurinko:bodySnippet",
+      "@type": "xsd:string"
+    },
+    "inReplyTo": {
+      "@id": "aurinko:inReplyTo",
+      "@type": "xsd:string"
+    },
+    "references": {
+      "@id": "aurinko:references",
+      "@type": "xsd:string"
+    },
+    "threadIndex": {
+      "@id": "aurinko:threadIndex",
+      "@type": "xsd:string"
+    },
+    "internetHeaders": {
+      "@id": "aurinko:internetHeaders",
+      "@container": "@list"
+    },
+    "nativeProperties": {
+      "@id": "aurinko:nativeProperties"
+    },
+    "ContactsPage": "aurinko:ContactsPage",
+    "SyncTasksPage": "aurinko:SyncTasksPage",
+    "CreateMeetingResponse": "aurinko:CreateMeetingResponse",
+    "created": {
+      "@id": "aurinko:created",
+      "@type": "xsd:boolean"
+    },
+    "ReservationId": {
+      "@id": "aurinko:ReservationId",
+      "@type": "xsd:integer"
+    },
+    "groupXid": {
+      "@id": "aurinko:groupXid",
+      "@type": "xsd:string"
+    },
+    "SuggestMeetingTimesRequest": "aurinko:SuggestMeetingTimesRequest",
+    "timeMin": {
+      "@id": "aurinko:timeMin",
+      "@type": "xsd:dateTime"
+    },
+    "timeMax": {
+      "@id": "aurinko:timeMax",
+      "@type": "xsd:dateTime"
+    },
+    "defaultTimezone": {
+      "@id": "aurinko:defaultTimezone",
+      "@type": "xsd:string"
+    },
+    "defaultWorkHours": {
+      "@id": "aurinko:defaultWorkHours",
+      "@type": "@id"
+    },
+    "freeStatuses": {
+      "@id": "aurinko:freeStatuses",
+      "@container": "@list"
+    },
+    "SyncStatus": "aurinko:SyncStatus",
+    "syncUpdatedToken": {
+      "@id": "aurinko:syncUpdatedToken",
+      "@type": "xsd:string"
+    },
+    "syncDeletedToken": {
+      "@id": "aurinko:syncDeletedToken",
+      "@type": "xsd:string"
+    },
+    "ready": {
+      "@id": "aurinko:ready",
+      "@type": "xsd:boolean"
+    },
+    "ContactOrId": "aurinko:ContactOrId",
+    "UpdateMessageStatusData": "aurinko:UpdateMessageStatusData",
+    "unread": {
+      "@id": "aurinko:unread",
+      "@type": "xsd:boolean"
+    },
+    "archived": {
+      "@id": "aurinko:archived",
+      "@type": "xsd:boolean"
+    },
+    "OutgoingEmailReply": "aurinko:OutgoingEmailReply",
+    "xHeaders": {
+      "@id": "aurinko:xHeaders",
+      "@container": "@list"
+    },
+    "followUp": {
+      "@id": "aurinko:followUp",
+      "@type": "@id"
+    },
+    "TaskImportance": "aurinko:TaskImportance",
+    "CalendarsPage": "aurinko:CalendarsPage",
+    "EndUserAccountDto": "aurinko:EndUserAccountDto",
+    "userAccountType": {
+      "@id": "aurinko:userAccountType",
+      "@type": "@id"
+    },
+    "organization": {
+      "@id": "aurinko:organization",
+      "@type": "@id"
+    },
+    "scopes": {
+      "@id": "aurinko:scopes",
+      "@container": "@list"
+    },
+    "nativeScopes": {
+      "@id": "aurinko:nativeScopes",
+      "@container": "@list"
+    },
+    "hasApiErrors": {
+      "@id": "aurinko:hasApiErrors",
+      "@type": "xsd:boolean"
+    },
+    "bookingCount": {
+      "@id": "aurinko:bookingCount",
+      "@type": "xsd:integer"
+    },
+    "trackingActive": {
+      "@id": "aurinko:trackingActive",
+      "@type": "xsd:boolean"
+    },
+    "templatesCount": {
+      "@id": "aurinko:templatesCount",
+      "@type": "xsd:integer"
+    },
+    "AvailabilityIntervals": "aurinko:AvailabilityIntervals",
+    "intervals": {
+      "@id": "aurinko:intervals",
+      "@container": "@list"
+    },
+    "SeriesInfo": "aurinko:SeriesInfo",
+    "modifiedOccurrences": {
+      "@id": "aurinko:modifiedOccurrences",
+      "@container": "@list"
+    },
+    "deletedOccurrences": {
+      "@id": "aurinko:deletedOccurrences",
+      "@container": "@list"
+    },
+    "ContactPostalAddress": "aurinko:ContactPostalAddress",
+    "street": {
+      "@id": "aurinko:street",
+      "@type": "xsd:string"
+    },
+    "streetLine2": {
+      "@id": "aurinko:streetLine2",
+      "@type": "xsd:string"
+    },
+    "poBox": {
+      "@id": "aurinko:poBox",
+      "@type": "xsd:string"
+    },
+    "city": {
+      "@id": "aurinko:city",
+      "@type": "xsd:string"
+    },
+    "state": {
+      "@id": "aurinko:state",
+      "@type": "xsd:string"
+    },
+    "postalCode": {
+      "@id": "aurinko:postalCode",
+      "@type": "xsd:string"
+    },
+    "country": {
+      "@id": "aurinko:country",
+      "@type": "xsd:string"
+    },
+    "FollowupRuleAction": "aurinko:FollowupRuleAction",
+    "intervalDays": {
+      "@id": "aurinko:intervalDays",
+      "@type": "xsd:integer"
+    },
+    "ServiceProvider": "aurinko:ServiceProvider",
+    "EventOrId": "aurinko:EventOrId",
+    "iCalUId": {
+      "@id": "aurinko:iCalUId",
+      "@type": "xsd:string"
+    },
+    "onlineMeetingProvider": {
+      "@id": "aurinko:onlineMeetingProvider",
+      "@type": "xsd:string"
+    },
+    "onlineMeetingDetails": {
+      "@id": "aurinko:onlineMeetingDetails",
+      "@type": "@id"
+    },
+    "BookingDetachGroupAccountsDto": "aurinko:BookingDetachGroupAccountsDto",
+    "DataConsumerFilter": "aurinko:DataConsumerFilter",
+    "ShowAs": "aurinko:ShowAs"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Yoxel API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Yoxel's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-19) from openapi/aurinko-openapi.json.",
+  "dcterms:created": "2026-10-19",
+  "dcterms:source": [
+    "openapi/aurinko-openapi.json"
+  ]
+}

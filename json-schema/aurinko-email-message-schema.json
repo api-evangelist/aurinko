@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/aurinko/main/json-schema/aurinko-email-message-schema.json",
+  "title": "EmailMessage",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/aurinko-openapi.json#/components/schemas/EmailMessage",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "readOnly": true
+    },
+    "threadId": {
+      "type": "string",
+      "readOnly": true
+    },
+    "createdTime": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "lastModifiedTime": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "sentAt": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "receivedAt": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true
+    },
+    "internetMessageId": {
+      "type": "string",
+      "readOnly": true
+    },
+    "subject": {
+      "type": "string",
+      "readOnly": true
+    },
+    "sysLabels": {
+      "type": "array",
+      "readOnly": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "junk",
+          "trash",
+          "sent",
+          "inbox",
+          "unread",
+          "flagged",
+          "important",
+          "draft"
+        ]
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sysClassifications": {
+      "type": "array",
+      "readOnly": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "personal",
+          "social",
+          "promotions",
+          "updates",
+          "forums"
+        ]
+      }
+    },
+    "sensitivity": {
+      "$ref": "#/$defs/Sensitivity"
+    },
+    "meetingMessageMethod": {
+      "type": "string",
+      "enum": [
+        "request",
+        "reply",
+        "cancel",
+        "counter",
+        "other"
+      ]
+    },
+    "from": {
+      "$ref": "#/$defs/EmailAddress"
+    },
+    "to": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/EmailAddress"
+      }
+    },
+    "cc": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/EmailAddress"
+      }
+    },
+    "bcc": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/EmailAddress"
+      }
+    },
+    "replyTo": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/EmailAddress"
+      }
+    },
+    "hasAttachments": {
+      "type": "boolean",
+      "readOnly": true
+    },
+    "body": {
+      "type": "string",
+      "readOnly": true
+    },
+    "bodySnippet": {
+      "type": "string",
+      "readOnly": true
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/EmailAttachment"
+      }
+    },
+    "inReplyTo": {
+      "type": "string",
+      "readOnly": true
+    },
+    "references": {
+      "type": "string",
+      "readOnly": true
+    },
+    "threadIndex": {
+      "type": "string",
+      "readOnly": true
+    },
+    "internetHeaders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/EmailHeader"
+      }
+    },
+    "nativeProperties": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "folderId": {
+      "type": "string",
+      "readOnly": true
+    },
+    "webLink": {
+      "type": "string",
+      "readOnly": true
+    },
+    "omitted": {
+      "type": "array",
+      "readOnly": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "threadId",
+          "body",
+          "attachments",
+          "recipients",
+          "internetHeaders"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "EmailAddress": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string",
+          "format": "email"
+        },
+        "raw": {
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "EmailAttachment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "readOnly": true
+        },
+        "mimeType": {
+          "type": "string",
+          "readOnly": true
+        },
+        "size": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "inline": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "contentId": {
+          "type": "string",
+          "readOnly": true
+        },
+        "content": {
+          "type": "string",
+          "readOnly": true
+        },
+        "contentLocation": {
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "EmailHeader": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "Sensitivity": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "private",
+        "personal",
+        "confidential"
+      ]
+    }
+  }
+}

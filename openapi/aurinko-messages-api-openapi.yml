@@ -1,0 +1,883 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Messages API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: Messages
+  x-displayName: Email messages
+  description: Messages contain several pieces of information, such as when a message was sent, the sender's address, to whom it was sent, and the message body. They can also contain files (attachments), calendar event invitations, and more.
+paths:
+  /v1/email/messages:
+    post:
+      operationId: send
+      tags:
+      - Messages
+      summary: Send a new message
+      parameters:
+      - schema:
+          type:
+          - bodytype
+          - 'null'
+          $ref: '#/components/schemas/BodyType'
+        in: query
+        name: bodyType
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: returnIds
+        description: return message id and thread id if possible
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutgoingEmail'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSendResponse'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/email/messages?bodyType=text \\\n    -d '{\n        \"subject\": \"Business lunch\",\n        \"body\": \"How about a lunch meeting?\",\n        \"to\": [{\"address\": \"partner@example.com\"}]\n        \"cc\": [{\"address\": \"guest@example.com\"}]\n       }'"
+    get:
+      operationId: messages
+      tags:
+      - Messages
+      summary: List email messages
+      parameters:
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: q
+        description: 'Only return messages matching the specified query. For example, "from:someuser@example.com after:01/01/2020"
+
+          '
+        required: false
+      - schema:
+          type:
+          - bodytype
+          - 'null'
+          $ref: '#/components/schemas/BodyType'
+        in: query
+        name: bodyType
+        description: Supported by Google and Office365 accounts only. Body preview (snippet) is returned for other providers. Always, check the omitted[] array to determine if the response contains full body.
+        required: false
+      - in: query
+        name: includeTrashAndJunk
+        required: false
+        schema:
+          type:
+          - boolean
+          - 'null'
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: nativeproperty
+            $ref: '#/components/schemas/NativeProperty'
+        in: query
+        name: nativeProperties
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailMessagesPageNext'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/messages\n    -d q='text to:{address_or_name}'"
+  /v1/email/messages/{messageId}:
+    get:
+      operationId: message
+      tags:
+      - Messages
+      summary: Get a message
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: messageId
+        description: email message identifier
+        required: true
+      - schema:
+          type:
+          - bodytype
+          - 'null'
+          $ref: '#/components/schemas/BodyType'
+        in: query
+        name: bodyType
+        description: Default html
+        required: false
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: nativeproperty
+            $ref: '#/components/schemas/NativeProperty'
+        in: query
+        name: nativeProperties
+        required: false
+      - schema:
+          default: false
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: loadInlines
+        description: automatically pre-load relevant inline attachments
+        required: false
+      - schema:
+          default: false
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: stripQuoted
+        description: strip quoted elements from message body
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailMessage'
+        '408':
+          description: threadId may be yet unavailable for some IMAP providers
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    https://api.aurinko.io/v1/email/messages/{id}"
+  /v1/email/messages/{messageId}/raw:
+    get:
+      operationId: messageRaw
+      tags:
+      - Messages
+      summary: Get a raw message
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: messageId
+        description: email message identifier
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    https://api.aurinko.io/v1/email/messages/{id}/raw"
+  /v1/email/messages/{messageId}/status:
+    post:
+      operationId: updateMessageStatus
+      tags:
+      - Messages
+      summary: Update a message's status
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: messageId
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMessageStatusData'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkResponse'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/email/messages/{messageId}/status \\\n    -d '{\n        \"unread\": true\n       }'"
+  /v1/email/conversations/{threadId}:
+    get:
+      operationId: conversation
+      tags:
+      - Messages
+      summary: Get messages in a conversation
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: threadId
+        description: conversation/thread identifier
+        required: true
+      - schema:
+          type:
+          - bodytype
+          - 'null'
+          $ref: '#/components/schemas/BodyType'
+        in: query
+        name: bodyType
+        description: Supported by Google and Office365 accounts only. Body preview (snippet) is returned for other providers. Always, check the omitted[] array to determine if the response contains full body.
+        required: false
+      - in: query
+        name: pageToken
+        required: false
+        schema:
+          type:
+          - string
+          - 'null'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailMessagesPageNext'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    https://api.aurinko.io/v1/email/conversations/{threadId}"
+  /v1/email/messages/{messageId}/reply:
+    post:
+      operationId: reply
+      tags:
+      - Messages
+      summary: Reply to a message
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: messageId
+        description: an identifier of a message the response is for
+        required: true
+      - schema:
+          type:
+          - bodytype
+          - 'null'
+          $ref: '#/components/schemas/BodyType'
+        in: query
+        name: bodyType
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: returnIds
+        description: return message id and thread id if possible
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutgoingEmailReply'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailSendResponse'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/email/messages/{msgId}/reply?bodyType=text \\\n    -d '{\n        \"subject\": \"RE: Business lunch\",\n        \"body\": \"Sure, lets meet.\",\n        \"to\": [{\"address\": \"partner@example.com\"}]\n        \"cc\": [{\"address\": \"guest@example.com\"}]\n       }'"
+  /v1/email/messages/{messageId}/attachments/{attachmentId}:
+    get:
+      operationId: emailAttachment
+      tags:
+      - Messages
+      summary: Get a message attachment
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: messageId
+        description: email message identifier
+        required: true
+      - schema:
+          type: string
+        in: path
+        name: attachmentId
+        description: attachment identifier
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailAttachmentContent'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    https://api.aurinko.io/v1/email/messages/{msgId}/attachments/{attId}"
+components:
+  schemas:
+    EmailMessagesPageNext:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailMessage'
+    NativeProperty:
+      type: string
+    OutgoingEmail:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/EmailAddress'
+        subject:
+          type: string
+        body:
+          type: string
+        inReplyTo:
+          type: string
+        references:
+          type: string
+        to:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        replyTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        xHeaders:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailHeader'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutgoingEmailAttachment'
+        tracking:
+          $ref: '#/components/schemas/OutEmailTrack'
+        followUp:
+          $ref: '#/components/schemas/FollowUpOutgoing'
+        keywords:
+          type: array
+          items:
+            type: string
+    EmailAttachmentContent:
+      type: object
+      properties:
+        content:
+          type: string
+          format: base64
+    EmailHeader:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    EmailAddress:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+          format: email
+        raw:
+          type: string
+          readOnly: true
+    EmailSendResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+        id:
+          type: string
+        threadId:
+          type: string
+        trackingId:
+          type: string
+          description: A tracking identifier for the sent message
+        processingStatus:
+          type: string
+          enum:
+          - Ok
+          - Incomplete
+        processingError:
+          $ref: '#/components/schemas/EmailSendError'
+    OutEmailTrack:
+      type: object
+      properties:
+        threadReplies:
+          type: boolean
+        opens:
+          type: boolean
+        trackOpensAfterSendDelay:
+          type: integer
+          description: number of seconds to wait after a send before enabling tracking
+          default: 5
+        context:
+          type: string
+          description: User-defined tracking data that will be associated with this email.
+    Sensitivity:
+      type: string
+      enum:
+      - normal
+      - private
+      - personal
+      - confidential
+    OutgoingEmailReply:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/EmailAddress'
+        subject:
+          type: string
+        body:
+          type: string
+        to:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        replyTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        xHeaders:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailHeader'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutgoingEmailAttachment'
+        tracking:
+          $ref: '#/components/schemas/OutEmailTrack'
+        followUp:
+          $ref: '#/components/schemas/FollowUpOutgoing'
+    EmailAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        mimeType:
+          type: string
+          readOnly: true
+        size:
+          type: integer
+          readOnly: true
+        inline:
+          type: boolean
+          readOnly: true
+        contentId:
+          type: string
+          readOnly: true
+        content:
+          type: string
+          readOnly: true
+        contentLocation:
+          type: string
+          readOnly: true
+    OkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+    BodyType:
+      type: string
+      enum:
+      - html
+      - text
+    UpdateMessageStatusData:
+      type: object
+      properties:
+        unread:
+          type: boolean
+        archived:
+          type: boolean
+        keywords:
+          type: array
+          items:
+            type: string
+    EmailMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        threadId:
+          type: string
+          readOnly: true
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+        lastModifiedTime:
+          type: string
+          format: date-time
+          readOnly: true
+        sentAt:
+          type: string
+          format: date-time
+          readOnly: true
+        receivedAt:
+          type: string
+          format: date-time
+          readOnly: true
+        internetMessageId:
+          type: string
+          readOnly: true
+        subject:
+          type: string
+          readOnly: true
+        sysLabels:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - junk
+            - trash
+            - sent
+            - inbox
+            - unread
+            - flagged
+            - important
+            - draft
+        keywords:
+          type: array
+          items:
+            type: string
+        sysClassifications:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - personal
+            - social
+            - promotions
+            - updates
+            - forums
+        sensitivity:
+          $ref: '#/components/schemas/Sensitivity'
+        meetingMessageMethod:
+          type: string
+          enum:
+          - request
+          - reply
+          - cancel
+          - counter
+          - other
+        from:
+          $ref: '#/components/schemas/EmailAddress'
+        to:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        replyTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        hasAttachments:
+          type: boolean
+          readOnly: true
+        body:
+          type: string
+          readOnly: true
+        bodySnippet:
+          type: string
+          readOnly: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAttachment'
+        inReplyTo:
+          type: string
+          readOnly: true
+        references:
+          type: string
+          readOnly: true
+        threadIndex:
+          type: string
+          readOnly: true
+        internetHeaders:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailHeader'
+        nativeProperties:
+          type: object
+          additionalProperties:
+            type: string
+        folderId:
+          type: string
+          readOnly: true
+        webLink:
+          type: string
+          readOnly: true
+        omitted:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - threadId
+            - body
+            - attachments
+            - recipients
+            - internetHeaders
+    FollowUpOutgoing:
+      type: object
+      properties:
+        ruleId:
+          type: integer
+        actionVars:
+          type: object
+          additionalProperties:
+            type: string
+    OutgoingEmailAttachment:
+      type: object
+      properties:
+        inline:
+          type: boolean
+        name:
+          type: string
+        mimeType:
+          type: string
+        contentId:
+          type: string
+        content:
+          type: string
+          format: base64
+    EmailSendError:
+      type: object
+      properties:
+        failedSteps:
+          type: array
+          items:
+            type: string
+            enum:
+            - tracking
+            - followUp
+            - keywords
+            - returnIds
+            description: Action that should have been performed, but were not performed due to an error
+        errorMessage:
+          type: string
+          description: An error occurred after a successful submission while processing the result
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

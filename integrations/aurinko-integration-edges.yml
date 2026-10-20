@@ -1,0 +1,18 @@
+generated: '2026-10-19'
+method: none
+source:
+- https://zapier.com/apps/aurinko/integrations
+- https://zapier.com/apps/yoxel/integrations
+- https://n8n.io/integrations/aurinko/
+- https://composio.dev/toolkits/aurinko
+- https://monid.ai/tools/aurinko
+checked:
+- https://composio.dev/toolkits/aurinko
+- https://monid.ai/tools/aurinko
+- https://n8n.io/integrations/aurinko/
+- https://zapier.com/apps/aurinko/integrations
+- https://zapier.com/apps/yoxel/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []

@@ -1,0 +1,734 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Email Tracking API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: EmailTracking
+  x-displayName: Email tracking
+  description: Track email opens.
+paths:
+  /v1/email/draftTracking/create:
+    post:
+      operationId: createDraftTracking
+      tags:
+      - EmailTracking
+      summary: Create tracking for a draft message
+      parameters:
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: draftId
+        description: an identifier of a draft message for start tracking
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: ignoreNotFound
+        description: if draft was not found, store tracking data anyway
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RewriteHtml'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailDraftCreateTrackingResponse'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/email/draftTracking/create?draftId=<draftId>  \\\n    -d '{\n        \"htmlText\": \"<p></p>\",\n        \"tracking\": {\n           \"threadReplies\": true\n        }\n       }'"
+  /v1/email/draftTracking/{draftId}/convert:
+    patch:
+      operationId: convertDraftTracking
+      tags:
+      - EmailTracking
+      summary: Mark draft's tracking as sent
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: draftId
+        description: an identifier of a draft message
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConvertDraft'
+      responses:
+        '200':
+          $ref: '#/components/responses/CommonOk'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X PATCH https://api.aurinko.io/v1/email/draftTracking/<draftId>/convert  \\\n    -d '{\n        \"threadId\": \"<threadId>\",\n        \"internetMessageId\": \"<internetMessageId>\"\n       }'"
+  /v1/email/draftTracking/{draftId}:
+    patch:
+      operationId: updateDraftTracking
+      tags:
+      - EmailTracking
+      summary: Modify draft's tracking
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: draftId
+        description: an identifier of a draft message
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDraftTrackingIn'
+      responses:
+        '200':
+          $ref: '#/components/responses/CommonOk'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X PATCH https://api.aurinko.io/v1/email/draftTracking/<draftId>  \\\n    -d '{\n        \"context\": \"<context>\"\n       }'"
+  /v1/email/tracking:
+    get:
+      operationId: getTracking
+      tags:
+      - EmailTracking
+      summary: List tracking data
+      parameters:
+      - schema:
+          default: false
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: withActivityOnly
+        description: return only those where an open or click happened
+        required: false
+      - schema:
+          default: 50
+          format: int32
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: limit
+        description: page size
+        required: false
+      - schema:
+          default: 0
+          format: int32
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: offset
+        description: return records offset by the given number
+        required: false
+      - in: query
+        name: contextContains
+        required: false
+        schema:
+          type:
+          - string
+          - 'null'
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: threadId
+        description: identifier of thread
+        required: false
+      - schema:
+          default: true
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: showSentOnly
+        description: return tracking which started message was sent
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTrackingPageNext'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/tracking"
+  /v1/email/tracking/purgeMyTracking:
+    post:
+      operationId: purgeMyTracking
+      tags:
+      - EmailTracking
+      summary: Purge recent activity for a user
+      parameters:
+      - in: query
+        name: threadId
+        required: false
+        schema:
+          type:
+          - string
+          - 'null'
+      - in: header
+        name: User-Agent
+        description: User-Agent
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/CommonOk'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n     -H 'User-Agent: <User-Agent>' \\\n    -X POST https://api.aurinko.io/v1/email/tracking/purgeMyTracking"
+  /v1/email/tracking/ignoreOpenClicks:
+    post:
+      operationId: switchOpenClicks
+      tags:
+      - EmailTracking
+      summary: Set ignore open/click tracking for а message
+      parameters:
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: messageId
+        description: message identifier
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: inetMessageId
+        description: internet message identifier
+        required: false
+      - schema:
+          type: boolean
+        in: query
+        name: isIgnored
+        description: should be ignored or not
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/CommonOk'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/email/tracking/ignoreOpenClicks"
+  /v1/email/tracking/events:
+    get:
+      operationId: getTrackingEvents
+      tags:
+      - EmailTracking
+      summary: List all tracking events
+      parameters:
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: threadId
+        description: conversation id
+        required: false
+      - schema:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        in: query
+        name: from
+        description: event start dateTime (strictly greater)
+        required: false
+      - schema:
+          format: datetime
+          type:
+          - string
+          - 'null'
+        in: query
+        name: to
+        description: event end dateTime (smaller or equal)
+        required: false
+      - schema:
+          default: 50
+          format: int32
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: limit
+        description: page size
+        required: false
+      - schema:
+          default: 0
+          format: int32
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: offset
+        description: return records offset by the given number
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTrackingEventPageNext'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/tracking/events"
+  /v1/email/tracking/{id}:
+    get:
+      operationId: trackingById
+      tags:
+      - EmailTracking
+      summary: Get tracking data by Id
+      parameters:
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: id
+        description: Tracking data id
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingData'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/tracking/{id}'"
+  /v1/email/tracking/{id}/events:
+    get:
+      operationId: trackingEvents
+      tags:
+      - EmailTracking
+      summary: List tracking events
+      parameters:
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: id
+        description: Tracking id
+        required: true
+      - schema:
+          default: 50
+          format: int32
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: limit
+        description: page size
+        required: false
+      - schema:
+          default: 0
+          format: int32
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: offset
+        description: return records offset by the given number
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTrackingEventPageNext'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/tracking/{id}/events"
+  /v1/email/tracking/{trackingId}/events/{id}:
+    get:
+      operationId: trackingEventById
+      tags:
+      - EmailTracking
+      summary: Get tracking event by Id
+      parameters:
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: trackingId
+        description: Tracking data id
+        required: true
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: id
+        description: Tracking event id
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTrackingEvent'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/tracking/{trackingId}/events/{id}'"
+components:
+  schemas:
+    EmailTrackingPageNext:
+      type: object
+      properties:
+        offset:
+          type: integer
+        totalSize:
+          type: integer
+          format: int64
+        done:
+          type: boolean
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackingData'
+    TrackingData:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        messageId:
+          type: string
+        inetMessageId:
+          type: string
+        threadId:
+          type: string
+        sendDate:
+          type: string
+          format: date-time
+        lastActivityTime:
+          type: string
+          format: date-time
+        lastRespondedTime:
+          type: string
+          format: date-time
+        trackReplies:
+          type: boolean
+        trackOpens:
+          type: boolean
+        trackingCode:
+          type: string
+        context:
+          type: string
+        location:
+          type: string
+        userAgent:
+          type: string
+        remoteAddr:
+          type: string
+        ignoreOpenClicks:
+          type: boolean
+        hasBounced:
+          type: boolean
+    ConvertDraft:
+      type: object
+      properties:
+        threadId:
+          type: string
+        messageId:
+          type: string
+        internetMessageId:
+          type: string
+    EmailTrackingEventPageNext:
+      type: object
+      properties:
+        offset:
+          type: integer
+        totalSize:
+          type: integer
+          format: int64
+        done:
+          type: boolean
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailTrackingEvent'
+    OutEmailTrack:
+      type: object
+      properties:
+        threadReplies:
+          type: boolean
+        opens:
+          type: boolean
+        trackOpensAfterSendDelay:
+          type: integer
+          description: number of seconds to wait after a send before enabling tracking
+          default: 5
+        context:
+          type: string
+          description: User-defined tracking data that will be associated with this email.
+    EmailTrackingEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          format: date-time
+        eventType:
+          type: string
+          enum:
+          - open
+          - click
+          - initial
+          - reply
+          - replyBounce
+        location:
+          type: string
+        userAgent:
+          type: string
+        referrer:
+          type: string
+        remoteAddr:
+          type: string
+        threadId:
+          type: string
+        messageId:
+          type: string
+        internetMessageId:
+          type: string
+        trackingId:
+          type: integer
+          format: int64
+        trackingThreadId:
+          type: string
+          description: Thread id where tracking begins
+        trackingMessageId:
+          type: string
+          description: Message id where tracking begins
+        trackingInternetMessageId:
+          type: string
+          description: Rfc822 message id where tracking begins
+        context:
+          type: string
+        trackingCode:
+          type: string
+    OkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+    EmailDraftCreateTrackingResponse:
+      type: object
+      properties:
+        trackReplies:
+          type: boolean
+        htmlBody:
+          type: string
+        trackingCode:
+          type: string
+        context:
+          type: string
+        linkCodes:
+          type: array
+          items:
+            type: object
+            description: Pairs of strings
+        trackingId:
+          type: string
+          description: A tracking identifier for the sent message
+    RewriteHtml:
+      type: object
+      properties:
+        htmlText:
+          type: string
+        tracking:
+          $ref: '#/components/schemas/OutEmailTrack'
+    UpdateDraftTrackingIn:
+      type: object
+      properties:
+        context:
+          type: string
+  responses:
+    CommonOk:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OkResponse'
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

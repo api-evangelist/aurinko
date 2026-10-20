@@ -1,0 +1,514 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Email Sync API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: EmailSync
+  x-displayName: Email sync
+  description: Sync/delta methods.
+paths:
+  /v1/email/sync:
+    post:
+      operationId: emailSyncStart
+      tags:
+      - EmailSync
+      summary: Start a new email sync
+      parameters:
+      - in: query
+        name: daysWithin
+        schema:
+          type: integer
+        required: false
+        description: 'Scan emails received within last ''daysWithin'' days.
+
+          '
+      - in: query
+        name: bodyType
+        schema:
+          $ref: '#/components/schemas/BodyType'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X POST -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/sync \\\n    -d daysWithin=7"
+  /v1/email/sync/updated:
+    get:
+      operationId: emailSyncUpdated
+      tags:
+      - EmailSync
+      summary: Request changed emails (deltas)
+      parameters:
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: deltaToken
+        description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: A token received as nextPageToken from a previous page request
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailMessagesPage'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/sync/updated \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
+  /v1/email/sync/deleted:
+    get:
+      operationId: emailSyncDeleted
+      tags:
+      - EmailSync
+      summary: Request deleted emails (deltas)
+      parameters:
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: deltaToken
+        description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: A token received as nextPageToken from a previous page request
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailDeletedPage'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/sync/deleted \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
+components:
+  schemas:
+    EmailHeader:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    EmailAddress:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+          format: email
+        raw:
+          type: string
+          readOnly: true
+    Sensitivity:
+      type: string
+      enum:
+      - normal
+      - private
+      - personal
+      - confidential
+    EmailAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        mimeType:
+          type: string
+          readOnly: true
+        size:
+          type: integer
+          readOnly: true
+        inline:
+          type: boolean
+          readOnly: true
+        contentId:
+          type: string
+          readOnly: true
+        content:
+          type: string
+          readOnly: true
+        contentLocation:
+          type: string
+          readOnly: true
+    EmailMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        threadId:
+          type: string
+          readOnly: true
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+        lastModifiedTime:
+          type: string
+          format: date-time
+          readOnly: true
+        sentAt:
+          type: string
+          format: date-time
+          readOnly: true
+        receivedAt:
+          type: string
+          format: date-time
+          readOnly: true
+        internetMessageId:
+          type: string
+          readOnly: true
+        subject:
+          type: string
+          readOnly: true
+        sysLabels:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - junk
+            - trash
+            - sent
+            - inbox
+            - unread
+            - flagged
+            - important
+            - draft
+        keywords:
+          type: array
+          items:
+            type: string
+        sysClassifications:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - personal
+            - social
+            - promotions
+            - updates
+            - forums
+        sensitivity:
+          $ref: '#/components/schemas/Sensitivity'
+        meetingMessageMethod:
+          type: string
+          enum:
+          - request
+          - reply
+          - cancel
+          - counter
+          - other
+        from:
+          $ref: '#/components/schemas/EmailAddress'
+        to:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        replyTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        hasAttachments:
+          type: boolean
+          readOnly: true
+        body:
+          type: string
+          readOnly: true
+        bodySnippet:
+          type: string
+          readOnly: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAttachment'
+        inReplyTo:
+          type: string
+          readOnly: true
+        references:
+          type: string
+          readOnly: true
+        threadIndex:
+          type: string
+          readOnly: true
+        internetHeaders:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailHeader'
+        nativeProperties:
+          type: object
+          additionalProperties:
+            type: string
+        folderId:
+          type: string
+          readOnly: true
+        webLink:
+          type: string
+          readOnly: true
+        omitted:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - threadId
+            - body
+            - attachments
+            - recipients
+            - internetHeaders
+    DeletedEmailMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        folderId:
+          type: string
+          readOnly: true
+        internetMessageId:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+    BodyType:
+      type: string
+      enum:
+      - html
+      - text
+    SyncStatus:
+      type: object
+      properties:
+        syncUpdatedToken:
+          type: string
+        syncDeletedToken:
+          type: string
+        ready:
+          type: boolean
+    EmailDeletedPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
+          type: string
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeletedEmailMessage'
+    EmailMessagesPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
+          type: string
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailMessage'
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

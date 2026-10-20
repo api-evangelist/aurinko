@@ -1,0 +1,688 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Cal Sync API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: CalSync
+  x-displayName: Calendar sync
+  description: Sync/delta methods.
+paths:
+  /v1/calendars/{calendarId}/sync:
+    post:
+      operationId: calSyncStart
+      tags:
+      - CalSync
+      summary: Start a new calendar sync
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: calendarId
+        description: Calendar id
+        required: true
+      - in: query
+        name: timeMin
+        schema:
+          type: string
+          format: date-time
+        required: true
+        description: 'Lower bound (exclusive) for an event''s end time to filter by. Must be an RFC3339 timestamp with mandatory time zone offset, for example, 2011-06-03T10:00:00-07:00, 2011-06-03T10:00:00Z. If timeMax is set, timeMin must be smaller than timeMax.
+
+          '
+      - in: query
+        name: timeMax
+        schema:
+          type: string
+          format: date-time
+        required: true
+        description: 'Upper bound (exclusive) for an event''s start time to filter by. Must be an RFC3339 timestamp with mandatory time zone offset, for example, 2011-06-03T10:00:00-07:00, 2011-06-03T10:00:00Z. Milliseconds may be provided but are ignored. If timeMin is set, timeMax must be greater than timeMin.
+
+          '
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X POST -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/calendars/primary/sync \\\n    -d timeMin=2019-06-03T10:00:00-07:00 \\\n    -d timeMax=2020-06-03T10:00:00-07:00"
+  /v1/calendars/{calendarId}/sync/updated:
+    get:
+      operationId: calSyncUpdated
+      tags:
+      - CalSync
+      summary: Request changed events (deltas)
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: calendarId
+        description: Calendar id
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: deltaToken
+        description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: A token received as nextPageToken from a previous page request
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsPage'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/calendars/primary/sync/updated \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
+  /v1/calendars/{calendarId}/sync/deleted:
+    get:
+      operationId: calSyncDeleted
+      tags:
+      - CalSync
+      summary: Request deleted events (deltas)
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: calendarId
+        description: Calendar id
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: deltaToken
+        description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: A token received as nextPageToken from a previous page request
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletedPage'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/calendars/primary/sync/deleted \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        etag:
+          type: string
+          readOnly: true
+        calendarId:
+          type: string
+          readOnly: true
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+        lastModifiedTime:
+          type: string
+          format: date-time
+          readOnly: true
+        subject:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        start:
+          $ref: '#/components/schemas/EventDateTime'
+        end:
+          $ref: '#/components/schemas/EventDateTime'
+        organizer:
+          $ref: '#/components/schemas/Organizer'
+          readOnly: true
+        meetingInfo:
+          $ref: '#/components/schemas/MeetingInfo'
+        recurrenceType:
+          type: string
+          enum:
+          - single
+          - master
+          - occurrence
+          readOnly: true
+        recurrence:
+          $ref: '#/components/schemas/Recurrence'
+        occurrenceInfo:
+          $ref: '#/components/schemas/OccurrenceInfo'
+          readOnly: true
+        iCalUid:
+          type: string
+          readOnly: true
+        globalId:
+          type: string
+          readOnly: true
+        showAs:
+          $ref: '#/components/schemas/ShowAs'
+        sensitivity:
+          $ref: '#/components/schemas/Sensitivity'
+        categories:
+          type: array
+          readOnly: true
+          items:
+            type: string
+        htmlLink:
+          type: string
+          readOnly: true
+        hasAttachments:
+          type: boolean
+          readOnly: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAttachment'
+        omitted:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - description
+            - attendees
+            - attachments
+    Attendee:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        emailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+        type:
+          type: string
+          enum:
+          - required
+          - optional
+          - resource
+        response:
+          type: string
+          enum:
+          - accepted
+          - tentitive
+          - declined
+          readOnly: true
+        comment:
+          type: string
+          readOnly: true
+    Recurrence:
+      type: object
+      properties:
+        original:
+          type: string
+          enum:
+          - simple
+          - ical
+          readOnly: true
+        ical:
+          type: object
+          properties:
+            rules:
+              type: array
+              items:
+                type: string
+            recurrenceStart:
+              $ref: '#/components/schemas/EventDateTime'
+        simple:
+          type: object
+          properties:
+            pattern:
+              type: object
+              properties:
+                frequency:
+                  type: string
+                  enum:
+                  - daily
+                  - weekly
+                  - monthly
+                  - monthlyRelative
+                  - yearly
+                  - yearlyRelative
+                interval:
+                  type: integer
+                  default: 1
+                daysOfWeek:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DayOfWeek'
+                weekStart:
+                  type: string
+                  enum:
+                  - monday
+                  - sunday
+                dayOfMonth:
+                  type: integer
+                  minimum: 1
+                  maximum: 31
+                monthOfYear:
+                  type: integer
+                  minimum: 1
+                  maximum: 12
+                instance:
+                  type: string
+                  enum:
+                  - first
+                  - second
+                  - third
+                  - fourth
+                  - last
+            range:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                  - byDate
+                  - byCount
+                  - unbounded
+                recurrenceStart:
+                  $ref: '#/components/schemas/EventDateTime'
+                recurrenceEnd:
+                  type: string
+                  format: date
+                count:
+                  type: integer
+                  minimum: 1
+                patternExclusions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/EventDateTime'
+                  readOnly: true
+    OccurrenceInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - regular
+          - modified
+          - deleted
+        originalStart:
+          $ref: '#/components/schemas/EventDateTime'
+        start:
+          $ref: '#/components/schemas/EventDateTime'
+        masterId:
+          type: string
+    DeletedPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
+          type: string
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeletedRecord'
+    EmailAddress:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+          format: email
+        raw:
+          type: string
+          readOnly: true
+    Organizer:
+      type: object
+      readOnly: true
+      properties:
+        id:
+          type: string
+          readOnly: true
+        emailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+    MeetingInfo:
+      type: object
+      properties:
+        canceled:
+          type: boolean
+          readOnly: true
+        attendees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attendee'
+        response:
+          $ref: '#/components/schemas/MeetingResponseType'
+          readOnly: true
+        attendeePermissions:
+          type: array
+          items:
+            type: string
+            enum:
+            - inviteOthers
+            - modify
+            - seeOthers
+        onlineMeeting:
+          type: boolean
+          description: Assumes default onlineMeetingProvider ('hangoutsMeet' or 'teamsForBusiness')
+          writeOnly: true
+        onlineMeetingProvider:
+          type: string
+          description: Value of provider, for example hangoutsMeet, teamsForBusiness, skypeForBusiness, skypeForConsumer
+        onlineMeetingDetails:
+          readOnly: true
+          $ref: '#/components/schemas/OnlineMeetingDetails'
+    Sensitivity:
+      type: string
+      enum:
+      - normal
+      - private
+      - personal
+      - confidential
+    DayOfWeek:
+      type: string
+      enum:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+    EmailAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        mimeType:
+          type: string
+          readOnly: true
+        size:
+          type: integer
+          readOnly: true
+        inline:
+          type: boolean
+          readOnly: true
+        contentId:
+          type: string
+          readOnly: true
+        content:
+          type: string
+          readOnly: true
+        contentLocation:
+          type: string
+          readOnly: true
+    SyncStatus:
+      type: object
+      properties:
+        syncUpdatedToken:
+          type: string
+        syncDeletedToken:
+          type: string
+        ready:
+          type: boolean
+    MeetingResponseType:
+      type: string
+      enum:
+      - noResponse
+      - declined
+      - tentative
+      - accepted
+    OnlineMeetingDetails:
+      type: object
+      readOnly: true
+      properties:
+        url:
+          type: string
+          readOnly: true
+        phone:
+          type: string
+          readOnly: true
+        pin:
+          type: string
+          readOnly: true
+        regionCode:
+          type: string
+          readOnly: true
+        sip:
+          type: string
+          readOnly: true
+        infoUrl:
+          type: string
+          readOnly: true
+    DeletedRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+    EventsPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
+          type: string
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    EventDateTime:
+      type: object
+      properties:
+        dateOnly:
+          type: string
+          format: date
+        dateTime:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+    ShowAs:
+      type: string
+      enum:
+      - free
+      - busy
+      - tentative
+      - outOfOffice
+      - unknown
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

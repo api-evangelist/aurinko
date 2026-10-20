@@ -1,0 +1,66 @@
+# Aurinko
+
+## Aurinko API
+
+- [What is Unified Mailbox API?](https://docs.aurinko.io/getting-started/readme.md): The Aurinko Unified Mailbox API enables seamless integration with email, calendar, contacts, and task providers like Google and Office 365.
+- [Getting started with Aurinko](https://docs.aurinko.io/getting-started/getting-started-with-aurinko.md): Aurinko enables product teams to quickly build and manage mailbox data sync solutions and integrations through a secure and reliable API platform.
+- [Get your developer API keys](https://docs.aurinko.io/getting-started/get-your-developer-api-keys.md): Set up your Aurinko developer account, obtain API keys, authenticate a test account, and make your first API request.
+- [Adding Aurinko to Google Workspace allowlist](https://docs.aurinko.io/getting-started/adding-aurinko-to-google-workspace-allowlist.md): Add Aurinko to your Google Workspace allowlist to trial the Email API.
+- [Bubble.io plugin](https://docs.aurinko.io/getting-started/bubble.io-plugin.md): Integrate your Bubble apps with users' email accounts through Aurinko's Unified Mailbox API to access their email and calendars.
+- [Subscribe to Aurinko](https://docs.aurinko.io/getting-started/subscribe-to-aurinko.md)
+- [Sign up for the Aurinko Portal](https://docs.aurinko.io/sign-up-for-the-aurinko-portal.md)
+- [Team members and roles in applications](https://docs.aurinko.io/team-members-and-roles-in-applications.md)
+- [Delete your profile and cancel your subscription](https://docs.aurinko.io/delete-your-profile-and-cancel-your-subscription.md)
+- [Email API](https://docs.aurinko.io/unified-apis/email-api.md): Aurinko's Email API provides a RESTful interface for accessing and syncing email messages across popular providers like Gmail, Office 365, iCloud, etc.
+- [Calendar API](https://docs.aurinko.io/unified-apis/calendar-api.md): Aurinko's Calendar API offers a unified REST interface for managing calendars across Google, Outlook, iCloud, etc. Access events, data sync, and simplify scheduling workflows.
+- [Contacts API](https://docs.aurinko.io/unified-apis/contacts-api.md): Aurinko's Contacts API offers a RESTful interface for syncing contacts from Google, Office 365, etc., with features like CRUD operations, incremental sync, and detailed access.
+- [Tasks API](https://docs.aurinko.io/unified-apis/tasks-api.md): Aurinko's Tasks API integrates task management into your apps, abstracting Google Tasks, Microsoft To Do, and Outlook Tasks. Perform CRUD tasks while managing lists.
+- [Webhooks API](https://docs.aurinko.io/unified-apis/webhooks-api.md): Aurinko's Webhooks API enables real-time event notifications for email, calendar, contacts, and task updates by subscribing to specific resources and handling webhook payloads efficiently.
+- [Authentication](https://docs.aurinko.io/unified-apis/webhooks-api/authentication.md)
+- [Notification URL Verification](https://docs.aurinko.io/unified-apis/webhooks-api/notification-url-verification.md)
+- [Configuring Pub/Sub for Gmail API Webhooks](https://docs.aurinko.io/unified-apis/webhooks-api/configuring-pub-sub-for-gmail-api-webhooks.md): Set up Google Cloud Pub/Sub for Aurinko to receive Gmail API push notifications, eliminating constant polling and enhancing efficiency.
+- [Direct API](https://docs.aurinko.io/unified-apis/direct-api.md): A direct pass-through API for native communications with underlying provider APIs using Aurinko's unified OAuth flow.
+- [Follow-up Rules API](https://docs.aurinko.io/unified-apis/follow-up-rules-api.md)
+- [OAuth Flow](https://docs.aurinko.io/authentication/oauth-flow.md): Aurinko's Unified OAuth Flow simplifies user authentication, supporting various account types including: Account, Service Account, User Session.
+- [Account OAuth Flow](https://docs.aurinko.io/authentication/oauth-flow/account-oauth-flow.md): Aurinko's Account OAuth Flow is a user-delegated authorization flow, producing an Aurinko account and an access token for secure API access.
+- [User ОАuth Flow](https://docs.aurinko.io/authentication/oauth-flow/user-oauth-flow.md): Aurinko's User OAuth Flow enables user-delegated authorization, producing a user session token or httpOnly cookie for managing application user sessions.
+- [Service Account OAuth Flow](https://docs.aurinko.io/authentication/oauth-flow/service-account-oauth-flow.md): Aurinko's Service Account OAuth Flow provides admin-level access via OAuth2, generating a service account and access token for secure API interactions.
+- [Authentication scopes](https://docs.aurinko.io/authentication/authentication-scopes.md): Aurinko's authentication scopes enhance security by allowing granular permission control. Limit access by using the scopes parameter during authentication.
+- [Authorized return URLs](https://docs.aurinko.io/authentication/authorized-return-urls.md): Specify authorized redirect URLs for Google or Azure OAuth apps to enable Aurinko's authorization flow. Use Aurinko's or your domain URL for callbacks.
+- [Google OAuth setup](https://docs.aurinko.io/authentication/google-oauth-setup.md): Set up Google OAuth by creating a project and client ID in the Developer Console. Enable required APIs and configure your app for Aurinko.
+- [Office 365 OAuth setup](https://docs.aurinko.io/authentication/office-365-oauth-setup.md): Set up Office 365 OAuth by registering your app in Azure Active Directory. Configure API permissions and upload your credentials to Aurinko.
+- [ZOHO OAuth setup](https://docs.aurinko.io/authentication/zoho-oauth-setup.md): Set up Zoho OAuth by registering your app in the ZOHO API Console. Configure API permissions and upload your credentials to Aurinko.
+- [Service accounts](https://docs.aurinko.io/authentication/service-accounts.md): Service accounts enable server-to-server access to web resources without user involvement. Aurinko supports G Suite, MS Exchange, and Office 365.
+- [Setting up G Suite service account](https://docs.aurinko.io/authentication/service-accounts/setting-up-g-suite-service-account.md): Setting up a G Suite service account to generate credentials and delegate authority. Follow the steps in the Google API Console for configuration.
+- [Setting up Office 365 daemon app registration](https://docs.aurinko.io/authentication/service-accounts/setting-up-office-365-daemon-app-registration.md): Set up an Office 365 daemon app registration to enable global admin authorizations, configure API permissions, and connect service accounts with Aurinko.
+- [Configuring IMAP Provider Connections in Aurinko](https://docs.aurinko.io/authentication/configuring-imap-provider-connections-in-aurinko.md): This guide explains how to configure Aurinko to work with IMAP email accounts, including provider credentials, server settings, synchronization, sending emails, and troubleshooting.
+- [Setting up MS Exchange service account](https://docs.aurinko.io/authentication/setting-up-ms-exchange-service-account.md)
+- [Create your first appointment booking page](https://docs.aurinko.io/scheduling/create-your-first-appointment-booking-page.md): Create a personalized appointment booking page by connecting your Google or Office 365 calendar. Download scheduler.html for setup and API details.
+- [Calendar Booking Page](https://docs.aurinko.io/scheduling/calendar-booking-page.md): Streamline scheduling with Aurinko's integrated calendar booking page, designed for seamless client interactions and effortless appointment management.
+- [Booking API](https://docs.aurinko.io/scheduling/booking-api.md): The Aurinko Booking API automates meeting scheduling, enabling developers to access calendar availability and create booking profiles easily.
+- [Group Booking API](https://docs.aurinko.io/scheduling/group-booking-api.md): The Group Booking API automates meeting scheduling for groups by gathering availability from multiple calendars and finding suitable time slots.
+- [Outlook addins](https://docs.aurinko.io/workspace-addons/outlook-addins.md): Integrate Outlook with third-party services using add-ins built on JavaScript/HTML, enabling seamless access to emails, meetings, and more.
+- [Create your first Outlook addin](https://docs.aurinko.io/workspace-addons/outlook-addins/create-your-first-outlook-addin.md): Set up your Aurinko Outlook add-in by creating an account, installing the manifest, and accessing user data through the Unified Mailbox API.
+- [Office 365: Installing Outlook addin](https://docs.aurinko.io/workspace-addons/outlook-addins/office-365-installing-outlook-addin.md): Install your Aurinko Outlook add-in by uploading the auto-generated manifest in Outlook. Open the add-in from the main ribbon to get started.
+- [Microsoft Teams apps](https://docs.aurinko.io/workspace-addons/microsoft-teams-apps.md): Integrate third-party solutions with Teams using Aurinko API. Develop bots and tabs to enhance user experience and access Graph API seamlessly.
+- [Microsoft Teams bot setup](https://docs.aurinko.io/workspace-addons/microsoft-teams-apps/microsoft-teams-bot-setup.md): Register your bot in the Microsoft Bot Framework, link it to Aurinko, and use the API to manage Teams interactions effectively.
+- [Create your first MS Teams app](https://docs.aurinko.io/workspace-addons/microsoft-teams-apps/create-your-first-ms-teams-app.md): Create an Aurinko account, set up your app, enable necessary APIs, and start using your MS Teams app by accessing the Aurinko API.
+- [Installing MS Teams app](https://docs.aurinko.io/workspace-addons/microsoft-teams-apps/installing-ms-teams-app.md): Install the Aurinko app in Microsoft Teams to integrate its features seamlessly.
+- [Chrome Extensions with Google authentication](https://docs.aurinko.io/workspace-addons/chrome-extensions-with-google-authentication.md): Integrate Google authentication into your Chrome extension using Aurinko's backend API for seamless user management and offline access.
+- [Google Workspace Add-Ons](https://docs.aurinko.io/workspace-addons/google-workspace-add-ons.md): Simplify your Google Workspace Add-Ons development with Aurinko's backend services for user management, third-party integrations, and offline access.
+- [Create your first embedded WebEx app](https://docs.aurinko.io/workspace-addons/create-your-first-embedded-webex-app.md)
+- [Storage API](https://docs.aurinko.io/workspace-addons/storage-api.md)
+- [User management](https://docs.aurinko.io/workspace-addons/user-management.md)
+- [What is Dynamic (Virtual) API?](https://docs.aurinko.io/dynamic-api/what-is-dynamic-virtual-api.md)
+- [Getting Started with Dynamic API](https://docs.aurinko.io/dynamic-api/getting-started-with-dynamic-api.md)
+- [Adding a Custom Service Type](https://docs.aurinko.io/dynamic-api/adding-a-custom-service-type.md): Define custom Aurinko service types to connect private APIs and internal services to Aurinko. Access custom services through the Dynamic API and Aurinko Sync.
+- [Does Aurinko provide a shared verified Google OAuth application?](https://docs.aurinko.io/faq/does-aurinko-provide-a-shared-verified-google-oauth-application.md)
+- [How does Aurinko billing work?](https://docs.aurinko.io/faq/how-does-aurinko-billing-work.md)
+
+## BrightSync
+
+- [What is BrightSync?](https://docs.aurinko.io/brightsync/readme.md): BrightSync is Aurinko's sync solution for automating two-way sync of calendars, contacts, tasks, and one-way email logging between user mailboxes and business systems.
+- [CRM connector requirements](https://docs.aurinko.io/brightsync/crm-connector-requirements.md): To activate BrightSync for your CRM, we need to add a new platform connector using your REST API. The connector requires authentication, users, accounts, contacts, and email sync methods.
+- [Email Sync API Requirements](https://docs.aurinko.io/brightsync/crm-connector-requirements/email-sync-api-requirements.md): This document outlines the required API endpoints and data structures for integrating your CRM with BrightSync's Email Synchronization features.
+- [Calendar Sync API Requirements](https://docs.aurinko.io/brightsync/crm-connector-requirements/calendar-sync-api-requirements.md): This document outlines the required API endpoints and data structures for integrating your CRM with BrightSync's Calendar Synchronization features.
+- [Getting Started with BrightSync API](https://docs.aurinko.io/brightsync/getting-started-with-brightsync.md): BrightSync API lets developers manage Aurinko's sync logic between mailboxes and business platforms for seamless two-way calendar, contacts, and tasks sync.

@@ -1,23 +1,782 @@
 aid: aurinko
 name: Yoxel
-description: 'Yoxel is a company surfaced via the API Evangelist harvest backlog (source: g2-catalog)
-  and added to the network as a stub for full-pipeline profiling.'
+image: https://www.aurinko.io/images/image-logo.png
+description: Aurinko provides a unified API platform that integrates email, calendar, contacts, and tasks across major services. Their solution
+  enables developers to streamline inbox integration, automate workflows, and enhance productivity for enterprises. With a free trial and trusted
+  by leading companies, Aurinko aims to simplify communication management through a single, consistent API layer, reducing development overhead
+  and improving user experience.
 url: https://raw.githubusercontent.com/api-evangelist/aurinko/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:g2-catalog
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-19 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-19'
 modified: '2026-10-19'
 tags:
 - Company
-apis: []
+- Integration
+- Email
+- Calendar
+- Contacts
+- Tasks
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/aurinko-agentic-access.yml
+- type: Plans
+  url: plans/aurinko-plans-pricing.yml
+- type: Spectral
+  url: rules/aurinko-rules.yml
+- type: JSONLD
+  url: json-ld/aurinko-context.jsonld
+- type: Vocabulary
+  url: vocabulary/aurinko-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DataModel
+  url: data-model/aurinko-data-model.yml
+- type: Authentication
+  url: authentication/aurinko-authentication.yml
+- type: ErrorCatalog
+  url: errors/aurinko-problem-types.yml
+- type: Conformance
+  url: conformance/aurinko-conformance.yml
+- type: LLMsTxt
+  url: llms/aurinko-llms.txt
+- type: WellKnown
+  url: well-known/aurinko-well-known.yml
+- type: Hosts
+  url: hosts/aurinko-hosts.yml
+- type: Vendors
+  url: vendors/aurinko-vendors.yml
+- type: SDKs
+  url: packages/aurinko-packages.yml
+- type: Packages
+  url: packages/aurinko-packages.yml
+- type: TermsOfService
+  url: https://www.aurinko.io/terms/
+- type: PrivacyPolicy
+  url: https://www.aurinko.io/privacy-policy
+- type: APIReference
+  url: https://apirefs.aurinko.io/
+- type: DomainSecurity
+  url: security/aurinko-domain-security.yml
 - type: Website
-  url: https://aurinko.io/
+  url: https://www.aurinko.io/
+- type: Documentation
+  url: https://docs.aurinko.io/
+- type: Blog
+  url: https://www.aurinko.io/blog/
+- type: Pricing
+  url: https://www.aurinko.io/pricing/
+- type: GettingStarted
+  url: https://www.aurinko.io/unified-api/
+apis:
+- aid: aurinko:aurinko-account-api
+  name: Yoxel Account API
+  description: >-
+    An account corresponds to an email address, mailbox, and/or calendar. When connecting to the Aurinko
+    API, a specific access token gives you access to a specific account’s data.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-account-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-accounts-api
+  name: Yoxel Accounts API
+  description: >-
+    These endpoints allow for account management outside the developer console interface. You can list,
+    cancel, update, and delete accounts associated with your application.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-accounts-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-auth-api
+  name: Yoxel Auth API
+  description: >-
+    Aurinko's Unified OAuth Flows are backed by providers’ OAuth2 flows (i.e. Google, Office 365, Salesforce,
+    HubSpot,...)
+
+    or by secure password-based authentications (i.e. MS Exchange, IMAP accounts). The following three
+    flows are supported:
+
+
+    1. Account OAuth - User delegated authorization that produces an Aurinko account and an access token.
+
+    2. Service Account OAuth - Admin/Org-level authorization that produces an Auirnko service account
+    and an access token.
+
+    3. User OAuth - User delegated authorization that produces an Aurinko User, its primary account, and
+    a user session token or cookie.
+
+
+    See [this user guide](https://docs.aurinko.io/authentication/authentication-flow) for more information.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Auth
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-auth-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-availability-api
+  name: Yoxel Availability API
+  description: >-
+    See meeting time availability according to the group booking profile configuration. Book a meeting
+    for an account or one of users in a group.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Availability
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-availability-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-booking-api
+  name: Yoxel Booking API
+  description: >-
+    Booking profiles allow you to build calendar availability and meeting scheduling apps. List, create,
+    update, and delete booking profiles associated with a calendar (Aurinko account). Gather availability
+    information from a calendar and find time slots when the calendar owner is available. Schedule events
+    for a calendar owner.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Booking
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-booking-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-calendars-api
+  name: Yoxel Calendars API
+  description: >-
+    Each account connected to Aurino can have zero or more calendars, and each calendar has a collection
+    of individual events.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Calendars
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-calendars-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-calsync-api
+  name: Yoxel Cal Sync API
+  description: Sync/delta methods.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - CalSync
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-calsync-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-contacts-api
+  name: Yoxel Contacts API
+  description: >-
+    Contacts are objects within an address book, containing several pieces of information, such as email
+    addresses, phone numbers,  postal addresses, work place details.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Contacts
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-contacts-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-contsync-api
+  name: Yoxel Cont Sync API
+  description: Sync/delta methods.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - ContSync
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-contsync-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-drafts-api
+  name: Yoxel Drafts API
+  description: >-
+    A draft message is a message which has not been sent yet. The drafts endpoints let you create new
+    drafts, read existing drafts, and send drafts.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Drafts
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-drafts-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-emailfolders-api
+  name: Yoxel Email Folders API
+  description: List email folders, their attributes, and messages.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - EmailFolders
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-emailfolders-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-emailsync-api
+  name: Yoxel Email Sync API
+  description: Sync/delta methods.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - EmailSync
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-emailsync-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-emailtracking-api
+  name: Yoxel Email Tracking API
+  description: Track email opens.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - EmailTracking
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-emailtracking-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-events-api
+  name: Yoxel Events API
+  description: >-
+    Events are objects within a calendar, generally supporting all features of modern scheduling apps.
+    Using the calendar APIs, your application can schedule events, send meeting invitations, RSVP, and
+    more.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-events-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-followuprobot-api
+  name: Yoxel Follow Up Robot API
+  description: >-
+    Follow-up rules allow you to define automatic email follow-up (drip) sequences and email templates.
+    List, create, update, and delete follow-up rules associated with a mailbox account. Check status of
+    a drip sequence for a given email thread, or activate a drip sequence.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - FollowUpRobot
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-followuprobot-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-freebusyschedule-api
+  name: Yoxel Free Busy Schedule API
+  description: >-
+    Check free/busy status for a calendar or available time slots for a meeting in multiple calendars.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - FreeBusySchedule
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-freebusyschedule-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-groupbooking-api
+  name: Yoxel Group Booking API
+  description: >-
+    Group Booking profiles allow you to build calendar availability and meeting scheduling for a group
+    of accounts. List, create, update, and delete booking profiles associated with a group. Gather availability
+    information from multiple account calendars and find time slots when at least one user is available.
+    Schedule events for available accounts.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - GroupBooking
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-groupbooking-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-managed-accounts-api
+  name: Yoxel Managed accounts API
+  description: >-
+    Manage accounts rely on service accounts for their connections. List, cancel, update, and delete managed
+    accounts associated with service accounts.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Managed accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-managed-accounts-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-messages-api
+  name: Yoxel Messages API
+  description: >-
+    Messages contain several pieces of information, such as when a message was sent, the sender's address,
+    to whom it was sent, and the message body. They can also contain files (attachments), calendar event
+    invitations, and more.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-messages-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-services-api
+  name: Yoxel Services API
+  description: >-
+    Service accounts represent admin/service/organization level connections. List, cancel, update, and
+    delete service accounts associated with your application.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Services
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-services-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-tasklists-api
+  name: Yoxel Task Lists API
+  description: TaskLists a container objects for tasks.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - TaskLists
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-tasklists-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-tasks-api
+  name: Yoxel Tasks API
+  description: Tasks a work to be done.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Tasks
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-tasks-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-tasksync-api
+  name: Yoxel Task Sync API
+  description: Sync/delta methods.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - TaskSync
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-tasksync-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-user-api
+  name: Yoxel User API
+  description: >-
+    `User` is an Aurinko managed entity that your app can leverage to implement user session management.
+    Multiple regular Aurinko accounts can be linked to a `User` however there is always one primary account
+    that acts as the user id-provider. The `User` sessions allow browser apps to store all their account
+    access tokens securely on the Aurinko servers.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-user-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+- aid: aurinko:aurinko-webhooks-api
+  name: Yoxel Webhooks API
+  description: >-
+    Webhooks allow your application to receive simple notifications when certain events occur.
+
+    They essentially tell your application that it can run incremental syncs to obtain the changed records
+    (updated/deleted).
+
+
+    ## Prerequisites
+
+    Gmail notifications require a special configuration, explained in [this article](https://developers.google.com/gmail/api/guides/push).
+
+    A PubSub PUSH subscription should specify your Aurinko endpoint `https://{yourAurinkoDomain}/push/google/email`
+
+    so that Gmail notifications are delivered to Aurinko first. Once the PubSub subscription is configured
+
+    and the `publish` rights are granted to `gmail-api-push@system.gserviceaccount.com` please specify
+    your
+
+    PubSub topic in the Application settings (Google OAuth) in the Aurinko portal.
+
+
+    ## Notification URL verification
+
+    To ensure that notifications are being delivered to a server under your direct control, we must verify
+
+    your ownership by issuing you a challenge request. Please make sure your notification endpoint
+
+    (specified in the notificationUrl property) responds to a validation request. If validation fails,
+
+    the request to create the subscription returns a 400 Bad Request error.
+
+
+    1. Aurinko sends a POST request to the notification URL:
+      ```
+      Content-Type: text/plain; charset=utf-8
+      POST https://{notificationUrl}?validationToken={challenge}
+      ```
+    2. The client must provide a response:
+      * A 200 (OK) status code.
+      * The body must include the validation token provided by the validationToken query parameter
+
+    ## Notifications
+
+    Aurinko sends notifications as POST requests with the following json payload:
+
+    ```
+
+    {
+      "subscription" : integer, // subscription Id
+      "resource" : string,
+      "accountId": integer,
+      "error": string,          // if any
+      "lifecycleEvent": string, // Enum of `error` or `active`, when subscription state changes
+      "payloads" : [...]
+    }
+
+    ```
+
+
+    You notification endpoint should respond with the 200 (OK) status code when a notification is successfully
+    processed.
+
+
+    ### Notification validation
+
+    Aurinko signs its requests using a secret unique to your app.
+
+    Here's an overview of the process to validate a signed request from Aurinko:
+
+
+    1. Retrieve the `X-Aurinko-Request-Timestamp` header on the HTTP request, and the body of the request
+    (Use the raw request body, before it has been deserialized from JSON or other forms.).
+
+    2. Concatenate the version number, the timestamp, and the body of the request to form a basestring.
+    Use a colon as the delimiter between the three elements.
+
+    The version number right now is always `v0`.
+
+    ```
+
+    final byte[] signData = org.apache.commons.lang3.ArrayUtils.addAll(
+        ("v0:" + timestampSeconds + ":").getBytes(StandardCharsets.UTF_8),
+        payloadBytes
+    );
+
+    ```
+
+    3. With the help of HMAC SHA256 implemented in your favorite programming language, hash the above
+    basestring, using the Aurinko Signing Secret as the key.
+
+    4. Compare this computed signature to the `X-Aurinko-Signature` header on the request.
+
+    If it matches - request is valid, if not - request must be discarded.
+  humanURL: https://apirefs.aurinko.io/
+  baseURL: https://api.aurinko.io
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/aurinko-webhooks-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/aurinko-email-message-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-out-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-in-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-group-booking-update-dto-schema.json
+  - type: JSONSchema
+    url: json-schema/aurinko-booking-in-dto-schema.json
+x-enrichment:
+  date: '2026-10-19'
+  status: enriched
+  artifacts_added: 26
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local

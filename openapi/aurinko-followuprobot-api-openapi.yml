@@ -1,0 +1,483 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Follow Up Robot API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: FollowUpRobot
+  x-displayName: Follow-up and templates
+  description: Follow-up rules allow you to define automatic email follow-up (drip) sequences and email templates. List, create, update, and delete follow-up rules associated with a mailbox account. Check status of a drip sequence for a given email thread, or activate a drip sequence.
+paths:
+  /v1/followup/config:
+    get:
+      operationId: getConfig
+      tags:
+      - FollowUpRobot
+      summary: Get a follow up configuration
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupConfig'
+    put:
+      operationId: updateConfig
+      tags:
+      - FollowUpRobot
+      summary: Update a follow up configuration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FollowupConfig'
+      responses:
+        '200':
+          description: A result of changed configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupConfig'
+  /v1/followup/rules:
+    post:
+      operationId: createRule
+      tags:
+      - FollowUpRobot
+      summary: Add a follow up rule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FollowupRuleAggregateIn'
+      responses:
+        '200':
+          description: A result of add rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupRuleAggregateOut'
+    get:
+      operationId: getRules
+      tags:
+      - FollowUpRobot
+      summary: Get follow up rules
+      responses:
+        '200':
+          description: A list of rules
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupRuleAggregateOut'
+  /v1/followup/rules/{id}:
+    delete:
+      operationId: deleteRule
+      tags:
+      - FollowUpRobot
+      summary: Delete a follow up rule
+      responses:
+        '200':
+          $ref: '#/components/responses/CommonOk'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+    put:
+      operationId: updateRule
+      tags:
+      - FollowUpRobot
+      summary: Update a follow up rule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FollowupRuleAggregateIn'
+      responses:
+        '200':
+          description: A result of changed rule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowupRuleAggregateOut'
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+  /v1/followup/conversations:
+    get:
+      operationId: getConversationsDripStatus
+      tags:
+      - FollowUpRobot
+      summary: Get a list of conversations touched by followup
+      parameters:
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: active
+        description: active or inactive threads, by default all threads returned
+        required: false
+      - schema:
+          default: 50
+          format: int32
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: limit
+        description: page size
+        required: false
+      - schema:
+          default: 0
+          format: int32
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: offset
+        description: page offset
+        required: false
+      responses:
+        '200':
+          description: A result of conversations with followup
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationDripStatus'
+  /v1/followup/conversations/{convoId}:
+    get:
+      operationId: getConversationDripStatus
+      tags:
+      - FollowUpRobot
+      summary: Check a conversation status
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: convoId
+        description: thread identifier
+        required: true
+      responses:
+        '200':
+          description: A conversation status response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationDripStatus'
+    put:
+      operationId: updateConversationDripStatus
+      tags:
+      - FollowUpRobot
+      summary: Update a conversation status
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: convoId
+        description: thread identifier
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DripRequestDTO'
+      responses:
+        '200':
+          description: A result of applying drip
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationDripStatus'
+components:
+  schemas:
+    ConversationDripStatus:
+      type: object
+      properties:
+        convoId:
+          type: string
+        subject:
+          type: string
+        status:
+          type: string
+          enum:
+          - disabled
+          - active
+          - failed
+          - finished
+          - ruleIncomplete
+        rule:
+          type: object
+          items:
+            $ref: '#/components/schemas/FollowupRuleAggregateOut'
+        dripStartedAt:
+          type: string
+          format: date-time
+        dripLastNum:
+          type: integer
+        dripError:
+          type: string
+        dripEndedAt:
+          type: string
+          format: date-time
+        actionVars:
+          type: object
+          additionalProperties:
+            type: string
+        targets:
+          type: array
+          items:
+            type: string
+        dripResponder:
+          type: string
+    FollowupRuleAggregateIn:
+      type: object
+      properties:
+        name:
+          type: string
+        expectThreadResponse:
+          type: boolean
+        templateBody:
+          type: string
+        templateSubject:
+          type: string
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FollowupRuleAction'
+    FollowupRuleAggregateOut:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        expectThreadResponse:
+          type: boolean
+        templateBody:
+          type: string
+        templateSubject:
+          type: string
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FollowupRuleAction'
+    DripRequestDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - disabled
+          - active
+        ruleId:
+          type: integer
+          format: int64
+        dripAfter:
+          type: string
+          format: date-time
+        targets:
+          type: array
+          items:
+            type: string
+        actionVars:
+          type: object
+          additionalProperties:
+            type: string
+    FollowupRuleAction:
+      type: object
+      properties:
+        intervalDays:
+          type: integer
+        message:
+          type: string
+    OkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+    FollowupConfig:
+      type: object
+      properties:
+        timezone:
+          type: string
+        emailAliases:
+          type: array
+          items:
+            type: string
+            format: email
+  responses:
+    CommonOk:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OkResponse'
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

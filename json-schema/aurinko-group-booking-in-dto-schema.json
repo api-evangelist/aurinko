@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/aurinko/main/json-schema/aurinko-group-booking-in-dto-schema.json",
+  "title": "GroupBookingInDto",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/aurinko-openapi.json#/components/schemas/GroupBookingInDto",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Profile name used in calendar links to identify a profile."
+    },
+    "durationMinutes": {
+      "type": "integer",
+      "description": "Duration of the meeting in minutes."
+    },
+    "availabilityStep": {
+      "type": "integer",
+      "description": "Determines the interval at which new meeting slots are made available throughout the working hours. Allowed values are 5, 10, 15, 20, 30, 60."
+    },
+    "startTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The beginning of the formation of intervals. Must be in the future, otherwise the current time will be used."
+    },
+    "endTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The ending of the formation of intervals. If the time specified here is in the past, the intervals will be empty, regardless of the Start time parameter."
+    },
+    "timeAvailableFor": {
+      "type": "string",
+      "description": "Time period (in ISO-8601 format) the profile is covering. For example, P3M (3 months), P4W (4 weeks), P5D (5 days)."
+    },
+    "subject": {
+      "type": "string",
+      "description": "Subject for events booked using this profile."
+    },
+    "description": {
+      "type": "string",
+      "description": "Description for events booked using this profile."
+    },
+    "location": {
+      "type": "string",
+      "description": "Location for events booked using this profile."
+    },
+    "workHours": {
+      "$ref": "#/$defs/WeekWorkSchedule"
+    },
+    "availabilityIntervals": {
+      "description": "the hours of availability for a date range, it have priority over workHours.",
+      "$ref": "#/$defs/AvailabilityIntervals"
+    },
+    "context": {
+      "type": "string",
+      "description": "Custom client data stored for the profile."
+    },
+    "startConference": {
+      "type": "boolean",
+      "description": "Whether to create an online conference (hangoutsMeet, teamsForBusiness, etc.) for the event. Note, not all providers support creating conferences."
+    },
+    "openMeetingUrl": {
+      "type": "string",
+      "description": "The value of the {{openMeetingUrl}} variable that can be used in the event description or subject."
+    },
+    "clientOrgId": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "AvailabilityInterval": {
+      "type": "object",
+      "properties": {
+        "dateStartInclusive": {
+          "type": "string",
+          "format": "date"
+        },
+        "dateEndInclusive": {
+          "type": "string",
+          "format": "date"
+        },
+        "hours": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WorkingInterval"
+          }
+        }
+      }
+    },
+    "AvailabilityIntervals": {
+      "type": "object",
+      "properties": {
+        "intervals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AvailabilityInterval"
+          }
+        }
+      }
+    },
+    "DayOfWeek": {
+      "type": "string",
+      "enum": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ]
+    },
+    "DayWorkSchedule": {
+      "type": "object",
+      "properties": {
+        "dayOfWeek": {
+          "$ref": "#/$defs/DayOfWeek"
+        },
+        "workingIntervals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WorkingInterval"
+          }
+        }
+      }
+    },
+    "WeekWorkSchedule": {
+      "type": "object",
+      "properties": {
+        "daySchedules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DayWorkSchedule"
+          }
+        },
+        "timezone": {
+          "type": "string"
+        }
+      }
+    },
+    "WorkingInterval": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "pattern": "^\\d{2}:\\d{2}:\\d{2}$"
+        },
+        "end": {
+          "type": "string",
+          "pattern": "^\\d{2}:\\d{2}:\\d{2}$"
+        }
+      }
+    }
+  }
+}

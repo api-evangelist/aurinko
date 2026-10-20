@@ -1,0 +1,513 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Contacts API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: Contacts
+  description: Contacts are objects within an address book, containing several pieces of information, such as email addresses, phone numbers, postal addresses, work place details.
+paths:
+  /v1/contacts/{contId}:
+    patch:
+      operationId: updateContact
+      tags:
+      - Contacts
+      summary: Update a contact
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: contId
+        description: Contact id
+        required: true
+      - in: header
+        name: If-Match
+        schema:
+          type: string
+        required: true
+        description: The HTTP entity tag of the resource (ETag). Used for web cache validation.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactOrId'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X PATCH https://api.aurinko.io/v1/contacts/{contId} \\\n    -d '{\n             \"name\": {\"givenName\": \"Sam\", \"familyName\": \"Black\"},\n             \"company\": {\"name\":\"Aurinko, Inc\", \"jobTitle\": \"QA engineer\"},\n             \"emailAddresses\": [\n                    {\"address\": \"sam@aurinko.io\", \"type\": \"work\"}\n                 ],\n             \"phoneNumbers\": [\n                    {\"number\": \"415 8399949\", \"type\": \"work\"}\n                    {\"value\": \"415 9499938\",\"type\": \"Home\"},\n                 ]\n        }'"
+    get:
+      operationId: contact
+      tags:
+      - Contacts
+      summary: Get a contact
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: contId
+        description: Contact id
+        required: true
+      - schema:
+          type:
+          - bodytype
+          - 'null'
+          $ref: '#/components/schemas/BodyType'
+        in: query
+        name: bodyType
+        description: Default text
+        required: false
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: nativeproperty
+            $ref: '#/components/schemas/NativeProperty'
+        in: query
+        name: nativeProperties
+        required: false
+      - in: query
+        name: withPhoto
+        required: false
+        schema:
+          type:
+          - boolean
+          - 'null'
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: includeUpdateToken
+        required: false
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    https://api.aurinko.io/v1/contacts/{id}"
+    delete:
+      operationId: deleteContact
+      tags:
+      - Contacts
+      summary: Delete a contact
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: contId
+        description: Contact id
+        required: true
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: Contact not found
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X DELETE https://api.aurinko.io/v1/contacts/{contId}"
+  /v1/contacts:
+    post:
+      operationId: createContact
+      tags:
+      - Contacts
+      summary: Create a new contact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactOrId'
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/contacts \\\n    -d '{\n             \"name\": {\"givenName\": \"Sam\", \"familyName\": \"Black\"},\n             \"company\": {\"name\":\"Aurinko\", \"jobTitle\": \"Support engineer\"},\n             \"emailAddresses\": [\n                     {\"address\": \"sam@aurinko.io\", \"type\": \"work\"}\n                 ],\n             \"phoneNumbers\": [\n                     {\"number\": \"415 8399949\", \"type\": \"work\"}\n                 ]\n                }'"
+components:
+  schemas:
+    NativeProperty:
+      type: string
+    ContactRelation:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - manager
+          - assistant
+          - spouse
+    ContactPhoto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        mimeType:
+          type: string
+        content:
+          type: string
+    ContactEmailAddress:
+      type: object
+      properties:
+        address:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+    ContactName:
+      type: object
+      properties:
+        displayName:
+          type: string
+        prefix:
+          type: string
+        givenName:
+          type: string
+        middleName:
+          type: string
+        familyName:
+          type: string
+        suffix:
+          type: string
+        yomiGivenName:
+          type: string
+        yomiFamilyName:
+          type: string
+    ContactCompany:
+      type: object
+      properties:
+        name:
+          type: string
+        officeLocation:
+          type: string
+        department:
+          type: string
+        jobTitle:
+          type: string
+        yomiCompanyName:
+          type: string
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        etag:
+          type: string
+          readOnly: true
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+        lastModifiedTime:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          $ref: '#/components/schemas/ContactName'
+        nickName:
+          type: string
+        fileAs:
+          type: string
+        company:
+          $ref: '#/components/schemas/ContactCompany'
+        relations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactRelation'
+        birthday:
+          type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        notes:
+          type: string
+        emailAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactEmailAddress'
+        phoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPhoneNumber'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPostalAddress'
+        urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactUrl'
+        nativeProperties:
+          type: object
+          additionalProperties:
+            type: string
+        hasPhoto:
+          type: boolean
+          readOnly: true
+        photo:
+          $ref: '#/components/schemas/ContactPhoto'
+          readOnly: true
+    ContactPostalAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        streetLine2:
+          type: string
+        poBox:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+        type:
+          type: string
+          enum:
+          - work
+          - home
+          - other
+    BodyType:
+      type: string
+      enum:
+      - html
+      - text
+    ContactPhoneNumber:
+      type: object
+      properties:
+        number:
+          type: string
+        type:
+          type: string
+          enum:
+          - work
+          - home
+          - other
+          - mobile
+          - workMobile
+          - main
+          - companyMain
+          - assistant
+          - workFax
+          - homeFax
+          - otherFax
+          - callback
+          - pager
+          - workPager
+          - radio
+          - telex
+          - tty
+        canonicalForm:
+          type: string
+          readOnly: true
+    ContactOrId:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        etag:
+          type: string
+          readOnly: true
+        record:
+          $ref: '#/components/schemas/Contact'
+    ContactUrl:
+      type: object
+      properties:
+        href:
+          type: string
+        type:
+          type: string
+          enum:
+          - work
+          - home
+          - other
+          - blog
+          - profile
+          - homePage
+          - ftp
+          - reservations
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

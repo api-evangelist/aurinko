@@ -1,0 +1,736 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Availability API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: Availability
+  x-displayName: Availability
+  description: See meeting time availability according to the group booking profile configuration. Book a meeting for an account or one of users in a group.
+paths:
+  /v1/book/account/profiles/{id}/meeting:
+    post:
+      operationId: bookingAccountCreateMeeting
+      tags:
+      - Availability
+      summary: Create a meeting
+      parameters:
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: id
+        description: A booking id
+        required: true
+      - schema:
+          default: one
+          type:
+          - core.client.booking.bookingrequiredmode.bookingrequiredmode
+          - 'null'
+          $ref: '#/components/schemas/BookingRequiredMode'
+        in: query
+        name: required
+        description: a way to select times
+        required: false
+      - schema:
+          format: int64
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: reserveForMinutes
+        description: Time in minutes, blocks the interval for a time (creates an unconfirmed reservation), the meeting is not created
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMeetingDto'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateMeetingResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError2'
+    get:
+      operationId: bookingAccountMeetingTimes
+      tags:
+      - Availability
+      summary: Get available meeting times
+      parameters:
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: id
+        description: A booking id
+        required: true
+      - schema:
+          default: one
+          type:
+          - core.client.booking.bookingrequiredmode.bookingrequiredmode
+          - 'null'
+          $ref: '#/components/schemas/BookingRequiredMode'
+        in: query
+        name: required
+        description: a way to select times
+        required: false
+      - schema:
+          format: date
+          type:
+          - string
+          - 'null'
+        in: query
+        name: fromDate
+        description: date to iterate a big time intervals
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: intervalLength
+        description: Time period (in ISO-8601 format) to iterate a big time intervals
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: token to request all pages, if booking has many accounts
+        required: false
+      - in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type:
+          - integer
+          - 'null'
+      - in: query
+        name: offset
+        required: false
+        schema:
+          format: int32
+          type:
+          - integer
+          - 'null'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingTimesOutDto'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError2'
+  /v1/book/group/profiles/dynamic/availability:
+    post:
+      operationId: bookingGroupAvailability
+      tags:
+      - Availability
+      summary: Get available bookings for а time range
+      security:
+      - AppAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingAvailableProfilesInDto'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingAvailableProfilesOutDto'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError2'
+  /v1/book/group/profiles/{id}/meeting:
+    post:
+      operationId: bookingGroupCreateMeeting
+      tags:
+      - Availability
+      summary: Create a meeting
+      security:
+      - AppAuth: []
+      parameters:
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: id
+        description: A booking id
+        required: true
+      - schema:
+          default: one
+          type:
+          - core.client.booking.bookingrequiredmode.bookingrequiredmode
+          - 'null'
+          $ref: '#/components/schemas/BookingRequiredMode'
+        in: query
+        name: required
+        description: a way to select times
+        required: false
+      - schema:
+          format: int64
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: reserveForMinutes
+        description: Time in minutes, blocks the interval for a time (creates an unconfirmed reservation), the meeting is not created
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMeetingDto'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateMeetingResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError2'
+    get:
+      operationId: bookingGroupMeetingTimes
+      tags:
+      - Availability
+      summary: Get available meeting times
+      security:
+      - AppAuth: []
+      parameters:
+      - schema:
+          format: int64
+          type: integer
+        in: path
+        name: id
+        description: A booking id
+        required: true
+      - schema:
+          default: one
+          type:
+          - core.client.booking.bookingrequiredmode.bookingrequiredmode
+          - 'null'
+          $ref: '#/components/schemas/BookingRequiredMode'
+        in: query
+        name: required
+        description: a way to select times
+        required: false
+      - schema:
+          format: date
+          type:
+          - string
+          - 'null'
+        in: query
+        name: fromDate
+        description: date to iterate a big time intervals
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: intervalLength
+        description: Time period (in ISO-8601 format) to iterate a big time intervals
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: token to request all pages, if booking has many accounts
+        required: false
+      - in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type:
+          - integer
+          - 'null'
+      - in: query
+        name: offset
+        required: false
+        schema:
+          format: int32
+          type:
+          - integer
+          - 'null'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingTimesOutDto'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError2'
+  /v1/book/{aurinkoClientId}/{name}/meeting:
+    post:
+      operationId: createMeeting
+      tags:
+      - Availability
+      summary: Create a meeting
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: aurinkoClientId
+        description: Application client Id
+        required: true
+      - schema:
+          type: string
+        in: path
+        name: name
+        description: Booking profile name
+        required: true
+      - schema:
+          default: one
+          type:
+          - core.client.booking.bookingrequiredmode.bookingrequiredmode
+          - 'null'
+          $ref: '#/components/schemas/BookingRequiredMode'
+        in: query
+        name: required
+        description: a way to select times
+        required: false
+      - schema:
+          format: int64
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: reserveForMinutes
+        description: Time in minutes, blocks the interval for a time (creates an unconfirmed reservation), the meeting is not created
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMeetingDto'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateMeetingResponse'
+    get:
+      operationId: getMeetingTimes
+      tags:
+      - Availability
+      summary: Get available meeting times
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: aurinkoClientId
+        description: Application client Id
+        required: true
+      - schema:
+          type: string
+        in: path
+        name: name
+        description: Booking profile name
+        required: true
+      - schema:
+          default: one
+          type:
+          - core.client.booking.bookingrequiredmode.bookingrequiredmode
+          - 'null'
+          $ref: '#/components/schemas/BookingRequiredMode'
+        in: query
+        name: required
+        description: a way to select times
+        required: false
+      - schema:
+          format: date
+          type:
+          - string
+          - 'null'
+        in: query
+        name: fromDate
+        description: date to iterate a big time intervals
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: intervalLength
+        description: Time period (in ISO-8601 format) to iterate a big time intervals
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: pageToken
+        description: token to request all pages, if booking has many accounts
+        required: false
+      - in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type:
+          - integer
+          - 'null'
+      - in: query
+        name: offset
+        required: false
+        schema:
+          format: int32
+          type:
+          - integer
+          - 'null'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingTimesOutDto'
+components:
+  schemas:
+    BookingMeetingInterval:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        groupXids:
+          type: array
+          items:
+            type: string
+        accountIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+    BookingTimesOutDto:
+      type: object
+      properties:
+        items:
+          type: array
+          description: List of available meeting slots.
+          items:
+            $ref: '#/components/schemas/BookingMeetingInterval'
+        startTime:
+          type: string
+          format: date-time
+          description: Start time of available meeting slots.
+        endTime:
+          type: string
+          format: date-time
+          description: End time of available meeting slots.
+        timeAvailableFor:
+          type: string
+          description: Time period (in ISO-8601 format) the profile is covering. For example, P3M (3 months), P4W (4 weeks), P5D (5 days).
+          example: P4W
+        durationMinutes:
+          type: integer
+          description: Length of meeting in minutes
+        availabilityStep:
+          type: integer
+          description: Determines the interval at which new meeting slots are made available throughout the working hours. Allowed values are 5, 10, 15, 20, 30, 60.
+        subject:
+          type: string
+          description: Subject for events booked using this profile.
+        primaryColor:
+          type: string
+          description: Primary Color, taken from the application settings.
+        secondaryColor:
+          type: string
+          description: The second Color, taken from the application settings.
+        additionalFields:
+          type: array
+          description: List of substitution variables like {{name}}, {{openMeetingUrl}},...
+          items:
+            $ref: '#/components/schemas/AdditionalField'
+        nextPageToken:
+          type: string
+          description: Next page token
+        nextFromDate:
+          type: string
+          format: date
+          description: Next fromDate to iterate a big time intervals
+    CreateMeetingDto:
+      type: object
+      properties:
+        time:
+          $ref: '#/components/schemas/SelectedMeetingTime'
+        groupXids:
+          type: array
+          items:
+            type: string
+            description: Group external id from available meeting times request
+        accountIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+            description: Account id from available meeting times request
+        name:
+          type: string
+          description: Username of the person requesting the meeting
+        email:
+          type: string
+          description: Email of the person requesting the meeting, if not specified, an event will be created without an attendee
+        substitutionData:
+          type: object
+          description: Data for substitution instead of templates, key - value
+          additionalProperties:
+            type: string
+    CreateMeetingResponse:
+      type: object
+      properties:
+        created:
+          type: boolean
+        id:
+          type: string
+          description: The created calendar event ID, if event was created
+        ReservationId:
+          type: integer
+          format: int64
+          description: The unconfirmed reservation ID
+        groupXid:
+          type: string
+          description: Group external id for group booking
+    BookingAvailableProfilesInDto:
+      type: object
+      properties:
+        timeMin:
+          type: string
+          format: date-time
+        timeMax:
+          type: string
+          format: date-time
+        profileNames:
+          type: array
+          items:
+            type: string
+        profileIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        required:
+          $ref: '#/components/schemas/BookingRequiredMode'
+    AdditionalField:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Substitution variable name
+        type:
+          type: string
+          description: Value type
+        default:
+          type: string
+          description: Default value
+    BookingAvailableProfilesOutDto:
+      type: object
+      properties:
+        profileIds:
+          type: array
+          description: List of available profile ids.
+          items:
+            type: integer
+            format: int64
+    SelectedMeetingTime:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+    BookingRequiredMode:
+      type: string
+      enum:
+      - one
+      - all
+  responses:
+    UnauthorizedError2:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors

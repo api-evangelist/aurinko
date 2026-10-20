@@ -1,0 +1,784 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: support@aurinko.io
+  description: '## Introduction
+
+    The Aurinko API is a unified API platform allowing developers to quickly build integrations with
+
+    many mailbox providers and services like Google, Office 365, Outlook.com, MS Exchange, IMAP.
+
+    The unified API abstracts away differences between many email, calendar, contact, task APIs
+
+    to make it easy to connect and sync the mailbox data.
+
+
+    The Aurinko API''s focus is convenient and reliable data synchronization for all supported
+
+    data categories (email, calendar, contacts, tasks) so the API provides methods to receive changes/deltas
+
+    and be notified of the changes (through webhooks) in a unified manner. The API''s sync/deltas model
+
+    should allow developers to build reliable event based solutions easily.
+
+
+    The Aurinko API is built on HTTP. Our API is RESTful. It has predictable resource URLs.
+
+    It returns HTTP response codes to indicate errors. It also accepts and returns JSON in the HTTP body.
+
+
+    ## API Authentication
+
+    When you sign up for an account, you are given a Client Id and Secret
+
+    for every application that you create. You use those to go through OAuth flows that allow you
+
+    to start syncing remote account data through Aurinko. An account OAuth flow can be started with
+
+    just the Client Id and the Client Secret will be required to obtain an account access token in the
+
+    "authorization code" flow ("implicit grant" flow does is secured by the "trusted domains" setting).
+
+
+    Aurinko offers two forms of authentication:
+
+
+    - `Basic ` - used for authentication flows and administrative requests made from the server side.
+
+    - `Bearer ` - used for working with an account data.
+
+    - `Api Key in Cookie` - for in-browser apps that use Aurinko as their backend API with user sessions.
+
+    - `Api Key in Header (X-Aurinko-Session)` - for server side apps that need user sessions
+
+
+    Never share your client secret or access token. Keep them guarded and secure.
+
+
+    ## Getting Started Guide
+
+    If you have a use case you would like to implement, please consult us for feedback on the best API operations for the task.
+
+
+    Click here to visit our API Guides.'
+  termsOfService: https://www.aurinko.io/terms-of-service/
+  title: Aurinko.io Auth API
+  version: 1.0.0
+servers:
+- url: https://api.aurinko.io
+  description: Production server
+security:
+- AccountToken: []
+- AppAuth: []
+  AccountIdHeader: []
+- UserSessionHeader: []
+  AccountIdHeader: []
+- UserSessionCookie: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+- AuthTypeHeader: []
+  ExchangeIdToken: []
+  ClientIdHeader: []
+  AccountIdHeader: []
+tags:
+- name: Auth
+  x-displayName: Authorization
+  description: 'Aurinko''s Unified OAuth Flows are backed by providers’ OAuth2 flows (i.e. Google, Office 365, Salesforce, HubSpot,...)
+
+    or by secure password-based authentications (i.e. MS Exchange, IMAP accounts). The following three flows are supported:
+
+
+    1. Account OAuth - User delegated authorization that produces an Aurinko account and an access token.
+
+    2. Service Account OAuth - Admin/Org-level authorization that produces an Auirnko service account and an access token.
+
+    3. User OAuth - User delegated authorization that produces an Aurinko User, its primary account, and a user session token or cookie.
+
+
+    See this user guide for more information.'
+paths:
+  /v1/auth/prepare:
+    post:
+      operationId: prepareAuth
+      tags:
+      - Auth
+      summary: Validate an external identity token
+      description: 'This method is for Office365 web add-ins that want to implement external authentication based on
+
+        Exchange Identity Token.
+
+
+        Here are the steps involved in establishing an Aurinko User session:
+
+
+        1. Your Office 365 web add-in gets the Exchange identity token (see the link above for how it is done).
+
+
+        2. Makes a POST call to the `/auth/prepare` endpoint with the following HTTP headers:
+
+        - `X-Aurinko-Auth-Type`: `exchangeIdToken`
+
+        - `Authorization`: `Bearer `
+
+
+        Auriko validates the identity token and provides a temporary token if the ID is valid:
+
+        `{ "token": "your-temporary-token" }`
+
+
+        3. The addin then calls the `/authorizeUser` endpoint with the temporary token, using the query parameter
+
+        `?token=your-temporary-token`.
+
+
+        Upon successful completion of the steps a new Aurinko User is created or an existing User is re-authorized.
+
+        And from now on this identity token is recognized by Aurinko and is associated with the User session.
+
+
+        From here on the add-in can access Aurinko API with its Exchange identity token, this way:
+
+
+        - `X-Aurinko-Auth-Type`: `exchangeIdToken`
+
+        - `Authorization`: `Bearer `'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreparedAuthToken'
+  /v1/auth/authorize:
+    get:
+      operationId: authorize
+      tags:
+      - Auth
+      summary: Start an account authorization flow
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: clientId
+        description: Application Client Id from the Aurinko portal dashboard.
+        required: true
+      - schema:
+          type: core.client.servicetype
+          $ref: '#/components/schemas/ServiceTypeNonDaemon'
+        in: query
+        name: serviceType
+        required: true
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: core.client.oauth.scope
+            $ref: '#/components/schemas/Scope'
+        in: query
+        name: scopes
+        description: Space separated list of Aurinko defined scopes.
+        required: false
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: core.client.oauth.nativescope
+            $ref: '#/components/schemas/NativeScope'
+        in: query
+        name: nativeScopes
+        description: Space separated list of provider defined scopes
+        required: false
+      - schema:
+          default: code
+          type:
+          - string
+          - 'null'
+          enum:
+          - code
+          - token
+        in: query
+        name: responseType
+        description: The type of response expected from the authorization flow. Choose `token` to directly receive the authentication token, or `code` to obtain a temporary code that can be exchanged for the token using the /auth/token endpoint.
+        required: false
+      - schema:
+          format: int64
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: accountId
+        description: For re-authorizing an existing account.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: loginHint
+        description: Is passed as "login_hint" in OAuth flows, suggesting user identity for a smoother login process.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: returnUrl
+        description: Return/Callback url for receiving the authorization code or token. It must be registered on the settings page in Aurinko portal.
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: state
+        description: Custom state string that will be returned in the callback.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: clientOrgId
+        description: Allows clients to group accounts based on their internal organization data.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: serverUrl
+        description: Can be used in the form-based authentication to specify the URL of the server to which the user intends to authenticate. When included, it automatically populates the corresponding input field on the authentication form.
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: ensureScopes
+        description: When set to true, Aurinko will check if a user granted all requested permissions.
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: ensureAccess
+        description: When set to true, Aurinko will check if a user has access to the requested resources. Supported only for Google and Office365, and only for Email, Calendar, Contacts and Tasks APIs.
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: recycle
+        description: Indicates whether to reuse an existing account instead of creating a new one during authentication.
+        required: false
+      - in: query
+        name: authEmail
+        description: Email address that must be used for authentication. Aurinko will fail the authentication flow if the email address does not match the one provided.
+        schema:
+          type: string
+      responses:
+        '303':
+          description: Redirect
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -G https://api.aurinko.io/v1/auth/authorize \\\n    -d clientId='a8b7c6d5e4f3g2h1' \\\n    -d serviceType='Google' \\\n    -d scopes='Calendar.ReadWrite Mail.Read Mail.Send' \\\n    -d responseType='code' \\\n    -d returnUrl='https://yourapp.com/aurinko-redirect' \\\n    -d state='CustomStateString'"
+  /v1/auth/authorizeDaemon:
+    get:
+      operationId: authorizeDaemon
+      tags:
+      - Auth
+      summary: Start a service/daemon account authorization flow
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: clientId
+        description: Application Client Id from the Aurinko portal dashboard.
+        required: true
+      - schema:
+          type: core.client.servicetype
+          $ref: '#/components/schemas/ServiceTypeDaemon'
+        in: query
+        name: serviceType
+        required: true
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: core.client.oauth.scope
+            $ref: '#/components/schemas/Scope'
+        in: query
+        name: scopes
+        description: Space separated list of Aurinko defined scopes.
+        required: false
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: core.client.oauth.nativescope
+            $ref: '#/components/schemas/NativeScope'
+        in: query
+        name: nativeScopes
+        description: Space separated list of provider defined scopes.
+        required: false
+      - schema:
+          default: code
+          type:
+          - string
+          - 'null'
+          enum:
+          - code
+          - token
+        in: query
+        name: responseType
+        description: The type of response expected from the authorization flow. Choose `token` to directly receive the authentication token, or `code` to obtain a temporary code that can be exchanged for the token using the /auth/token endpoint.
+        required: false
+      - schema:
+          format: int64
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: accountId
+        description: For re-authorizing an existing account.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: returnUrl
+        description: Return/Callback url for receiving the authorization code or token. It must be registered on the settings page in Aurinko portal.
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: state
+        description: Custom state string
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: clientOrgId
+        description: Allows clients to group accounts based on their internal organization data.
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: ensureScopes
+        description: When set to true, Aurinko will check if a user granted all requested permissions.
+        required: false
+      responses:
+        '303':
+          description: Redirect
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -G https://api.aurinko.io/v1/auth/authorizeDaemon \\\n    -d clientId='a8b7c6d5e4f3g2h1' \\\n    -d serviceType='Google' \\\n    -d scopes='Calendar.ReadWrite Mail.Read Mail.Send' \\\n    -d returnUrl='https://yourapp.com/aurinko-redirect' \\\n    -d state='CustomStateString'"
+  /v1/auth/authorizeUser:
+    get:
+      operationId: authorizeUser
+      tags:
+      - Auth
+      summary: Start a user session authorization flow
+      description: This endpoint is used to authorize accounts that are linked to `Users`. The `accountRole` parameter must be set to either `primary` or `secondary`. A `primary` role creates a new User entity and assigns the account as its key/primary account, with subsequent authorizations simply re-authorizing the existing primary account with its User. The `secondary` role requires an existing `User` cookie or `userId`+`userSignature` parameters and links the new account to the `User` specified by the cookie or `userId`.
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: clientId
+        description: Application Client Id from the Aurinko portal dashboard.
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: mailboxInfo
+        description: Relevant only for cookie-based authentication in multi-client setups. When different client apps are connected to a single Aurinko application, this string (commonly the user's email, but can be any unique identifier) is combined with "clientId" to create a distinct authentication cookie name and prevent cookie conflicts. Clients using cookie-based auth must send "clientId" and "mailboxInfo" via "X-Aurinko-Client-Id" and "X-Aurinko-Mailbox-Info" HTTP headers for accurate cookie identification.
+        required: false
+      - schema:
+          type: core.client.servicetype
+          $ref: '#/components/schemas/ServiceTypeNonDaemon'
+        in: query
+        name: serviceType
+        required: true
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: core.client.oauth.scope
+            $ref: '#/components/schemas/Scope'
+        in: query
+        name: scopes
+        description: Space separated list of Aurinko defined scopes.
+        required: false
+      - schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: core.client.oauth.nativescope
+            $ref: '#/components/schemas/NativeScope'
+        in: query
+        name: nativeScopes
+        description: Space separated list of provider defined scopes
+        required: false
+      - schema:
+          default: cookie
+          type:
+          - string
+          - 'null'
+          enum:
+          - cookie
+          - code
+          - none
+        in: query
+        name: responseType
+        description: The type of response expected from the user authorization flow. For `primary` accounts, choose `cookie` or `code`, for `secondary` accounts, choose `none`. `cookie` will set a cookie in the user's browser in the callback, `code` will return a temporary code that can be exchanged for a user session token using the /auth/token endpoint. `none` will return only the status of the operation and information about an occurred error. Because `secondary` accounts are linked to an existing and authorized User, they don't need to receive a token or cookie in the callback.
+        required: false
+      - schema:
+          format: int64
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: accountId
+        description: For re-authorizing an existing `secondary` account.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: loginHint
+        description: Is passed as "login_hint" in OAuth flows, suggesting user identity for a smoother login process.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: returnUrl
+        description: Return/Callback url for receiving the authorization code or token. It must be registered on the settings page in Aurinko portal.
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: state
+        description: Custom state string
+        required: false
+      - schema:
+          type: string
+          enum:
+          - primary
+          - secondary
+        in: query
+        name: accountRole
+        description: The account's role in relation to a User. Use `primary` for the account to act as a key account; this will create a new User if the primary account doesn't exist already. If the primary account exists, it's simply re-authorized without creating a new user. Choose `secondary` to associate the account with an already existing User, which requires either existing User cookie or `userId` + `userSignature` for identification.
+        required: true
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: userId
+        description: Identifies a user for whom a secondary account is being added. Should be used only when `userAccount=secondary` and user cookie is not present in the request. Works in conjunction with `timestamp` and `userSignature` to authorize the addition of secondary account.
+        required: false
+      - schema:
+          format: int64
+          type:
+          - integer
+          - 'null'
+        in: query
+        name: timestamp
+        description: Request timestamp in seconds. Should be used only when `userAccount=secondary` and user cookie is not present in the request. Works in conjunction with `userId` and `userSignature` to authorize the addition of secondary account.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: userSignature
+        description: A string that is generated by concatenating `userId` and `timestamp`, then hashing with HmacSHA256 using the application's `clientSecret`, then encoding in Hex, base64, or base64 web format. Should be used only when `userAccount=secondary` and user cookie is not present in the request Works in conjunction with `userId` and `timestamp` to authorize the addition of secondary account.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: serverUrl
+        description: Can be used in the form-based authentication to specify the URL of the server to which the user intends to authenticate. When included, it automatically populates the corresponding input field on the authentication form.
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: ensureScopes
+        description: When set to true, Aurinko will check if a user granted all requested permissions.
+        required: false
+      - schema:
+          type:
+          - boolean
+          - 'null'
+        in: query
+        name: ensureAccess
+        description: When set to true, Aurinko will check if a user has access to the requested resources. Supported only for Google and Office365, and only for Email, Calendar, Contacts and Tasks APIs.
+        required: false
+      - schema:
+          type:
+          - string
+          - 'null'
+        in: query
+        name: token
+        description: Token from the /auth/prepare endpoint.
+        required: false
+      responses:
+        '303':
+          description: Redirect
+      x-codeSamples:
+      - lang: cURL
+        source: "curl -X GET -G https://api.aurinko.io/v1/auth/authorizeUser \\\n    -d clientId='a8b7c6d5e4f3g2h1' \\\n    -d serviceType='Google' \\\n    -d accountRole='primary' \\\n    -d scopes='Calendar.ReadWrite Mail.Read Mail.Send' \\\n    -d responseType='cookie' \\\n    -d returnUrl='https://yourapp.com/aurinko-redirect' \\\n    -d state='CustomStateString'"
+  /v1/auth/token/{code}:
+    post:
+      operationId: authCodeExchange
+      tags:
+      - Auth
+      summary: Request an access token
+      security:
+      - AppAuth: []
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: code
+        description: A code returned by /authorize
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountSaveResult'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError2'
+      x-codeSamples:
+      - lang: cURL
+        source: curl -u ClientId:Secret -X POST https://api.aurinko.io/v1/auth/token/<code>
+    get:
+      operationId: getAccessTokenByCode
+      tags:
+      - Auth
+      summary: Get access token, Deprecated use POST instead
+      security:
+      - AppAuth: []
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: code
+        description: A code returned by /authorize
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountSaveResult'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError2'
+      x-codeSamples:
+      - lang: cURL
+        source: curl -u ClientId:Secret -X GET https://api.aurinko.io/v1/auth/token/<code>
+components:
+  responses:
+    UnauthorizedError2:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  schemas:
+    NativeScope:
+      type: string
+      description: Native scope from provider's API.
+    ServiceTypeDaemon:
+      type: string
+      enum:
+      - Google
+      - GoogleBot
+      - Office365
+      - EWS
+      - MsTeamsBot
+      - Slack
+      - SlackBot
+      - ZoomBot
+      - MCTrade
+      - Zoho
+    ServiceTypeNonDaemon:
+      type: string
+      enum:
+      - Google
+      - Office365
+      - EWS
+      - IMAP
+      - Salesforce
+      - Salesflare
+      - Repfabric
+      - Slack
+      - SugarCRM
+      - HighLevel
+      - Hubspot
+      - Zoom
+      - Webex
+      - WebexBot
+      - Pipedrive
+      - EclipseERP
+      - AutoQuotes
+      - Teamwork
+      - NetSuite
+      - SpecPath
+      - Zoho
+      - Clientify
+      - QuickBooks
+      - ActiveCampaign
+      - Creatio
+      - ConstantContact
+      - Fishbowl
+      - iCloud
+    AccountSaveResult:
+      type: object
+      properties:
+        accountId:
+          type: integer
+          format: int64
+        accessToken:
+          type: string
+        userId:
+          type: string
+        userSession:
+          type: string
+    Scope:
+      type: string
+      enum:
+      - Calendar.Read
+      - Calendar.ReadWrite
+      - Mail.Read
+      - Mail.ReadWrite
+      - Mail.Send
+      - Mail.Drafts
+      - Mail.All
+      - Contacts.Read
+      - Contacts.ReadWrite
+      - Tasks.Read
+      - Tasks.ReadWrite
+      description: Space separated list of scopes
+    PreparedAuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+  securitySchemes:
+    AppAuth:
+      type: http
+      scheme: basic
+      description: App-level basic authentication using Client ID and Client Secret that can be obtained at Aurinko Dashboard page.
+    AccountToken:
+      type: http
+      scheme: bearer
+      description: Account-level authentication with account token obtained using `/auth/authorize` endpoint.
+    UserSessionCookie:
+      type: apiKey
+      in: cookie
+      name: AUR{APPID}
+      description: Cookie-based user-level authentication
+    UserSessionHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Session
+      description: Token-based user-level authentication
+    ClientIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Client-Id
+      description: Client ID that can be obtained at Aurinko Dashboard page
+    AccountIdHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Account-Id
+      description: User account id
+    AuthTypeHeader:
+      type: apiKey
+      in: header
+      name: X-Aurinko-Auth-Type
+      description: 'Authentication type. Possible values: default, exchangeIdToken'
+    ExchangeIdToken:
+      type: http
+      scheme: bearer
+      bearerFormat: 'Exchange Identity Token (only with `X-Aurinko-Auth-Type: exchangeIdToken` header.)'
+      description: 'Authentication using Exchange Identity Token. To use this method `X-Aurinko-Auth-Type: exchangeIdToken` header should be used.'
+x-tagGroups:
+- name: OAuth Flow
+  tags:
+  - Auth
+  - Account
+  - User
+- name: Account management
+  tags:
+  - Accounts
+  - Services
+  - Managed accounts
+- name: Email
+  tags:
+  - Messages
+  - EmailSync
+  - Drafts
+  - EmailFolders
+  - EmailTracking
+  - FollowUpRobot
+- name: Calendars
+  tags:
+  - Calendars
+  - Events
+  - CalSync
+  - FreeBusySchedule
+- name: Scheduling
+  tags:
+  - Booking
+  - GroupBooking
+  - Availability
+- name: Contacts
+  tags:
+  - Contacts
+  - ContSync
+- name: Tasks
+  tags:
+  - TaskLists
+  - Tasks
+  - TaskSync
+- name: Webhooks
+  tags:
+  - Webhooks
+- name: Other
+  tags:
+  - Errors
