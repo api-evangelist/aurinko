@@ -150,6 +150,41 @@ paths:
         source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/calendars/suggestMeetingTimes \\\n    -d '{\n        \"timeMin\": \"2020-02-03T10:00:00-07:00\",\n        \"timeMax\": \"2020-06-03T10:00:00-07:00\",\n        \"durationMinutes\": 45,\n        \"attendees\": [\n            {\"email\": \"user1@corp.com\"},\n            {\"email\": \"user2@corp.com\"}\n        ],\n        \"defaultTimezone\": \"America/New_York\"\n       }'"
 components:
   schemas:
+    WorkHoursRequest:
+      type: object
+      properties:
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+    SuggestMeetingTimesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeInterval'
+        attendees:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeetingAttendee'
+    AvailabilityIntervals:
+      type: object
+      properties:
+        intervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailabilityInterval'
+    WeekWorkSchedule:
+      type: object
+      properties:
+        daySchedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayWorkSchedule'
+        timezone:
+          type: string
     WorkHoursResponseItem:
       type: object
       properties:
@@ -157,27 +192,6 @@ components:
           type: string
         workHours:
           $ref: '#/components/schemas/WeekWorkSchedule'
-    ShowAs:
-      type: string
-      enum:
-      - free
-      - busy
-      - tentative
-      - outOfOffice
-      - unknown
-    AvailabilityInterval:
-      type: object
-      properties:
-        dateStartInclusive:
-          type: string
-          format: date
-        dateEndInclusive:
-          type: string
-          format: date
-        hours:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkingInterval'
     FreeBusySchedule:
       type: object
       properties:
@@ -203,15 +217,6 @@ components:
           format: date-time
         status:
           $ref: '#/components/schemas/ShowAs'
-    TimeInterval:
-      type: object
-      properties:
-        start:
-          type: string
-          format: date-time
-        end:
-          type: string
-          format: date-time
     FreeBusySchedulePage:
       type: object
       properties:
@@ -219,26 +224,50 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FreeBusySchedule'
-    SuggestMeetingTimesResponse:
+    FreeBusyRequest:
       type: object
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/TimeInterval'
-        attendees:
-          type: array
-          items:
-            $ref: '#/components/schemas/MeetingAttendee'
-    WeekWorkSchedule:
-      type: object
-      properties:
-        daySchedules:
-          type: array
-          items:
-            $ref: '#/components/schemas/DayWorkSchedule'
-        timezone:
+        timeMin:
           type: string
+          format: date-time
+        timeMax:
+          type: string
+          format: date-time
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+    ShowAs:
+      type: string
+      enum:
+      - free
+      - busy
+      - tentative
+      - outOfOffice
+      - unknown
+    DayWorkSchedule:
+      type: object
+      properties:
+        dayOfWeek:
+          $ref: '#/components/schemas/DayOfWeek'
+        workingIntervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingInterval'
+    AvailabilityInterval:
+      type: object
+      properties:
+        dateStartInclusive:
+          type: string
+          format: date
+        dateEndInclusive:
+          type: string
+          format: date
+        hours:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingInterval'
     DayOfWeek:
       type: string
       enum:
@@ -249,13 +278,37 @@ components:
       - friday
       - saturday
       - sunday
-    AvailabilityIntervals:
+    MeetingAttendee:
       type: object
       properties:
-        intervals:
+        email:
+          type: string
+        timezone:
+          type: string
+        workHours:
+          $ref: '#/components/schemas/WeekWorkSchedule'
+        error:
+          type: string
+          readOnly: true
+        busyIntervals:
           type: array
           items:
-            $ref: '#/components/schemas/AvailabilityInterval'
+            $ref: '#/components/schemas/TimeInterval'
+          writeOnly: true
+          description: Busy intervals for the attendee. If set, these intervals will be excluded when searching for available meeting times. Can be combined with `freeIntervals`.
+        freeIntervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeInterval'
+          writeOnly: true
+          description: Free time intervals for the attendee. If set, this parameter will limit the search for available meeting times. Can be combined with `busyIntervals`.
+    WorkHoursResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkHoursResponseItem'
     SuggestMeetingTimesRequest:
       type: object
       properties:
@@ -295,61 +348,15 @@ components:
           default:
           - free
           description: The statuses from /freeBusy request to consider as free time for the attendees.
-    MeetingAttendee:
+    TimeInterval:
       type: object
       properties:
-        email:
-          type: string
-        timezone:
-          type: string
-        workHours:
-          $ref: '#/components/schemas/WeekWorkSchedule'
-        error:
-          type: string
-          readOnly: true
-        busyIntervals:
-          type: array
-          items:
-            $ref: '#/components/schemas/TimeInterval'
-          writeOnly: true
-          description: Busy intervals for the attendee. If set, these intervals will be excluded when searching for available meeting times. Can be combined with `freeIntervals`.
-        freeIntervals:
-          type: array
-          items:
-            $ref: '#/components/schemas/TimeInterval'
-          writeOnly: true
-          description: Free time intervals for the attendee. If set, this parameter will limit the search for available meeting times. Can be combined with `busyIntervals`.
-    FreeBusyRequest:
-      type: object
-      properties:
-        timeMin:
+        start:
           type: string
           format: date-time
-        timeMax:
+        end:
           type: string
           format: date-time
-        emails:
-          type: array
-          items:
-            type: string
-            format: email
-    WorkHoursRequest:
-      type: object
-      properties:
-        emails:
-          type: array
-          items:
-            type: string
-            format: email
-    DayWorkSchedule:
-      type: object
-      properties:
-        dayOfWeek:
-          $ref: '#/components/schemas/DayOfWeek'
-        workingIntervals:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkingInterval'
     WorkingInterval:
       type: object
       properties:
@@ -361,13 +368,6 @@ components:
           type: string
           pattern: ^\d{2}:\d{2}:\d{2}$
           example: '17:00:00'
-    WorkHoursResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkHoursResponseItem'
   securitySchemes:
     AppAuth:
       type: http

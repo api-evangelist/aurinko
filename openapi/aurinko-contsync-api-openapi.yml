@@ -170,67 +170,73 @@ paths:
         source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/contacts/sync/deleted \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
 components:
   schemas:
-    ContactRelation:
+    ContactPostalAddress:
       type: object
       properties:
-        name:
+        street:
+          type: string
+        streetLine2:
+          type: string
+        poBox:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postalCode:
+          type: string
+        country:
           type: string
         type:
           type: string
           enum:
-          - manager
-          - assistant
-          - spouse
-    ContactPhoto:
+          - work
+          - home
+          - other
+    ContactUrl:
       type: object
       properties:
-        id:
-          type: string
-        name:
-          type: string
-        mimeType:
-          type: string
-        content:
-          type: string
-    ContactEmailAddress:
-      type: object
-      properties:
-        address:
-          type: string
-        name:
+        href:
           type: string
         type:
           type: string
-    DeletedPage:
+          enum:
+          - work
+          - home
+          - other
+          - blog
+          - profile
+          - homePage
+          - ftp
+          - reservations
+    ContactPhoneNumber:
       type: object
       properties:
-        nextPageToken:
+        number:
           type: string
-          description: A token received as nextPageToken from a previous page request
-        nextDeltaToken:
+        type:
           type: string
-          description: A token received as nextDeltaToken from a previous sync request or a start sync request
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeletedRecord'
-    ContactsPage:
-      type: object
-      properties:
-        nextPageToken:
+          enum:
+          - work
+          - home
+          - other
+          - mobile
+          - workMobile
+          - main
+          - companyMain
+          - assistant
+          - workFax
+          - homeFax
+          - otherFax
+          - callback
+          - pager
+          - workPager
+          - radio
+          - telex
+          - tty
+        canonicalForm:
           type: string
-          description: A token received as nextPageToken from a previous page request
-        nextDeltaToken:
-          type: string
-          description: A token received as nextDeltaToken from a previous sync request or a start sync request
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/Contact'
+          readOnly: true
     ContactName:
       type: object
       properties:
@@ -250,28 +256,17 @@ components:
           type: string
         yomiFamilyName:
           type: string
-    ContactCompany:
+    ContactRelation:
       type: object
       properties:
         name:
           type: string
-        officeLocation:
+        type:
           type: string
-        department:
-          type: string
-        jobTitle:
-          type: string
-        yomiCompanyName:
-          type: string
-    DeletedRecord:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        timestamp:
-          type: string
-          format: date-time
+          enum:
+          - manager
+          - assistant
+          - spouse
     Contact:
       type: object
       properties:
@@ -335,73 +330,45 @@ components:
         photo:
           $ref: '#/components/schemas/ContactPhoto'
           readOnly: true
-    ContactPostalAddress:
+    DeletedPage:
       type: object
       properties:
-        street:
+        nextPageToken:
           type: string
-        streetLine2:
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
           type: string
-        poBox:
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeletedRecord'
+    ContactsPage:
+      type: object
+      properties:
+        nextPageToken:
           type: string
-        city:
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
           type: string
-        state:
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contact'
+    ContactEmailAddress:
+      type: object
+      properties:
+        address:
           type: string
-        postalCode:
-          type: string
-        country:
+        name:
           type: string
         type:
           type: string
-          enum:
-          - work
-          - home
-          - other
-    ContactPhoneNumber:
-      type: object
-      properties:
-        number:
-          type: string
-        type:
-          type: string
-          enum:
-          - work
-          - home
-          - other
-          - mobile
-          - workMobile
-          - main
-          - companyMain
-          - assistant
-          - workFax
-          - homeFax
-          - otherFax
-          - callback
-          - pager
-          - workPager
-          - radio
-          - telex
-          - tty
-        canonicalForm:
-          type: string
-          readOnly: true
-    ContactUrl:
-      type: object
-      properties:
-        href:
-          type: string
-        type:
-          type: string
-          enum:
-          - work
-          - home
-          - other
-          - blog
-          - profile
-          - homePage
-          - ftp
-          - reservations
     SyncStatus:
       type: object
       properties:
@@ -411,6 +378,39 @@ components:
           type: string
         ready:
           type: boolean
+    DeletedRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+    ContactCompany:
+      type: object
+      properties:
+        name:
+          type: string
+        officeLocation:
+          type: string
+        department:
+          type: string
+        jobTitle:
+          type: string
+        yomiCompanyName:
+          type: string
+    ContactPhoto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        mimeType:
+          type: string
+        content:
+          type: string
   securitySchemes:
     AppAuth:
       type: http

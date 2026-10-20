@@ -273,6 +273,28 @@ paths:
                 $ref: '#/components/schemas/ConversationDripStatus'
 components:
   schemas:
+    DripRequestDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - disabled
+          - active
+        ruleId:
+          type: integer
+          format: int64
+        dripAfter:
+          type: string
+          format: date-time
+        targets:
+          type: array
+          items:
+            type: string
+        actionVars:
+          type: object
+          additionalProperties:
+            type: string
     ConversationDripStatus:
       type: object
       properties:
@@ -312,21 +334,30 @@ components:
             type: string
         dripResponder:
           type: string
-    FollowupRuleAggregateIn:
+    FollowupConfig:
       type: object
       properties:
-        name:
+        timezone:
           type: string
-        expectThreadResponse:
-          type: boolean
-        templateBody:
-          type: string
-        templateSubject:
-          type: string
-        actions:
+        emailAliases:
           type: array
           items:
-            $ref: '#/components/schemas/FollowupRuleAction'
+            type: string
+            format: email
+    OkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+    FollowupRuleAction:
+      type: object
+      properties:
+        intervalDays:
+          type: integer
+        message:
+          type: string
     FollowupRuleAggregateOut:
       type: object
       properties:
@@ -344,52 +375,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FollowupRuleAction'
-    DripRequestDTO:
+    FollowupRuleAggregateIn:
       type: object
       properties:
-        status:
+        name:
           type: string
-          enum:
-          - disabled
-          - active
-        ruleId:
-          type: integer
-          format: int64
-        dripAfter:
+        expectThreadResponse:
+          type: boolean
+        templateBody:
           type: string
-          format: date-time
-        targets:
+        templateSubject:
+          type: string
+        actions:
           type: array
           items:
-            type: string
-        actionVars:
-          type: object
-          additionalProperties:
-            type: string
-    FollowupRuleAction:
-      type: object
-      properties:
-        intervalDays:
-          type: integer
-        message:
-          type: string
-    OkResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - Ok
-    FollowupConfig:
-      type: object
-      properties:
-        timezone:
-          type: string
-        emailAliases:
-          type: array
-          items:
-            type: string
-            format: email
+            $ref: '#/components/schemas/FollowupRuleAction'
   responses:
     CommonOk:
       description: Success

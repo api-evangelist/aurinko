@@ -481,98 +481,6 @@ paths:
                 $ref: '#/components/schemas/BookingTimesOutDto'
 components:
   schemas:
-    BookingMeetingInterval:
-      type: object
-      properties:
-        start:
-          type: string
-          format: date-time
-        end:
-          type: string
-          format: date-time
-        groupXids:
-          type: array
-          items:
-            type: string
-        accountIds:
-          type: array
-          items:
-            type: integer
-            format: int64
-    BookingTimesOutDto:
-      type: object
-      properties:
-        items:
-          type: array
-          description: List of available meeting slots.
-          items:
-            $ref: '#/components/schemas/BookingMeetingInterval'
-        startTime:
-          type: string
-          format: date-time
-          description: Start time of available meeting slots.
-        endTime:
-          type: string
-          format: date-time
-          description: End time of available meeting slots.
-        timeAvailableFor:
-          type: string
-          description: Time period (in ISO-8601 format) the profile is covering. For example, P3M (3 months), P4W (4 weeks), P5D (5 days).
-          example: P4W
-        durationMinutes:
-          type: integer
-          description: Length of meeting in minutes
-        availabilityStep:
-          type: integer
-          description: Determines the interval at which new meeting slots are made available throughout the working hours. Allowed values are 5, 10, 15, 20, 30, 60.
-        subject:
-          type: string
-          description: Subject for events booked using this profile.
-        primaryColor:
-          type: string
-          description: Primary Color, taken from the application settings.
-        secondaryColor:
-          type: string
-          description: The second Color, taken from the application settings.
-        additionalFields:
-          type: array
-          description: List of substitution variables like {{name}}, {{openMeetingUrl}},...
-          items:
-            $ref: '#/components/schemas/AdditionalField'
-        nextPageToken:
-          type: string
-          description: Next page token
-        nextFromDate:
-          type: string
-          format: date
-          description: Next fromDate to iterate a big time intervals
-    CreateMeetingDto:
-      type: object
-      properties:
-        time:
-          $ref: '#/components/schemas/SelectedMeetingTime'
-        groupXids:
-          type: array
-          items:
-            type: string
-            description: Group external id from available meeting times request
-        accountIds:
-          type: array
-          items:
-            type: integer
-            format: int64
-            description: Account id from available meeting times request
-        name:
-          type: string
-          description: Username of the person requesting the meeting
-        email:
-          type: string
-          description: Email of the person requesting the meeting, if not specified, an event will be created without an attendee
-        substitutionData:
-          type: object
-          description: Data for substitution instead of templates, key - value
-          additionalProperties:
-            type: string
     CreateMeetingResponse:
       type: object
       properties:
@@ -620,15 +528,85 @@ components:
         default:
           type: string
           description: Default value
-    BookingAvailableProfilesOutDto:
+    CreateMeetingDto:
       type: object
       properties:
-        profileIds:
+        time:
+          $ref: '#/components/schemas/SelectedMeetingTime'
+        groupXids:
           type: array
-          description: List of available profile ids.
+          items:
+            type: string
+            description: Group external id from available meeting times request
+        accountIds:
+          type: array
           items:
             type: integer
             format: int64
+            description: Account id from available meeting times request
+        name:
+          type: string
+          description: Username of the person requesting the meeting
+        email:
+          type: string
+          description: Email of the person requesting the meeting, if not specified, an event will be created without an attendee
+        substitutionData:
+          type: object
+          description: Data for substitution instead of templates, key - value
+          additionalProperties:
+            type: string
+    BookingTimesOutDto:
+      type: object
+      properties:
+        items:
+          type: array
+          description: List of available meeting slots.
+          items:
+            $ref: '#/components/schemas/BookingMeetingInterval'
+        startTime:
+          type: string
+          format: date-time
+          description: Start time of available meeting slots.
+        endTime:
+          type: string
+          format: date-time
+          description: End time of available meeting slots.
+        timeAvailableFor:
+          type: string
+          description: Time period (in ISO-8601 format) the profile is covering. For example, P3M (3 months), P4W (4 weeks), P5D (5 days).
+          example: P4W
+        durationMinutes:
+          type: integer
+          description: Length of meeting in minutes
+        availabilityStep:
+          type: integer
+          description: Determines the interval at which new meeting slots are made available throughout the working hours. Allowed values are 5, 10, 15, 20, 30, 60.
+        subject:
+          type: string
+          description: Subject for events booked using this profile.
+        primaryColor:
+          type: string
+          description: Primary Color, taken from the application settings.
+        secondaryColor:
+          type: string
+          description: The second Color, taken from the application settings.
+        additionalFields:
+          type: array
+          description: List of substitution variables like {{name}}, {{openMeetingUrl}},...
+          items:
+            $ref: '#/components/schemas/AdditionalField'
+        nextPageToken:
+          type: string
+          description: Next page token
+        nextFromDate:
+          type: string
+          format: date
+          description: Next fromDate to iterate a big time intervals
+    BookingRequiredMode:
+      type: string
+      enum:
+      - one
+      - all
     SelectedMeetingTime:
       type: object
       properties:
@@ -638,11 +616,33 @@ components:
         end:
           type: string
           format: date-time
-    BookingRequiredMode:
-      type: string
-      enum:
-      - one
-      - all
+    BookingAvailableProfilesOutDto:
+      type: object
+      properties:
+        profileIds:
+          type: array
+          description: List of available profile ids.
+          items:
+            type: integer
+            format: int64
+    BookingMeetingInterval:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        groupXids:
+          type: array
+          items:
+            type: string
+        accountIds:
+          type: array
+          items:
+            type: integer
+            format: int64
   responses:
     UnauthorizedError2:
       description: Authentication information is missing or invalid

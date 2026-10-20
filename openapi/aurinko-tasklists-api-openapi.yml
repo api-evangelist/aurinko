@@ -210,29 +210,11 @@ paths:
         source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X DELETE https://api.aurinko.io/v1/tasklists/{taskListId}"
 components:
   schemas:
-    TaskListPage:
-      type: object
-      properties:
-        nextPageToken:
-          type: string
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaskList'
-    TaskListUpdate:
+    TaskListCreate:
       type: object
       properties:
         title:
           type: string
-    OkResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - Ok
     TaskList:
       type: object
       properties:
@@ -253,7 +235,25 @@ components:
         lastModifiedTime:
           type: string
           format: date-time
-    TaskListCreate:
+    OkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+    TaskListPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskList'
+    TaskListUpdate:
       type: object
       properties:
         title:

@@ -466,82 +466,13 @@ paths:
         source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/tracking/{trackingId}/events/{id}'"
 components:
   schemas:
-    EmailTrackingPageNext:
+    RewriteHtml:
       type: object
       properties:
-        offset:
-          type: integer
-        totalSize:
-          type: integer
-          format: int64
-        done:
-          type: boolean
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/TrackingData'
-    TrackingData:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        messageId:
+        htmlText:
           type: string
-        inetMessageId:
-          type: string
-        threadId:
-          type: string
-        sendDate:
-          type: string
-          format: date-time
-        lastActivityTime:
-          type: string
-          format: date-time
-        lastRespondedTime:
-          type: string
-          format: date-time
-        trackReplies:
-          type: boolean
-        trackOpens:
-          type: boolean
-        trackingCode:
-          type: string
-        context:
-          type: string
-        location:
-          type: string
-        userAgent:
-          type: string
-        remoteAddr:
-          type: string
-        ignoreOpenClicks:
-          type: boolean
-        hasBounced:
-          type: boolean
-    ConvertDraft:
-      type: object
-      properties:
-        threadId:
-          type: string
-        messageId:
-          type: string
-        internetMessageId:
-          type: string
-    EmailTrackingEventPageNext:
-      type: object
-      properties:
-        offset:
-          type: integer
-        totalSize:
-          type: integer
-          format: int64
-        done:
-          type: boolean
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailTrackingEvent'
+        tracking:
+          $ref: '#/components/schemas/OutEmailTrack'
     OutEmailTrack:
       type: object
       properties:
@@ -556,6 +487,53 @@ components:
         context:
           type: string
           description: User-defined tracking data that will be associated with this email.
+    EmailTrackingPageNext:
+      type: object
+      properties:
+        offset:
+          type: integer
+        totalSize:
+          type: integer
+          format: int64
+        done:
+          type: boolean
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackingData'
+    ConvertDraft:
+      type: object
+      properties:
+        threadId:
+          type: string
+        messageId:
+          type: string
+        internetMessageId:
+          type: string
+    UpdateDraftTrackingIn:
+      type: object
+      properties:
+        context:
+          type: string
+    EmailDraftCreateTrackingResponse:
+      type: object
+      properties:
+        trackReplies:
+          type: boolean
+        htmlBody:
+          type: string
+        trackingCode:
+          type: string
+        context:
+          type: string
+        linkCodes:
+          type: array
+          items:
+            type: object
+            description: Pairs of strings
+        trackingId:
+          type: string
+          description: A tracking identifier for the sent message
     EmailTrackingEvent:
       type: object
       properties:
@@ -603,6 +581,45 @@ components:
           type: string
         trackingCode:
           type: string
+    TrackingData:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        messageId:
+          type: string
+        inetMessageId:
+          type: string
+        threadId:
+          type: string
+        sendDate:
+          type: string
+          format: date-time
+        lastActivityTime:
+          type: string
+          format: date-time
+        lastRespondedTime:
+          type: string
+          format: date-time
+        trackReplies:
+          type: boolean
+        trackOpens:
+          type: boolean
+        trackingCode:
+          type: string
+        context:
+          type: string
+        location:
+          type: string
+        userAgent:
+          type: string
+        remoteAddr:
+          type: string
+        ignoreOpenClicks:
+          type: boolean
+        hasBounced:
+          type: boolean
     OkResponse:
       type: object
       properties:
@@ -610,37 +627,20 @@ components:
           type: string
           enum:
           - Ok
-    EmailDraftCreateTrackingResponse:
+    EmailTrackingEventPageNext:
       type: object
       properties:
-        trackReplies:
+        offset:
+          type: integer
+        totalSize:
+          type: integer
+          format: int64
+        done:
           type: boolean
-        htmlBody:
-          type: string
-        trackingCode:
-          type: string
-        context:
-          type: string
-        linkCodes:
+        records:
           type: array
           items:
-            type: object
-            description: Pairs of strings
-        trackingId:
-          type: string
-          description: A tracking identifier for the sent message
-    RewriteHtml:
-      type: object
-      properties:
-        htmlText:
-          type: string
-        tracking:
-          $ref: '#/components/schemas/OutEmailTrack'
-    UpdateDraftTrackingIn:
-      type: object
-      properties:
-        context:
-          type: string
+            $ref: '#/components/schemas/EmailTrackingEvent'
   responses:
     CommonOk:
       description: Success

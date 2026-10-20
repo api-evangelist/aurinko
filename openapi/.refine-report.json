@@ -1,7 +1,7 @@
 {
   "provider": "aurinko",
   "sources": [
-    "aurinko-openapi.json"
+    "_original/aurinko-openapi.json"
   ],
   "outputs": [
     "aurinko-account-api-openapi.yml",
@@ -30,14 +30,39 @@
     "aurinko-user-api-openapi.yml",
     "aurinko-webhooks-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/aurinko-openapi.json"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "aurinko-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "apis.yml register: written (+25 apis, 25 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "aurinko-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-accounts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-auth-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-availability-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-booking-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-calendars-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-calsync-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-contacts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-contsync-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-drafts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-emailfolders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-emailsync-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-emailtracking-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-events-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-followuprobot-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-freebusyschedule-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-groupbooking-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-managed-accounts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-messages-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-services-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-tasklists-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-tasks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-tasksync-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-user-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "aurinko-webhooks-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

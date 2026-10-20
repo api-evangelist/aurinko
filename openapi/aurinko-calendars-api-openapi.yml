@@ -199,38 +199,6 @@ paths:
         source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X GET https://api.aurinko.io/v1/calendars/primary"
 components:
   schemas:
-    CalendarMode:
-      type: string
-      enum:
-      - user
-      - group
-    CalendarsPage:
-      type: object
-      properties:
-        nextPageToken:
-          type: string
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/Calendar'
-    CalendarUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-    CalendarCreate:
-      type: object
-      properties:
-        name:
-          type: string
-        color:
-          type: string
-        description:
-          type: string
     Calendar:
       type: object
       properties:
@@ -255,6 +223,38 @@ components:
         primary:
           type: boolean
           readOnly: true
+    CalendarUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    CalendarCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+    CalendarsPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/Calendar'
+    CalendarMode:
+      type: string
+      enum:
+      - user
+      - group
   securitySchemes:
     AppAuth:
       type: http

@@ -412,19 +412,70 @@ paths:
         source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    https://api.aurinko.io/v1/email/messages/{msgId}/attachments/{attId}"
 components:
   schemas:
-    EmailMessagesPageNext:
+    OutgoingEmailAttachment:
       type: object
       properties:
-        nextPageToken:
+        inline:
+          type: boolean
+        name:
           type: string
-        length:
+        mimeType:
+          type: string
+        contentId:
+          type: string
+        content:
+          type: string
+          format: base64
+    EmailAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        mimeType:
+          type: string
+          readOnly: true
+        size:
           type: integer
-        records:
+          readOnly: true
+        inline:
+          type: boolean
+          readOnly: true
+        contentId:
+          type: string
+          readOnly: true
+        content:
+          type: string
+          readOnly: true
+        contentLocation:
+          type: string
+          readOnly: true
+    EmailHeader:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    EmailSendError:
+      type: object
+      properties:
+        failedSteps:
           type: array
           items:
-            $ref: '#/components/schemas/EmailMessage'
-    NativeProperty:
-      type: string
+            type: string
+            enum:
+            - tracking
+            - followUp
+            - keywords
+            - returnIds
+            description: Action that should have been performed, but were not performed due to an error
+        errorMessage:
+          type: string
+          description: An error occurred after a successful submission while processing the result
     OutgoingEmail:
       type: object
       properties:
@@ -470,19 +521,8 @@ components:
           type: array
           items:
             type: string
-    EmailAttachmentContent:
-      type: object
-      properties:
-        content:
-          type: string
-          format: base64
-    EmailHeader:
-      type: object
-      properties:
-        name:
-          type: string
-        value:
-          type: string
+    NativeProperty:
+      type: string
     EmailAddress:
       type: object
       properties:
@@ -494,27 +534,6 @@ components:
         raw:
           type: string
           readOnly: true
-    EmailSendResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - Ok
-        id:
-          type: string
-        threadId:
-          type: string
-        trackingId:
-          type: string
-          description: A tracking identifier for the sent message
-        processingStatus:
-          type: string
-          enum:
-          - Ok
-          - Incomplete
-        processingError:
-          $ref: '#/components/schemas/EmailSendError'
     OutEmailTrack:
       type: object
       properties:
@@ -529,13 +548,22 @@ components:
         context:
           type: string
           description: User-defined tracking data that will be associated with this email.
-    Sensitivity:
+    BodyType:
       type: string
       enum:
-      - normal
-      - private
-      - personal
-      - confidential
+      - html
+      - text
+    UpdateMessageStatusData:
+      type: object
+      properties:
+        unread:
+          type: boolean
+        archived:
+          type: boolean
+        keywords:
+          type: array
+          items:
+            type: string
     OutgoingEmailReply:
       type: object
       properties:
@@ -573,33 +601,15 @@ components:
           $ref: '#/components/schemas/OutEmailTrack'
         followUp:
           $ref: '#/components/schemas/FollowUpOutgoing'
-    EmailAttachment:
+    FollowUpOutgoing:
       type: object
       properties:
-        id:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        mimeType:
-          type: string
-          readOnly: true
-        size:
+        ruleId:
           type: integer
-          readOnly: true
-        inline:
-          type: boolean
-          readOnly: true
-        contentId:
-          type: string
-          readOnly: true
-        content:
-          type: string
-          readOnly: true
-        contentLocation:
-          type: string
-          readOnly: true
+        actionVars:
+          type: object
+          additionalProperties:
+            type: string
     OkResponse:
       type: object
       properties:
@@ -607,22 +617,40 @@ components:
           type: string
           enum:
           - Ok
-    BodyType:
-      type: string
-      enum:
-      - html
-      - text
-    UpdateMessageStatusData:
+    EmailAttachmentContent:
       type: object
       properties:
-        unread:
-          type: boolean
-        archived:
-          type: boolean
-        keywords:
-          type: array
-          items:
-            type: string
+        content:
+          type: string
+          format: base64
+    Sensitivity:
+      type: string
+      enum:
+      - normal
+      - private
+      - personal
+      - confidential
+    EmailSendResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+        id:
+          type: string
+        threadId:
+          type: string
+        trackingId:
+          type: string
+          description: A tracking identifier for the sent message
+        processingStatus:
+          type: string
+          enum:
+          - Ok
+          - Incomplete
+        processingError:
+          $ref: '#/components/schemas/EmailSendError'
     EmailMessage:
       type: object
       properties:
@@ -758,45 +786,17 @@ components:
             - attachments
             - recipients
             - internetHeaders
-    FollowUpOutgoing:
+    EmailMessagesPageNext:
       type: object
       properties:
-        ruleId:
+        nextPageToken:
+          type: string
+        length:
           type: integer
-        actionVars:
-          type: object
-          additionalProperties:
-            type: string
-    OutgoingEmailAttachment:
-      type: object
-      properties:
-        inline:
-          type: boolean
-        name:
-          type: string
-        mimeType:
-          type: string
-        contentId:
-          type: string
-        content:
-          type: string
-          format: base64
-    EmailSendError:
-      type: object
-      properties:
-        failedSteps:
+        records:
           type: array
           items:
-            type: string
-            enum:
-            - tracking
-            - followUp
-            - keywords
-            - returnIds
-            description: Action that should have been performed, but were not performed due to an error
-        errorMessage:
-          type: string
-          description: An error occurred after a successful submission while processing the result
+            $ref: '#/components/schemas/EmailMessage'
   securitySchemes:
     AppAuth:
       type: http

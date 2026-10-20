@@ -197,14 +197,6 @@ paths:
         source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/tasklists/{taskListId}/sync/deleted \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
 components:
   schemas:
-    TaskStatus:
-      type: string
-      enum:
-      - notStarted
-      - inProgress
-      - completed
-      - waitingOnOthers
-      - deferred
     TaskLink:
       type: object
       properties:
@@ -229,30 +221,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeletedRecord'
-    DeletedRecord:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        timestamp:
-          type: string
-          format: date-time
-    TaskImportance:
-      type: string
-      enum:
-      - low
-      - normal
-      - high
-    SyncStatus:
-      type: object
-      properties:
-        syncUpdatedToken:
-          type: string
-        syncDeletedToken:
-          type: string
-        ready:
-          type: boolean
     Task:
       type: object
       properties:
@@ -301,6 +269,32 @@ components:
             type: string
             enum:
             - notes
+    TaskStatus:
+      type: string
+      enum:
+      - notStarted
+      - inProgress
+      - completed
+      - waitingOnOthers
+      - deferred
+    DeletedRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+    SyncStatus:
+      type: object
+      properties:
+        syncUpdatedToken:
+          type: string
+        syncDeletedToken:
+          type: string
+        ready:
+          type: boolean
     SyncTasksPage:
       type: object
       properties:
@@ -316,6 +310,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Task'
+    TaskImportance:
+      type: string
+      enum:
+      - low
+      - normal
+      - high
   securitySchemes:
     AppAuth:
       type: http

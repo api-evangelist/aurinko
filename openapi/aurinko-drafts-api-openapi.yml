@@ -203,36 +203,54 @@ paths:
         source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X POST https://api.aurinko.io/v1/email/drafts/{draftId}/send?sendTime=2021-04-28T15:40:00Z \\"
 components:
   schemas:
-    EmailDraft:
+    OutgoingEmailAttachment:
+      type: object
+      properties:
+        inline:
+          type: boolean
+        name:
+          type: string
+        mimeType:
+          type: string
+        contentId:
+          type: string
+        content:
+          type: string
+          format: base64
+    EmailDraftResponse:
       type: object
       properties:
         id:
           type: string
           readOnly: true
-        message:
-          $ref: '#/components/schemas/EmailMessage'
-        scheduled:
-          $ref: '#/components/schemas/ScheduledDraft'
-    NativeProperty:
-      type: string
-    ScheduledDraft:
+        webLink:
+          type: string
+          readOnly: true
+    EmailAttachment:
       type: object
       properties:
-        jobId:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        mimeType:
+          type: string
+          readOnly: true
+        size:
           type: integer
-          format: int64
           readOnly: true
-        sendTime:
-          type: string
-          format: date-time
+        inline:
+          type: boolean
           readOnly: true
-        status:
+        contentId:
           type: string
-          enum:
-          - scheduled
-          - sent
-          - failed
-        errorMessage:
+          readOnly: true
+        content:
+          type: string
+          readOnly: true
+        contentLocation:
           type: string
           readOnly: true
     DraftSendDetails:
@@ -240,6 +258,13 @@ components:
       properties:
         tracking:
           $ref: '#/components/schemas/OutEmailTrack'
+    EmailHeader:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
     OutgoingEmail:
       type: object
       properties:
@@ -285,22 +310,8 @@ components:
           type: array
           items:
             type: string
-    EmailDraftResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        webLink:
-          type: string
-          readOnly: true
-    EmailHeader:
-      type: object
-      properties:
-        name:
-          type: string
-        value:
-          type: string
+    NativeProperty:
+      type: string
     EmailAddress:
       type: object
       properties:
@@ -312,6 +323,11 @@ components:
         raw:
           type: string
           readOnly: true
+    BodyType:
+      type: string
+      enum:
+      - html
+      - text
     OutEmailTrack:
       type: object
       properties:
@@ -337,6 +353,25 @@ components:
         trackingId:
           type: string
           description: A tracking identifier for the sent message
+    FollowUpOutgoing:
+      type: object
+      properties:
+        ruleId:
+          type: integer
+        actionVars:
+          type: object
+          additionalProperties:
+            type: string
+    EmailDraft:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        message:
+          $ref: '#/components/schemas/EmailMessage'
+        scheduled:
+          $ref: '#/components/schemas/ScheduledDraft'
     Sensitivity:
       type: string
       enum:
@@ -344,31 +379,24 @@ components:
       - private
       - personal
       - confidential
-    EmailAttachment:
+    ScheduledDraft:
       type: object
       properties:
-        id:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        mimeType:
-          type: string
-          readOnly: true
-        size:
+        jobId:
           type: integer
+          format: int64
           readOnly: true
-        inline:
-          type: boolean
-          readOnly: true
-        contentId:
+        sendTime:
           type: string
+          format: date-time
           readOnly: true
-        content:
+        status:
           type: string
-          readOnly: true
-        contentLocation:
+          enum:
+          - scheduled
+          - sent
+          - failed
+        errorMessage:
           type: string
           readOnly: true
     EmailMessage:
@@ -506,34 +534,6 @@ components:
             - attachments
             - recipients
             - internetHeaders
-    BodyType:
-      type: string
-      enum:
-      - html
-      - text
-    FollowUpOutgoing:
-      type: object
-      properties:
-        ruleId:
-          type: integer
-        actionVars:
-          type: object
-          additionalProperties:
-            type: string
-    OutgoingEmailAttachment:
-      type: object
-      properties:
-        inline:
-          type: boolean
-        name:
-          type: string
-        mimeType:
-          type: string
-        contentId:
-          type: string
-        content:
-          type: string
-          format: base64
   securitySchemes:
     AppAuth:
       type: http

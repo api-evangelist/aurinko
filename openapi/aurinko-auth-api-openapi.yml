@@ -611,30 +611,22 @@ paths:
       - lang: cURL
         source: curl -u ClientId:Secret -X GET https://api.aurinko.io/v1/auth/token/<code>
 components:
-  responses:
-    UnauthorizedError2:
-      description: Authentication information is missing or invalid
-      headers:
-        WWW_Authenticate:
-          schema:
-            type: string
   schemas:
-    NativeScope:
-      type: string
-      description: Native scope from provider's API.
-    ServiceTypeDaemon:
+    Scope:
       type: string
       enum:
-      - Google
-      - GoogleBot
-      - Office365
-      - EWS
-      - MsTeamsBot
-      - Slack
-      - SlackBot
-      - ZoomBot
-      - MCTrade
-      - Zoho
+      - Calendar.Read
+      - Calendar.ReadWrite
+      - Mail.Read
+      - Mail.ReadWrite
+      - Mail.Send
+      - Mail.Drafts
+      - Mail.All
+      - Contacts.Read
+      - Contacts.ReadWrite
+      - Tasks.Read
+      - Tasks.ReadWrite
+      description: Space separated list of scopes
     ServiceTypeNonDaemon:
       type: string
       enum:
@@ -666,6 +658,22 @@ components:
       - ConstantContact
       - Fishbowl
       - iCloud
+    NativeScope:
+      type: string
+      description: Native scope from provider's API.
+    ServiceTypeDaemon:
+      type: string
+      enum:
+      - Google
+      - GoogleBot
+      - Office365
+      - EWS
+      - MsTeamsBot
+      - Slack
+      - SlackBot
+      - ZoomBot
+      - MCTrade
+      - Zoho
     AccountSaveResult:
       type: object
       properties:
@@ -678,26 +686,18 @@ components:
           type: string
         userSession:
           type: string
-    Scope:
-      type: string
-      enum:
-      - Calendar.Read
-      - Calendar.ReadWrite
-      - Mail.Read
-      - Mail.ReadWrite
-      - Mail.Send
-      - Mail.Drafts
-      - Mail.All
-      - Contacts.Read
-      - Contacts.ReadWrite
-      - Tasks.Read
-      - Tasks.ReadWrite
-      description: Space separated list of scopes
     PreparedAuthToken:
       type: object
       properties:
         token:
           type: string
+  responses:
+    UnauthorizedError2:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
   securitySchemes:
     AppAuth:
       type: http

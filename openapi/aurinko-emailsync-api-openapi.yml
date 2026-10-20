@@ -182,31 +182,21 @@ paths:
         source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/sync/deleted \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
 components:
   schemas:
-    EmailHeader:
+    EmailDeletedPage:
       type: object
       properties:
-        name:
+        nextPageToken:
           type: string
-        value:
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
           type: string
-    EmailAddress:
-      type: object
-      properties:
-        name:
-          type: string
-        address:
-          type: string
-          format: email
-        raw:
-          type: string
-          readOnly: true
-    Sensitivity:
-      type: string
-      enum:
-      - normal
-      - private
-      - personal
-      - confidential
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeletedEmailMessage'
     EmailAttachment:
       type: object
       properties:
@@ -234,6 +224,75 @@ components:
         contentLocation:
           type: string
           readOnly: true
+    EmailHeader:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    EmailAddress:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+          format: email
+        raw:
+          type: string
+          readOnly: true
+    BodyType:
+      type: string
+      enum:
+      - html
+      - text
+    SyncStatus:
+      type: object
+      properties:
+        syncUpdatedToken:
+          type: string
+        syncDeletedToken:
+          type: string
+        ready:
+          type: boolean
+    DeletedEmailMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        folderId:
+          type: string
+          readOnly: true
+        internetMessageId:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+    EmailMessagesPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: A token received as nextPageToken from a previous page request
+        nextDeltaToken:
+          type: string
+          description: A token received as nextDeltaToken from a previous sync request or a start sync request
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailMessage'
+    Sensitivity:
+      type: string
+      enum:
+      - normal
+      - private
+      - personal
+      - confidential
     EmailMessage:
       type: object
       properties:
@@ -369,65 +428,6 @@ components:
             - attachments
             - recipients
             - internetHeaders
-    DeletedEmailMessage:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        folderId:
-          type: string
-          readOnly: true
-        internetMessageId:
-          type: string
-          readOnly: true
-        timestamp:
-          type: string
-          format: date-time
-    BodyType:
-      type: string
-      enum:
-      - html
-      - text
-    SyncStatus:
-      type: object
-      properties:
-        syncUpdatedToken:
-          type: string
-        syncDeletedToken:
-          type: string
-        ready:
-          type: boolean
-    EmailDeletedPage:
-      type: object
-      properties:
-        nextPageToken:
-          type: string
-          description: A token received as nextPageToken from a previous page request
-        nextDeltaToken:
-          type: string
-          description: A token received as nextDeltaToken from a previous sync request or a start sync request
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeletedEmailMessage'
-    EmailMessagesPage:
-      type: object
-      properties:
-        nextPageToken:
-          type: string
-          description: A token received as nextPageToken from a previous page request
-        nextDeltaToken:
-          type: string
-          description: A token received as nextDeltaToken from a previous sync request or a start sync request
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailMessage'
   securitySchemes:
     AppAuth:
       type: http

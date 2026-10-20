@@ -2,19 +2,30 @@ generated: '2026-10-20'
 method: derived
 generator: derive-problem-types.py
 source:
-- openapi/aurinko-openapi.json
+- openapi/aurinko-account-api-openapi.yml
+- openapi/aurinko-accounts-api-openapi.yml
+- openapi/aurinko-auth-api-openapi.yml
+- openapi/aurinko-availability-api-openapi.yml
+- openapi/aurinko-booking-api-openapi.yml
+- openapi/aurinko-calendars-api-openapi.yml
+- openapi/aurinko-calsync-api-openapi.yml
+- openapi/aurinko-contacts-api-openapi.yml
+- openapi/aurinko-contsync-api-openapi.yml
+- openapi/aurinko-drafts-api-openapi.yml
+- openapi/aurinko-emailfolders-api-openapi.yml
+- openapi/aurinko-emailsync-api-openapi.yml
 format: custom
 envelope:
   media_type: null
   schema: null
 coverage:
-  operations: 134
+  operations: 139
   statuses_declared: 3
 problems:
 - status: 401
   title: Unauthorized
   description: Authentication information is missing or invalid
-  operations: 45
+  operations: 50
   media_types: []
   schema: null
 - status: 404

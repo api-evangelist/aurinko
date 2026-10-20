@@ -247,74 +247,6 @@ paths:
         source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/email/messages\n    -d q='text to:{address_or_name}'"
 components:
   schemas:
-    EmailMessagesPageNext:
-      type: object
-      properties:
-        nextPageToken:
-          type: string
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailMessage'
-    NativeProperty:
-      type: string
-    EmailFolderInfo:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        fullName:
-          type: string
-          readOnly: true
-        isFolder:
-          type: boolean
-          readOnly: true
-        isLabel:
-          type: boolean
-          readOnly: true
-        parentId:
-          type: string
-          readOnly: true
-    EmailHeader:
-      type: object
-      properties:
-        name:
-          type: string
-        value:
-          type: string
-    EmailFolderInfoPage:
-      type: object
-      properties:
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailFolderInfo'
-    EmailAddress:
-      type: object
-      properties:
-        name:
-          type: string
-        address:
-          type: string
-          format: email
-        raw:
-          type: string
-          readOnly: true
-    Sensitivity:
-      type: string
-      enum:
-      - normal
-      - private
-      - personal
-      - confidential
     EmailAttachment:
       type: object
       properties:
@@ -342,6 +274,64 @@ components:
         contentLocation:
           type: string
           readOnly: true
+    EmailHeader:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    NativeProperty:
+      type: string
+    EmailAddress:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+          format: email
+        raw:
+          type: string
+          readOnly: true
+    BodyType:
+      type: string
+      enum:
+      - html
+      - text
+    WellKnownFoldersOut:
+      type: object
+      properties:
+        archive:
+          type: string
+          description: an xid of folder marked as an Archive
+    WellKnownFoldersIn:
+      type: object
+      properties:
+        archive:
+          type: string
+          description: an xid of folder - to mark it as Archive, set to null to clear Archive folder
+    EmailFolderInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        fullName:
+          type: string
+          readOnly: true
+        isFolder:
+          type: boolean
+          readOnly: true
+        isLabel:
+          type: boolean
+          readOnly: true
+        parentId:
+          type: string
+          readOnly: true
     EmailFolderCreate:
       type: object
       properties:
@@ -350,11 +340,22 @@ components:
         parentId:
           type: string
           description: parent folder identifier
-    BodyType:
+    EmailFolderInfoPage:
+      type: object
+      properties:
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailFolderInfo'
+    Sensitivity:
       type: string
       enum:
-      - html
-      - text
+      - normal
+      - private
+      - personal
+      - confidential
     EmailMessage:
       type: object
       properties:
@@ -490,18 +491,17 @@ components:
             - attachments
             - recipients
             - internetHeaders
-    WellKnownFoldersOut:
+    EmailMessagesPageNext:
       type: object
       properties:
-        archive:
+        nextPageToken:
           type: string
-          description: an xid of folder marked as an Archive
-    WellKnownFoldersIn:
-      type: object
-      properties:
-        archive:
-          type: string
-          description: an xid of folder - to mark it as Archive, set to null to clear Archive folder
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailMessage'
   securitySchemes:
     AppAuth:
       type: http

@@ -2,7 +2,31 @@ generated: '2026-10-20'
 method: derived
 generator: derive-mcp-candidate.py
 source:
-- openapi/aurinko-openapi.json
+- openapi/aurinko-account-api-openapi.yml
+- openapi/aurinko-accounts-api-openapi.yml
+- openapi/aurinko-auth-api-openapi.yml
+- openapi/aurinko-availability-api-openapi.yml
+- openapi/aurinko-booking-api-openapi.yml
+- openapi/aurinko-calendars-api-openapi.yml
+- openapi/aurinko-calsync-api-openapi.yml
+- openapi/aurinko-contacts-api-openapi.yml
+- openapi/aurinko-contsync-api-openapi.yml
+- openapi/aurinko-drafts-api-openapi.yml
+- openapi/aurinko-emailfolders-api-openapi.yml
+- openapi/aurinko-emailsync-api-openapi.yml
+- openapi/aurinko-emailtracking-api-openapi.yml
+- openapi/aurinko-events-api-openapi.yml
+- openapi/aurinko-followuprobot-api-openapi.yml
+- openapi/aurinko-freebusyschedule-api-openapi.yml
+- openapi/aurinko-groupbooking-api-openapi.yml
+- openapi/aurinko-managed-accounts-api-openapi.yml
+- openapi/aurinko-messages-api-openapi.yml
+- openapi/aurinko-services-api-openapi.yml
+- openapi/aurinko-tasklists-api-openapi.yml
+- openapi/aurinko-tasks-api-openapi.yml
+- openapi/aurinko-tasksync-api-openapi.yml
+- openapi/aurinko-user-api-openapi.yml
+- openapi/aurinko-webhooks-api-openapi.yml
 status: candidate
 deployment:
   mode: none
@@ -12,203 +36,203 @@ note: No MCP server was found. The pre-flight posted tools/list to /mcp on api.a
   absent. Candidate tools below are derived from the 134 operation(s) in the provider's own OpenAPI (40 listed); they describe what a server WOULD
   expose, not one that exists.
 tools:
-- name: free_busy
-  operationId: freeBusy
+- name: get_my_account
+  operationId: getMyAccount
+  method: GET
+  path: /v1/account
+  description: Get account status
+- name: upsert_personal
+  operationId: upsertPersonal
   method: POST
-  path: /v1/calendars/freeBusy
-  description: Get the free/busy availability information for a collection of users, or resources
-- name: calendar_workhours
-  operationId: calendarWorkhours
+  path: /v1/am/accounts
+  description: Upsert an account
+- name: prepare_auth
+  operationId: prepareAuth
   method: POST
-  path: /v1/calendars/workHours
-  description: Get working hours for a collection of users, or resources.
-- name: suggest_meeting_times
-  operationId: suggestMeetingTimes
+  path: /v1/auth/prepare
+  description: Validate an external identity token
+- name: booking_account_create_meeting
+  operationId: bookingAccountCreateMeeting
   method: POST
-  path: /v1/calendars/suggestMeetingTimes
-  description: Suggest meeting times for a collection of users, or resources
+  path: /v1/book/account/profiles/{id}/meeting
+  description: Create a meeting
+- name: work_hours
+  operationId: workHours
+  method: GET
+  path: /v1/book/account/workHours
+  description: Get user work hours
 - name: create_calendar
   operationId: createCalendar
   method: POST
   path: /v1/calendars
   description: Create new calendar
-- name: calendars
-  operationId: calendars
-  method: GET
-  path: /v1/calendars
-  description: Request list of calendars
-- name: update_calendar
-  operationId: updateCalendar
-  method: PATCH
-  path: /v1/calendars/{id}
-  description: Update a calendar
-- name: calendar_by_id
-  operationId: calendarById
-  method: GET
-  path: /v1/calendars/{id}
-  description: Get a calendar
 - name: cal_sync_start
   operationId: calSyncStart
   method: POST
   path: /v1/calendars/{calendarId}/sync
   description: Start a new calendar sync
-- name: cal_sync_updated
-  operationId: calSyncUpdated
-  method: GET
-  path: /v1/calendars/{calendarId}/sync/updated
-  description: Request changed events (deltas)
-- name: cal_sync_deleted
-  operationId: calSyncDeleted
-  method: GET
-  path: /v1/calendars/{calendarId}/sync/deleted
-  description: Request deleted events (deltas)
-- name: range
-  operationId: range
-  method: GET
-  path: /v1/calendars/{calendarId}/events/range
-  description: Request events in a range
-- name: events_by_ical_uids
-  operationId: eventsByICalUIds
-  method: GET
-  path: /v1/calendars/{calendarId}/events/find
-  description: Request events by ICalUid's
-- name: update_event
-  operationId: updateEvent
+- name: update_contact
+  operationId: updateContact
   method: PATCH
-  path: /v1/calendars/{calendarId}/events/{eventId}
-  description: Update an event
-- name: event
-  operationId: event
-  method: GET
-  path: /v1/calendars/{calendarId}/events/{eventId}
-  description: Get an event
-- name: delete_event
-  operationId: deleteEvent
-  method: DELETE
-  path: /v1/calendars/{calendarId}/events/{eventId}
-  description: Delete an event
-- name: series_info
-  operationId: seriesInfo
-  method: GET
-  path: /v1/calendars/{calendarId}/events/{masterId}/series
-  description: Request a series description
-- name: occurrence_by_orig_start
-  operationId: occurrenceByOrigStart
-  method: GET
-  path: /v1/calendars/{calendarId}/events/{masterId}/occurrences/{ost}
-  description: Request an occurrence by original start time
-- name: create_event
-  operationId: createEvent
+  path: /v1/contacts/{contId}
+  description: Update a contact
+- name: cont_sync_start
+  operationId: contSyncStart
   method: POST
-  path: /v1/calendars/{calendarId}/events
-  description: Create a new event
-- name: update_meeting_response
-  operationId: updateMeetingResponse
-  method: PUT
-  path: /v1/calendars/{calendarId}/events/{eventId}/response
-  description: Update meeting response
-- name: attachment
-  operationId: attachment
-  method: GET
-  path: /v1/calendars/{calendarId}/events/{eventId}/attachments/{attachmentId}
-  description: Get an event attachment
-- name: email_sync_start
-  operationId: emailSyncStart
-  method: POST
-  path: /v1/email/sync
-  description: Start a new email sync
-- name: email_sync_updated
-  operationId: emailSyncUpdated
-  method: GET
-  path: /v1/email/sync/updated
-  description: Request changed emails (deltas)
-- name: email_sync_deleted
-  operationId: emailSyncDeleted
-  method: GET
-  path: /v1/email/sync/deleted
-  description: Request deleted emails (deltas)
-- name: send
-  operationId: send
-  method: POST
-  path: /v1/email/messages
-  description: Send a new message
-- name: messages
-  operationId: messages
-  method: GET
-  path: /v1/email/messages
-  description: List email messages
-- name: message
-  operationId: message
-  method: GET
-  path: /v1/email/messages/{messageId}
-  description: Get a message
-- name: message_raw
-  operationId: messageRaw
-  method: GET
-  path: /v1/email/messages/{messageId}/raw
-  description: Get a raw message
-- name: update_message_status
-  operationId: updateMessageStatus
-  method: POST
-  path: /v1/email/messages/{messageId}/status
-  description: Update a message's status
-- name: conversation
-  operationId: conversation
-  method: GET
-  path: /v1/email/conversations/{threadId}
-  description: Get messages in a conversation
-- name: reply
-  operationId: reply
-  method: POST
-  path: /v1/email/messages/{messageId}/reply
-  description: Reply to a message
-- name: email_attachment
-  operationId: emailAttachment
-  method: GET
-  path: /v1/email/messages/{messageId}/attachments/{attachmentId}
-  description: Get a message attachment
-- name: create_folder
-  operationId: createFolder
-  method: POST
-  path: /v1/email/folders
-  description: Create a new email folder
-- name: folders
-  operationId: folders
-  method: GET
-  path: /v1/email/folders
-  description: List email folders
-- name: update_well_known_folders
-  operationId: updateWellKnownFolders
-  method: PATCH
-  path: /v1/email/folders/wellKnown
-  description: Update wellKnown email folders
-- name: well_known_folders
-  operationId: wellKnownFolders
-  method: GET
-  path: /v1/email/folders/wellKnown
-  description: List wellKnown email folders
-- name: folder
-  operationId: folder
-  method: GET
-  path: /v1/email/folders/{folderId}
-  description: Get an email folder
-- name: folder_emails
-  operationId: folderEmails
-  method: GET
-  path: /v1/email/folders/{folderId}/messages
-  description: List email messages in a specified folder
+  path: /v1/contacts/sync
+  description: Start a new contacts sync
 - name: create_draft
   operationId: createDraft
   method: POST
   path: /v1/email/drafts
   description: Create a new draft message
+- name: create_folder
+  operationId: createFolder
+  method: POST
+  path: /v1/email/folders
+  description: Create a new email folder
+- name: email_sync_start
+  operationId: emailSyncStart
+  method: POST
+  path: /v1/email/sync
+  description: Start a new email sync
+- name: create_draft_tracking
+  operationId: createDraftTracking
+  method: POST
+  path: /v1/email/draftTracking/create
+  description: Create tracking for a draft message
+- name: range
+  operationId: range
+  method: GET
+  path: /v1/calendars/{calendarId}/events/range
+  description: Request events in a range
+- name: get_config
+  operationId: getConfig
+  method: GET
+  path: /v1/followup/config
+  description: Get a follow up configuration
+- name: free_busy
+  operationId: freeBusy
+  method: POST
+  path: /v1/calendars/freeBusy
+  description: Get the free/busy availability information for a collection of users, or…
+- name: create_group_booking
+  operationId: createGroupBooking
+  method: POST
+  path: /v1/book/group/profiles
+  description: Create a group booking profile
+- name: upsert_managed_account
+  operationId: upsertManagedAccount
+  method: POST
+  path: /v1/am/svc_accounts/{accId}/accounts
+  description: Upsert a managed account
+- name: send
+  operationId: send
+  method: POST
+  path: /v1/email/messages
+  description: Send a new message
+- name: upsert_service_account
+  operationId: upsertServiceAccount
+  method: POST
+  path: /v1/am/svc_accounts
+  description: Upsert a service account
+- name: create_task_list
+  operationId: createTaskList
+  method: POST
+  path: /v1/tasklists
+  description: Create a task list
+- name: create_task
+  operationId: createTask
+  method: POST
+  path: /v1/tasklists/{taskListId}/tasks
+  description: Create a task
+- name: task_sync_start
+  operationId: taskSyncStart
+  method: POST
+  path: /v1/tasklists/{taskListId}/sync
+  description: Start a new task sync
+- name: get_user_info
+  operationId: getUserInfo
+  method: GET
+  path: /v1/user
+  description: Get user info
+- name: subscribe
+  operationId: subscribe
+  method: POST
+  path: /v1/subscriptions
+  description: Create a push event subscription
+- name: delete_account
+  operationId: deleteAccount
+  method: DELETE
+  path: /v1/account
+  description: Delete the account
+- name: get_accounts
+  operationId: getAccounts
+  method: GET
+  path: /v1/am/accounts
+  description: Get accounts
+- name: authorize
+  operationId: authorize
+  method: GET
+  path: /v1/auth/authorize
+  description: Start an account authorization flow
+- name: booking_account_meeting_times
+  operationId: bookingAccountMeetingTimes
+  method: GET
+  path: /v1/book/account/profiles/{id}/meeting
+  description: Get available meeting times
+- name: create
+  operationId: create
+  method: POST
+  path: /v1/book/account/profiles
+  description: Create a booking profile
+- name: calendars
+  operationId: calendars
+  method: GET
+  path: /v1/calendars
+  description: Request list of calendars
+- name: cal_sync_updated
+  operationId: calSyncUpdated
+  method: GET
+  path: /v1/calendars/{calendarId}/sync/updated
+  description: Request changed events (deltas)
+- name: contact
+  operationId: contact
+  method: GET
+  path: /v1/contacts/{contId}
+  description: Get a contact
+- name: cont_sync_updated
+  operationId: contSyncUpdated
+  method: GET
+  path: /v1/contacts/sync/updated
+  description: Request changed contacts (deltas)
 - name: get_draft
   operationId: getDraft
   method: GET
   path: /v1/email/drafts/{draftId}
   description: Get a draft message
-- name: send_draft
-  operationId: sendDraft
-  method: POST
-  path: /v1/email/drafts/{draftId}/send
-  description: Send a draft message
+- name: folders
+  operationId: folders
+  method: GET
+  path: /v1/email/folders
+  description: List email folders
+- name: email_sync_updated
+  operationId: emailSyncUpdated
+  method: GET
+  path: /v1/email/sync/updated
+  description: Request changed emails (deltas)
+- name: convert_draft_tracking
+  operationId: convertDraftTracking
+  method: PATCH
+  path: /v1/email/draftTracking/{draftId}/convert
+  description: Mark draft's tracking as sent
+- name: events_by_ical_uids
+  operationId: eventsByICalUIds
+  method: GET
+  path: /v1/calendars/{calendarId}/events/find
+  description: Request events by ICalUid's
+- name: update_config
+  operationId: updateConfig
+  method: PUT
+  path: /v1/followup/config
+  description: Update a follow up configuration

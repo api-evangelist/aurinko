@@ -150,85 +150,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedError2'
 components:
   schemas:
-    ServiceKey:
-      type: string
-      enum:
-      - email
-      - orgId
-      - userId
-      - serverUrl
-      - username
-      - clientOrgId
-      description: Keys that control account re-cycling.
-    UserAccountType:
-      type: string
-      enum:
-      - primary
-      - secondary
-      description: Type of user account. Required if `userId` is provided.
-    ServiceType:
-      type: string
-      enum:
-      - Google
-      - GoogleBot
-      - Office365
-      - EWS
-      - IMAP
-      - Salesforce
-      - Salesflare
-      - Repfabric
-      - MsTeamsBot
-      - Slack
-      - SlackBot
-      - SugarCRM
-      - HighLevel
-      - Hubspot
-      - Zoom
-      - ZoomBot
-      - Webex
-      - WebexBot
-      - Pipedrive
-      - EclipseERP
-      - AutoQuotes
-      - Teamwork
-      - NetSuite
-      - MCTrade
-      - SpecPath
-      - Zoho
-      - Clientify
-      - QuickBooks
-      - ActiveCampaign
-      - Creatio
-      - ConstantContact
-      - Fishbowl
-      - iCloud
-    AccountSaveResult:
-      type: object
-      properties:
-        accountId:
-          type: integer
-          format: int64
-        accessToken:
-          type: string
-        userId:
-          type: string
-        userSession:
-          type: string
-    Scope:
-      type: string
-      enum:
-      - Calendar.Read
-      - Calendar.ReadWrite
-      - Mail.Read
-      - Mail.ReadWrite
-      - Mail.Send
-      - Mail.Drafts
-      - Mail.All
-      - Contacts.Read
-      - Contacts.ReadWrite
-      - Tasks.Read
-      - Tasks.ReadWrite
-      description: Space separated list of scopes
     ApiAccountInDto:
       type: object
       required:
@@ -279,6 +200,85 @@ components:
           type: string
         timezone:
           type: string
+    ServiceKey:
+      type: string
+      enum:
+      - email
+      - orgId
+      - userId
+      - serverUrl
+      - username
+      - clientOrgId
+      description: Keys that control account re-cycling.
+    Scope:
+      type: string
+      enum:
+      - Calendar.Read
+      - Calendar.ReadWrite
+      - Mail.Read
+      - Mail.ReadWrite
+      - Mail.Send
+      - Mail.Drafts
+      - Mail.All
+      - Contacts.Read
+      - Contacts.ReadWrite
+      - Tasks.Read
+      - Tasks.ReadWrite
+      description: Space separated list of scopes
+    ServiceType:
+      type: string
+      enum:
+      - Google
+      - GoogleBot
+      - Office365
+      - EWS
+      - IMAP
+      - Salesforce
+      - Salesflare
+      - Repfabric
+      - MsTeamsBot
+      - Slack
+      - SlackBot
+      - SugarCRM
+      - HighLevel
+      - Hubspot
+      - Zoom
+      - ZoomBot
+      - Webex
+      - WebexBot
+      - Pipedrive
+      - EclipseERP
+      - AutoQuotes
+      - Teamwork
+      - NetSuite
+      - MCTrade
+      - SpecPath
+      - Zoho
+      - Clientify
+      - QuickBooks
+      - ActiveCampaign
+      - Creatio
+      - ConstantContact
+      - Fishbowl
+      - iCloud
+    AccountSaveResult:
+      type: object
+      properties:
+        accountId:
+          type: integer
+          format: int64
+        accessToken:
+          type: string
+        userId:
+          type: string
+        userSession:
+          type: string
+    UserAccountType:
+      type: string
+      enum:
+      - primary
+      - secondary
+      description: Type of user account. Required if `userId` is provided.
   responses:
     UnauthorizedError2:
       description: Authentication information is missing or invalid

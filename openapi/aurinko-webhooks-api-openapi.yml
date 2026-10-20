@@ -293,35 +293,6 @@ paths:
           description: Success
 components:
   schemas:
-    SubscriptionsPage:
-      type: object
-      properties:
-        offset:
-          type: integer
-        totalSize:
-          type: integer
-          format: int64
-        done:
-          type: boolean
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubscriptionResponse'
-    DataConsumerFilter:
-      type: string
-      enum:
-      - withoutDrafts
-    SubscriptionRequest:
-      type: object
-      properties:
-        resource:
-          type: string
-        notificationUrl:
-          type: string
-        filters:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataConsumerFilter'
     SubscriptionResponse:
       type: object
       properties:
@@ -341,6 +312,35 @@ components:
           type: string
         disabledByBilling:
           type: boolean
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataConsumerFilter'
+    DataConsumerFilter:
+      type: string
+      enum:
+      - withoutDrafts
+    SubscriptionsPage:
+      type: object
+      properties:
+        offset:
+          type: integer
+        totalSize:
+          type: integer
+          format: int64
+        done:
+          type: boolean
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionResponse'
+    SubscriptionRequest:
+      type: object
+      properties:
+        resource:
+          type: string
+        notificationUrl:
+          type: string
         filters:
           type: array
           items:

@@ -497,311 +497,6 @@ paths:
         source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    https://api.aurinko.io/v1/email/messages/{msgId}/attachments/{attId}"
 components:
   schemas:
-    OccurrenceInfo:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - regular
-          - modified
-          - deleted
-        originalStart:
-          $ref: '#/components/schemas/EventDateTime'
-        start:
-          $ref: '#/components/schemas/EventDateTime'
-        masterId:
-          type: string
-    EmailAddress:
-      type: object
-      properties:
-        name:
-          type: string
-        address:
-          type: string
-          format: email
-        raw:
-          type: string
-          readOnly: true
-    DayOfWeek:
-      type: string
-      enum:
-      - monday
-      - tuesday
-      - wednesday
-      - thursday
-      - friday
-      - saturday
-      - sunday
-    MeetingInfo:
-      type: object
-      properties:
-        canceled:
-          type: boolean
-          readOnly: true
-        attendees:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attendee'
-        response:
-          $ref: '#/components/schemas/MeetingResponseType'
-          readOnly: true
-        attendeePermissions:
-          type: array
-          items:
-            type: string
-            enum:
-            - inviteOthers
-            - modify
-            - seeOthers
-        onlineMeeting:
-          type: boolean
-          description: Assumes default onlineMeetingProvider ('hangoutsMeet' or 'teamsForBusiness')
-          writeOnly: true
-        onlineMeetingProvider:
-          type: string
-          description: Value of provider, for example hangoutsMeet, teamsForBusiness, skypeForBusiness, skypeForConsumer
-        onlineMeetingDetails:
-          readOnly: true
-          $ref: '#/components/schemas/OnlineMeetingDetails'
-    Sensitivity:
-      type: string
-      enum:
-      - normal
-      - private
-      - personal
-      - confidential
-    BodyType:
-      type: string
-      enum:
-      - html
-      - text
-    MeetingResponseType:
-      type: string
-      enum:
-      - noResponse
-      - declined
-      - tentative
-      - accepted
-    NativeProperty:
-      type: string
-    Event:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        etag:
-          type: string
-          readOnly: true
-        calendarId:
-          type: string
-          readOnly: true
-        createdTime:
-          type: string
-          format: date-time
-          readOnly: true
-        lastModifiedTime:
-          type: string
-          format: date-time
-          readOnly: true
-        subject:
-          type: string
-        description:
-          type: string
-        location:
-          type: string
-        start:
-          $ref: '#/components/schemas/EventDateTime'
-        end:
-          $ref: '#/components/schemas/EventDateTime'
-        organizer:
-          $ref: '#/components/schemas/Organizer'
-          readOnly: true
-        meetingInfo:
-          $ref: '#/components/schemas/MeetingInfo'
-        recurrenceType:
-          type: string
-          enum:
-          - single
-          - master
-          - occurrence
-          readOnly: true
-        recurrence:
-          $ref: '#/components/schemas/Recurrence'
-        occurrenceInfo:
-          $ref: '#/components/schemas/OccurrenceInfo'
-          readOnly: true
-        iCalUid:
-          type: string
-          readOnly: true
-        globalId:
-          type: string
-          readOnly: true
-        showAs:
-          $ref: '#/components/schemas/ShowAs'
-        sensitivity:
-          $ref: '#/components/schemas/Sensitivity'
-        categories:
-          type: array
-          readOnly: true
-          items:
-            type: string
-        htmlLink:
-          type: string
-          readOnly: true
-        hasAttachments:
-          type: boolean
-          readOnly: true
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailAttachment'
-        omitted:
-          type: array
-          readOnly: true
-          items:
-            type: string
-            enum:
-            - description
-            - attendees
-            - attachments
-    Attendee:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        emailAddress:
-          $ref: '#/components/schemas/EmailAddress'
-        type:
-          type: string
-          enum:
-          - required
-          - optional
-          - resource
-        response:
-          type: string
-          enum:
-          - accepted
-          - tentitive
-          - declined
-          readOnly: true
-        comment:
-          type: string
-          readOnly: true
-    EmailAttachmentContent:
-      type: object
-      properties:
-        content:
-          type: string
-          format: base64
-    OnlineMeetingDetails:
-      type: object
-      readOnly: true
-      properties:
-        url:
-          type: string
-          readOnly: true
-        phone:
-          type: string
-          readOnly: true
-        pin:
-          type: string
-          readOnly: true
-        regionCode:
-          type: string
-          readOnly: true
-        sip:
-          type: string
-          readOnly: true
-        infoUrl:
-          type: string
-          readOnly: true
-    EventDateTime:
-      type: object
-      properties:
-        dateOnly:
-          type: string
-          format: date
-        dateTime:
-          type: string
-          format: date-time
-        timezone:
-          type: string
-    MeetingResponse:
-      type: object
-      required:
-      - response
-      properties:
-        response:
-          $ref: '#/components/schemas/MeetingResponseType'
-        comment:
-          type: string
-    ShowAs:
-      type: string
-      enum:
-      - free
-      - busy
-      - tentative
-      - outOfOffice
-      - unknown
-    EventsPageNext:
-      type: object
-      properties:
-        nextPageToken:
-          type: string
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
-    Organizer:
-      type: object
-      readOnly: true
-      properties:
-        id:
-          type: string
-          readOnly: true
-        emailAddress:
-          $ref: '#/components/schemas/EmailAddress'
-    EmailAttachment:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        mimeType:
-          type: string
-          readOnly: true
-        size:
-          type: integer
-          readOnly: true
-        inline:
-          type: boolean
-          readOnly: true
-        contentId:
-          type: string
-          readOnly: true
-        content:
-          type: string
-          readOnly: true
-        contentLocation:
-          type: string
-          readOnly: true
-    OkResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - Ok
     SeriesInfo:
       type: object
       properties:
@@ -824,28 +519,17 @@ components:
           readOnly: true
           items:
             $ref: '#/components/schemas/OccurrenceInfo'
-    EventOrId:
+    EmailAddress:
       type: object
       properties:
-        id:
+        name:
+          type: string
+        address:
+          type: string
+          format: email
+        raw:
           type: string
           readOnly: true
-        etag:
-          type: string
-          readOnly: true
-        iCalUId:
-          type: string
-          readOnly: true
-        globalId:
-          type: string
-          readOnly: true
-        record:
-          $ref: '#/components/schemas/Event'
-        onlineMeetingProvider:
-          type: string
-          description: Value of provider, for example hangoutsMeet, teamsForBusiness, skypeForBusiness, skypeForConsumer
-        onlineMeetingDetails:
-          $ref: '#/components/schemas/OnlineMeetingDetails'
     Recurrence:
       type: object
       properties:
@@ -929,6 +613,322 @@ components:
                   items:
                     $ref: '#/components/schemas/EventDateTime'
                   readOnly: true
+    ShowAs:
+      type: string
+      enum:
+      - free
+      - busy
+      - tentative
+      - outOfOffice
+      - unknown
+    EmailAttachment:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        mimeType:
+          type: string
+          readOnly: true
+        size:
+          type: integer
+          readOnly: true
+        inline:
+          type: boolean
+          readOnly: true
+        contentId:
+          type: string
+          readOnly: true
+        content:
+          type: string
+          readOnly: true
+        contentLocation:
+          type: string
+          readOnly: true
+    BodyType:
+      type: string
+      enum:
+      - html
+      - text
+    OccurrenceInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - regular
+          - modified
+          - deleted
+        originalStart:
+          $ref: '#/components/schemas/EventDateTime'
+        start:
+          $ref: '#/components/schemas/EventDateTime'
+        masterId:
+          type: string
+    DayOfWeek:
+      type: string
+      enum:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+    OkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+    EventsPageNext:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    MeetingInfo:
+      type: object
+      properties:
+        canceled:
+          type: boolean
+          readOnly: true
+        attendees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attendee'
+        response:
+          $ref: '#/components/schemas/MeetingResponseType'
+          readOnly: true
+        attendeePermissions:
+          type: array
+          items:
+            type: string
+            enum:
+            - inviteOthers
+            - modify
+            - seeOthers
+        onlineMeeting:
+          type: boolean
+          description: Assumes default onlineMeetingProvider ('hangoutsMeet' or 'teamsForBusiness')
+          writeOnly: true
+        onlineMeetingProvider:
+          type: string
+          description: Value of provider, for example hangoutsMeet, teamsForBusiness, skypeForBusiness, skypeForConsumer
+        onlineMeetingDetails:
+          readOnly: true
+          $ref: '#/components/schemas/OnlineMeetingDetails'
+    Organizer:
+      type: object
+      readOnly: true
+      properties:
+        id:
+          type: string
+          readOnly: true
+        emailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        etag:
+          type: string
+          readOnly: true
+        calendarId:
+          type: string
+          readOnly: true
+        createdTime:
+          type: string
+          format: date-time
+          readOnly: true
+        lastModifiedTime:
+          type: string
+          format: date-time
+          readOnly: true
+        subject:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        start:
+          $ref: '#/components/schemas/EventDateTime'
+        end:
+          $ref: '#/components/schemas/EventDateTime'
+        organizer:
+          $ref: '#/components/schemas/Organizer'
+          readOnly: true
+        meetingInfo:
+          $ref: '#/components/schemas/MeetingInfo'
+        recurrenceType:
+          type: string
+          enum:
+          - single
+          - master
+          - occurrence
+          readOnly: true
+        recurrence:
+          $ref: '#/components/schemas/Recurrence'
+        occurrenceInfo:
+          $ref: '#/components/schemas/OccurrenceInfo'
+          readOnly: true
+        iCalUid:
+          type: string
+          readOnly: true
+        globalId:
+          type: string
+          readOnly: true
+        showAs:
+          $ref: '#/components/schemas/ShowAs'
+        sensitivity:
+          $ref: '#/components/schemas/Sensitivity'
+        categories:
+          type: array
+          readOnly: true
+          items:
+            type: string
+        htmlLink:
+          type: string
+          readOnly: true
+        hasAttachments:
+          type: boolean
+          readOnly: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAttachment'
+        omitted:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - description
+            - attendees
+            - attachments
+    MeetingResponse:
+      type: object
+      required:
+      - response
+      properties:
+        response:
+          $ref: '#/components/schemas/MeetingResponseType'
+        comment:
+          type: string
+    EventOrId:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        etag:
+          type: string
+          readOnly: true
+        iCalUId:
+          type: string
+          readOnly: true
+        globalId:
+          type: string
+          readOnly: true
+        record:
+          $ref: '#/components/schemas/Event'
+        onlineMeetingProvider:
+          type: string
+          description: Value of provider, for example hangoutsMeet, teamsForBusiness, skypeForBusiness, skypeForConsumer
+        onlineMeetingDetails:
+          $ref: '#/components/schemas/OnlineMeetingDetails'
+    Sensitivity:
+      type: string
+      enum:
+      - normal
+      - private
+      - personal
+      - confidential
+    MeetingResponseType:
+      type: string
+      enum:
+      - noResponse
+      - declined
+      - tentative
+      - accepted
+    EventDateTime:
+      type: object
+      properties:
+        dateOnly:
+          type: string
+          format: date
+        dateTime:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+    OnlineMeetingDetails:
+      type: object
+      readOnly: true
+      properties:
+        url:
+          type: string
+          readOnly: true
+        phone:
+          type: string
+          readOnly: true
+        pin:
+          type: string
+          readOnly: true
+        regionCode:
+          type: string
+          readOnly: true
+        sip:
+          type: string
+          readOnly: true
+        infoUrl:
+          type: string
+          readOnly: true
+    NativeProperty:
+      type: string
+    Attendee:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        emailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+        type:
+          type: string
+          enum:
+          - required
+          - optional
+          - resource
+        response:
+          type: string
+          enum:
+          - accepted
+          - tentitive
+          - declined
+          readOnly: true
+        comment:
+          type: string
+          readOnly: true
+    EmailAttachmentContent:
+      type: object
+      properties:
+        content:
+          type: string
+          format: base64
   securitySchemes:
     AppAuth:
       type: http

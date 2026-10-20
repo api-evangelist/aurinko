@@ -240,25 +240,6 @@ paths:
         source: "curl -H 'Authorization: Bearer <access token>' \\\n    -X DELETE https://api.aurinko.io/v1/tasklists/{taskListId}/tasks/{id}"
 components:
   schemas:
-    TaskStatus:
-      type: string
-      enum:
-      - notStarted
-      - inProgress
-      - completed
-      - waitingOnOthers
-      - deferred
-    TaskCreateResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        etag:
-          type: string
-          readOnly: true
-        record:
-          $ref: '#/components/schemas/Task'
     TaskLink:
       type: object
       properties:
@@ -268,30 +249,31 @@ components:
           type: string
         link:
           type: string
-    OkResponse:
+    TaskCreate:
       type: object
       properties:
+        title:
+          type: string
+        parentId:
+          type: string
+        previousId:
+          type: string
+        notes:
+          type: string
         status:
+          $ref: '#/components/schemas/TaskStatus'
+        importance:
+          $ref: '#/components/schemas/TaskImportance'
+        due:
           type: string
-          enum:
-          - Ok
-    TasksPage:
-      type: object
-      properties:
-        nextPageToken:
+          format: date-time
+        startDateTime:
           type: string
-        length:
-          type: integer
-        records:
+          format: date-time
+        categories:
           type: array
           items:
-            $ref: '#/components/schemas/Task'
-    TaskImportance:
-      type: string
-      enum:
-      - low
-      - normal
-      - high
+            type: string
     TaskUpdate:
       type: object
       properties:
@@ -317,6 +299,17 @@ components:
           type: array
           items:
             type: string
+    TaskCreateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        etag:
+          type: string
+          readOnly: true
+        record:
+          $ref: '#/components/schemas/Task'
     Task:
       type: object
       properties:
@@ -365,31 +358,32 @@ components:
             type: string
             enum:
             - notes
-    TaskCreate:
+    TaskStatus:
+      type: string
+      enum:
+      - notStarted
+      - inProgress
+      - completed
+      - waitingOnOthers
+      - deferred
+    TasksPage:
       type: object
       properties:
-        title:
+        nextPageToken:
           type: string
-        parentId:
-          type: string
-        previousId:
-          type: string
-        notes:
-          type: string
-        status:
-          $ref: '#/components/schemas/TaskStatus'
-        importance:
-          $ref: '#/components/schemas/TaskImportance'
-        due:
-          type: string
-          format: date-time
-        startDateTime:
-          type: string
-          format: date-time
-        categories:
+        length:
+          type: integer
+        records:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/Task'
+    OkResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
     TaskUpdateResponse:
       type: object
       properties:
@@ -401,6 +395,12 @@ components:
           readOnly: true
         record:
           $ref: '#/components/schemas/Task'
+    TaskImportance:
+      type: string
+      enum:
+      - low
+      - normal
+      - high
   securitySchemes:
     AppAuth:
       type: http

@@ -206,109 +206,75 @@ paths:
         source: "curl -X GET -H 'Authorization: Bearer <access token>' \\\n    -G https://api.aurinko.io/v1/calendars/primary/sync/deleted \\\n    -d deltaToken='a8b7c6d5e4f3g2h1'"
 components:
   schemas:
-    Event:
+    EventDateTime:
+      type: object
+      properties:
+        dateOnly:
+          type: string
+          format: date
+        dateTime:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+    OnlineMeetingDetails:
+      type: object
+      readOnly: true
+      properties:
+        url:
+          type: string
+          readOnly: true
+        phone:
+          type: string
+          readOnly: true
+        pin:
+          type: string
+          readOnly: true
+        regionCode:
+          type: string
+          readOnly: true
+        sip:
+          type: string
+          readOnly: true
+        infoUrl:
+          type: string
+          readOnly: true
+    EmailAttachment:
       type: object
       properties:
         id:
           type: string
           readOnly: true
-        etag:
+        name:
           type: string
           readOnly: true
-        calendarId:
+        mimeType:
           type: string
           readOnly: true
-        createdTime:
-          type: string
-          format: date-time
+        size:
+          type: integer
           readOnly: true
-        lastModifiedTime:
-          type: string
-          format: date-time
-          readOnly: true
-        subject:
-          type: string
-        description:
-          type: string
-        location:
-          type: string
-        start:
-          $ref: '#/components/schemas/EventDateTime'
-        end:
-          $ref: '#/components/schemas/EventDateTime'
-        organizer:
-          $ref: '#/components/schemas/Organizer'
-          readOnly: true
-        meetingInfo:
-          $ref: '#/components/schemas/MeetingInfo'
-        recurrenceType:
-          type: string
-          enum:
-          - single
-          - master
-          - occurrence
-          readOnly: true
-        recurrence:
-          $ref: '#/components/schemas/Recurrence'
-        occurrenceInfo:
-          $ref: '#/components/schemas/OccurrenceInfo'
-          readOnly: true
-        iCalUid:
-          type: string
-          readOnly: true
-        globalId:
-          type: string
-          readOnly: true
-        showAs:
-          $ref: '#/components/schemas/ShowAs'
-        sensitivity:
-          $ref: '#/components/schemas/Sensitivity'
-        categories:
-          type: array
-          readOnly: true
-          items:
-            type: string
-        htmlLink:
-          type: string
-          readOnly: true
-        hasAttachments:
+        inline:
           type: boolean
           readOnly: true
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailAttachment'
-        omitted:
-          type: array
+        contentId:
+          type: string
           readOnly: true
-          items:
-            type: string
-            enum:
-            - description
-            - attendees
-            - attachments
-    Attendee:
+        content:
+          type: string
+          readOnly: true
+        contentLocation:
+          type: string
+          readOnly: true
+    EmailAddress:
       type: object
       properties:
-        id:
+        name:
           type: string
-          readOnly: true
-        emailAddress:
-          $ref: '#/components/schemas/EmailAddress'
-        type:
+        address:
           type: string
-          enum:
-          - required
-          - optional
-          - resource
-        response:
-          type: string
-          enum:
-          - accepted
-          - tentitive
-          - declined
-          readOnly: true
-        comment:
+          format: email
+        raw:
           type: string
           readOnly: true
     Recurrence:
@@ -394,23 +360,6 @@ components:
                   items:
                     $ref: '#/components/schemas/EventDateTime'
                   readOnly: true
-    OccurrenceInfo:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - regular
-          - modified
-          - deleted
-        originalStart:
-          $ref: '#/components/schemas/EventDateTime'
-        start:
-          $ref: '#/components/schemas/EventDateTime'
-        masterId:
-          type: string
     DeletedPage:
       type: object
       properties:
@@ -426,26 +375,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeletedRecord'
-    EmailAddress:
-      type: object
-      properties:
-        name:
-          type: string
-        address:
-          type: string
-          format: email
-        raw:
-          type: string
-          readOnly: true
-    Organizer:
-      type: object
-      readOnly: true
-      properties:
-        id:
-          type: string
-          readOnly: true
-        emailAddress:
-          $ref: '#/components/schemas/EmailAddress'
+    ShowAs:
+      type: string
+      enum:
+      - free
+      - busy
+      - tentative
+      - outOfOffice
+      - unknown
     MeetingInfo:
       type: object
       properties:
@@ -477,97 +414,23 @@ components:
         onlineMeetingDetails:
           readOnly: true
           $ref: '#/components/schemas/OnlineMeetingDetails'
-    Sensitivity:
-      type: string
-      enum:
-      - normal
-      - private
-      - personal
-      - confidential
-    DayOfWeek:
-      type: string
-      enum:
-      - monday
-      - tuesday
-      - wednesday
-      - thursday
-      - friday
-      - saturday
-      - sunday
-    EmailAttachment:
+    OccurrenceInfo:
       type: object
       properties:
         id:
           type: string
-          readOnly: true
-        name:
+        type:
           type: string
-          readOnly: true
-        mimeType:
+          enum:
+          - regular
+          - modified
+          - deleted
+        originalStart:
+          $ref: '#/components/schemas/EventDateTime'
+        start:
+          $ref: '#/components/schemas/EventDateTime'
+        masterId:
           type: string
-          readOnly: true
-        size:
-          type: integer
-          readOnly: true
-        inline:
-          type: boolean
-          readOnly: true
-        contentId:
-          type: string
-          readOnly: true
-        content:
-          type: string
-          readOnly: true
-        contentLocation:
-          type: string
-          readOnly: true
-    SyncStatus:
-      type: object
-      properties:
-        syncUpdatedToken:
-          type: string
-        syncDeletedToken:
-          type: string
-        ready:
-          type: boolean
-    MeetingResponseType:
-      type: string
-      enum:
-      - noResponse
-      - declined
-      - tentative
-      - accepted
-    OnlineMeetingDetails:
-      type: object
-      readOnly: true
-      properties:
-        url:
-          type: string
-          readOnly: true
-        phone:
-          type: string
-          readOnly: true
-        pin:
-          type: string
-          readOnly: true
-        regionCode:
-          type: string
-          readOnly: true
-        sip:
-          type: string
-          readOnly: true
-        infoUrl:
-          type: string
-          readOnly: true
-    DeletedRecord:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        timestamp:
-          type: string
-          format: date-time
     EventsPage:
       type: object
       properties:
@@ -583,25 +446,162 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Event'
-    EventDateTime:
+    SyncStatus:
       type: object
       properties:
-        dateOnly:
+        syncUpdatedToken:
           type: string
-          format: date
-        dateTime:
+        syncDeletedToken:
+          type: string
+        ready:
+          type: boolean
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        etag:
+          type: string
+          readOnly: true
+        calendarId:
+          type: string
+          readOnly: true
+        createdTime:
           type: string
           format: date-time
-        timezone:
+          readOnly: true
+        lastModifiedTime:
           type: string
-    ShowAs:
+          format: date-time
+          readOnly: true
+        subject:
+          type: string
+        description:
+          type: string
+        location:
+          type: string
+        start:
+          $ref: '#/components/schemas/EventDateTime'
+        end:
+          $ref: '#/components/schemas/EventDateTime'
+        organizer:
+          $ref: '#/components/schemas/Organizer'
+          readOnly: true
+        meetingInfo:
+          $ref: '#/components/schemas/MeetingInfo'
+        recurrenceType:
+          type: string
+          enum:
+          - single
+          - master
+          - occurrence
+          readOnly: true
+        recurrence:
+          $ref: '#/components/schemas/Recurrence'
+        occurrenceInfo:
+          $ref: '#/components/schemas/OccurrenceInfo'
+          readOnly: true
+        iCalUid:
+          type: string
+          readOnly: true
+        globalId:
+          type: string
+          readOnly: true
+        showAs:
+          $ref: '#/components/schemas/ShowAs'
+        sensitivity:
+          $ref: '#/components/schemas/Sensitivity'
+        categories:
+          type: array
+          readOnly: true
+          items:
+            type: string
+        htmlLink:
+          type: string
+          readOnly: true
+        hasAttachments:
+          type: boolean
+          readOnly: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAttachment'
+        omitted:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            enum:
+            - description
+            - attendees
+            - attachments
+    Organizer:
+      type: object
+      readOnly: true
+      properties:
+        id:
+          type: string
+          readOnly: true
+        emailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+    Attendee:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        emailAddress:
+          $ref: '#/components/schemas/EmailAddress'
+        type:
+          type: string
+          enum:
+          - required
+          - optional
+          - resource
+        response:
+          type: string
+          enum:
+          - accepted
+          - tentitive
+          - declined
+          readOnly: true
+        comment:
+          type: string
+          readOnly: true
+    DayOfWeek:
       type: string
       enum:
-      - free
-      - busy
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+    DeletedRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+    MeetingResponseType:
+      type: string
+      enum:
+      - noResponse
+      - declined
       - tentative
-      - outOfOffice
-      - unknown
+      - accepted
+    Sensitivity:
+      type: string
+      enum:
+      - normal
+      - private
+      - personal
+      - confidential
   securitySchemes:
     AppAuth:
       type: http

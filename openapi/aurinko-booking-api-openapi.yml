@@ -395,94 +395,27 @@ paths:
           $ref: '#/components/responses/UnauthorizedError2'
 components:
   schemas:
-    BookingMeetingInterval:
+    CreateMeetingResponse:
       type: object
       properties:
-        start:
+        created:
+          type: boolean
+        id:
           type: string
-          format: date-time
-        end:
-          type: string
-          format: date-time
-        groupXids:
-          type: array
-          items:
-            type: string
-        accountIds:
-          type: array
-          items:
-            type: integer
-            format: int64
-    AvailabilityInterval:
-      type: object
-      properties:
-        dateStartInclusive:
-          type: string
-          format: date
-        dateEndInclusive:
-          type: string
-          format: date
-        hours:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkingInterval'
-    BookingTimesOutDto:
-      type: object
-      properties:
-        items:
-          type: array
-          description: List of available meeting slots.
-          items:
-            $ref: '#/components/schemas/BookingMeetingInterval'
-        startTime:
-          type: string
-          format: date-time
-          description: Start time of available meeting slots.
-        endTime:
-          type: string
-          format: date-time
-          description: End time of available meeting slots.
-        timeAvailableFor:
-          type: string
-          description: Time period (in ISO-8601 format) the profile is covering. For example, P3M (3 months), P4W (4 weeks), P5D (5 days).
-          example: P4W
-        durationMinutes:
+          description: The created calendar event ID, if event was created
+        ReservationId:
           type: integer
-          description: Length of meeting in minutes
-        availabilityStep:
-          type: integer
-          description: Determines the interval at which new meeting slots are made available throughout the working hours. Allowed values are 5, 10, 15, 20, 30, 60.
-        subject:
+          format: int64
+          description: The unconfirmed reservation ID
+        groupXid:
           type: string
-          description: Subject for events booked using this profile.
-        primaryColor:
+          description: Group external id for group booking
+    ConfirmReservationOutDto:
+      type: object
+      properties:
+        id:
           type: string
-          description: Primary Color, taken from the application settings.
-        secondaryColor:
-          type: string
-          description: The second Color, taken from the application settings.
-        additionalFields:
-          type: array
-          description: List of substitution variables like {{name}}, {{openMeetingUrl}},...
-          items:
-            $ref: '#/components/schemas/AdditionalField'
-        nextPageToken:
-          type: string
-          description: Next page token
-        nextFromDate:
-          type: string
-          format: date
-          description: Next fromDate to iterate a big time intervals
-    DayOfWeek:
-      type: string
-      enum:
-      - monday
-      - tuesday
-      - wednesday
-      - thursday
-      - friday
-      - saturday
-      - sunday
+          description: The created calendar event ID, if event was created.
     BookingInDto:
       type: object
       properties:
@@ -532,6 +465,132 @@ components:
         openMeetingUrl:
           type: string
           description: The value of the {{openMeetingUrl}} variable that can be used in the event description or subject.
+    BookingPage:
+      type: object
+      properties:
+        offset:
+          type: integer
+        totalSize:
+          type: integer
+          format: int64
+        done:
+          type: boolean
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookingOutDto'
+    DayOfWeek:
+      type: string
+      enum:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+    WeekWorkSchedule:
+      type: object
+      properties:
+        daySchedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayWorkSchedule'
+        timezone:
+          type: string
+    AdditionalField:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Substitution variable name
+        type:
+          type: string
+          description: Value type
+        default:
+          type: string
+          description: Default value
+    CreateMeetingDto:
+      type: object
+      properties:
+        time:
+          $ref: '#/components/schemas/SelectedMeetingTime'
+        groupXids:
+          type: array
+          items:
+            type: string
+            description: Group external id from available meeting times request
+        accountIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+            description: Account id from available meeting times request
+        name:
+          type: string
+          description: Username of the person requesting the meeting
+        email:
+          type: string
+          description: Email of the person requesting the meeting, if not specified, an event will be created without an attendee
+        substitutionData:
+          type: object
+          description: Data for substitution instead of templates, key - value
+          additionalProperties:
+            type: string
+    BookingSuccessOutDto:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - Ok
+    BookingTimesOutDto:
+      type: object
+      properties:
+        items:
+          type: array
+          description: List of available meeting slots.
+          items:
+            $ref: '#/components/schemas/BookingMeetingInterval'
+        startTime:
+          type: string
+          format: date-time
+          description: Start time of available meeting slots.
+        endTime:
+          type: string
+          format: date-time
+          description: End time of available meeting slots.
+        timeAvailableFor:
+          type: string
+          description: Time period (in ISO-8601 format) the profile is covering. For example, P3M (3 months), P4W (4 weeks), P5D (5 days).
+          example: P4W
+        durationMinutes:
+          type: integer
+          description: Length of meeting in minutes
+        availabilityStep:
+          type: integer
+          description: Determines the interval at which new meeting slots are made available throughout the working hours. Allowed values are 5, 10, 15, 20, 30, 60.
+        subject:
+          type: string
+          description: Subject for events booked using this profile.
+        primaryColor:
+          type: string
+          description: Primary Color, taken from the application settings.
+        secondaryColor:
+          type: string
+          description: The second Color, taken from the application settings.
+        additionalFields:
+          type: array
+          description: List of substitution variables like {{name}}, {{openMeetingUrl}},...
+          items:
+            $ref: '#/components/schemas/AdditionalField'
+        nextPageToken:
+          type: string
+          description: Next page token
+        nextFromDate:
+          type: string
+          format: date
+          description: Next fromDate to iterate a big time intervals
     BookingOutDto:
       type: object
       properties:
@@ -584,40 +643,33 @@ components:
         openMeetingUrl:
           type: string
           description: The value of the {{}openMeetingUrl}} variable that can be used in the event description or subject.
-    BookingSuccessOutDto:
+    BookingRequiredMode:
+      type: string
+      enum:
+      - one
+      - all
+    AvailabilityInterval:
       type: object
       properties:
-        status:
+        dateStartInclusive:
           type: string
-          enum:
-          - Ok
-    CreateMeetingDto:
+          format: date
+        dateEndInclusive:
+          type: string
+          format: date
+        hours:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingInterval'
+    SelectedMeetingTime:
       type: object
       properties:
-        time:
-          $ref: '#/components/schemas/SelectedMeetingTime'
-        groupXids:
-          type: array
-          items:
-            type: string
-            description: Group external id from available meeting times request
-        accountIds:
-          type: array
-          items:
-            type: integer
-            format: int64
-            description: Account id from available meeting times request
-        name:
+        start:
           type: string
-          description: Username of the person requesting the meeting
-        email:
+          format: date-time
+        end:
           type: string
-          description: Email of the person requesting the meeting, if not specified, an event will be created without an attendee
-        substitutionData:
-          type: object
-          description: Data for substitution instead of templates, key - value
-          additionalProperties:
-            type: string
+          format: date-time
     BookingUpdateDto:
       type: object
       properties:
@@ -676,11 +728,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WorkingInterval'
-    BookingRequiredMode:
-      type: string
-      enum:
-      - one
-      - all
     WorkingInterval:
       type: object
       properties:
@@ -692,48 +739,6 @@ components:
           type: string
           pattern: ^\d{2}:\d{2}:\d{2}$
           example: '17:00:00'
-    BookingPage:
-      type: object
-      properties:
-        offset:
-          type: integer
-        totalSize:
-          type: integer
-          format: int64
-        done:
-          type: boolean
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/BookingOutDto'
-    WeekWorkSchedule:
-      type: object
-      properties:
-        daySchedules:
-          type: array
-          items:
-            $ref: '#/components/schemas/DayWorkSchedule'
-        timezone:
-          type: string
-    ConfirmSlotDeleteOutDto:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - Ok
-    AdditionalField:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Substitution variable name
-        type:
-          type: string
-          description: Value type
-        default:
-          type: string
-          description: Default value
     AvailabilityIntervals:
       type: object
       properties:
@@ -741,28 +746,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AvailabilityInterval'
-    ConfirmReservationOutDto:
+    ConfirmSlotDeleteOutDto:
       type: object
       properties:
-        id:
+        status:
           type: string
-          description: The created calendar event ID, if event was created.
-    CreateMeetingResponse:
-      type: object
-      properties:
-        created:
-          type: boolean
-        id:
-          type: string
-          description: The created calendar event ID, if event was created
-        ReservationId:
-          type: integer
-          format: int64
-          description: The unconfirmed reservation ID
-        groupXid:
-          type: string
-          description: Group external id for group booking
-    SelectedMeetingTime:
+          enum:
+          - Ok
+    BookingMeetingInterval:
       type: object
       properties:
         start:
@@ -771,6 +762,15 @@ components:
         end:
           type: string
           format: date-time
+        groupXids:
+          type: array
+          items:
+            type: string
+        accountIds:
+          type: array
+          items:
+            type: integer
+            format: int64
   responses:
     UnauthorizedError2:
       description: Authentication information is missing or invalid

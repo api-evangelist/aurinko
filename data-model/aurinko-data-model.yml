@@ -2,12 +2,23 @@ generated: '2026-10-20'
 method: derived
 generator: derive-data-model.py
 source:
-- openapi/aurinko-openapi.json
+- openapi/aurinko-account-api-openapi.yml
+- openapi/aurinko-accounts-api-openapi.yml
+- openapi/aurinko-auth-api-openapi.yml
+- openapi/aurinko-availability-api-openapi.yml
+- openapi/aurinko-booking-api-openapi.yml
+- openapi/aurinko-calendars-api-openapi.yml
+- openapi/aurinko-calsync-api-openapi.yml
+- openapi/aurinko-contacts-api-openapi.yml
+- openapi/aurinko-contsync-api-openapi.yml
+- openapi/aurinko-drafts-api-openapi.yml
+- openapi/aurinko-emailfolders-api-openapi.yml
+- openapi/aurinko-emailsync-api-openapi.yml
 notation: has_one = property $ref; has_many = array of $ref; belongs_to = <entity>_id field
 summary:
-  entities: 144
-  entities_in_spec: 144
-  relationships: 122
+  entities: 143
+  entities_in_spec: 143
+  relationships: 121
 entities:
 - name: AccountSaveResult
   fields: 4
@@ -63,8 +74,6 @@ entities:
   fields: 12
 - name: BookingUpdateDto
   fields: 14
-- name: BookingWorkHours
-  fields: 1
 - name: Calendar
   fields: 6
 - name: CalendarCreate
@@ -298,88 +307,8 @@ entities:
 - name: WorkingInterval
   fields: 2
 relationships:
-- from: WorkHoursResponseItem
-  to: WeekWorkSchedule
-  type: has_one
-  via: workHours
-- from: TaskCreateResponse
-  to: Task
-  type: has_one
-  via: record
-- from: BookingDetachGroupsDto
-  to: BookingDetachGroupDto
-  type: has_many
-  via: groups
-- from: EmailMessagesPageNext
-  to: EmailMessage
-  type: has_many
-  via: records
-- from: EmailDeletedPage
-  to: DeletedEmailMessage
-  type: has_many
-  via: records
-- from: GroupBookingInDto
-  to: WeekWorkSchedule
-  type: has_one
-  via: workHours
-- from: GroupBookingInDto
-  to: AvailabilityIntervals
-  type: has_one
-  via: availabilityIntervals
-- from: BookingAttachedGroupsPage
-  to: BookingAttachedDto
-  type: has_many
-  via: records
-- from: FreeBusySchedulePage
-  to: FreeBusySchedule
-  type: has_many
-  via: records
-- from: EmailTrackingPageNext
-  to: TrackingData
-  type: has_many
-  via: records
-- from: DayWorkSchedule
-  to: WorkingInterval
-  type: has_many
-  via: workingIntervals
-- from: MeetingAttendee
-  to: WeekWorkSchedule
-  type: has_one
-  via: workHours
-- from: MeetingAttendee
-  to: TimeInterval
-  type: has_many
-  via: busyIntervals
-- from: MeetingAttendee
-  to: TimeInterval
-  type: has_many
-  via: freeIntervals
-- from: FollowupRuleAggregateOut
-  to: FollowupRuleAction
-  type: has_many
-  via: actions
-- from: EndUserDto
-  to: EndUserAccountDto
-  type: has_many
-  via: accounts
-- from: RewriteHtml
-  to: OutEmailTrack
-  type: has_one
-  via: tracking
-- from: SuggestMeetingTimesResponse
-  to: TimeInterval
-  type: has_many
-  via: items
-- from: SuggestMeetingTimesResponse
-  to: MeetingAttendee
-  type: has_many
-  via: attendees
 - from: AccountsPage
   to: ApiAccountOutDto
-  type: has_many
-  via: records
-- from: TasksPage
-  to: Task
   type: has_many
   via: records
 - from: BookingTimesOutDto
@@ -390,22 +319,14 @@ relationships:
   to: AdditionalField
   type: has_many
   via: additionalFields
-- from: EmailDraft
-  to: EmailMessage
+- from: CreateMeetingDto
+  to: SelectedMeetingTime
   type: has_one
-  via: message
-- from: EmailDraft
-  to: ScheduledDraft
-  type: has_one
-  via: scheduled
-- from: EmailTrackingEventPageNext
-  to: EmailTrackingEvent
+  via: time
+- from: AvailabilityInterval
+  to: WorkingInterval
   type: has_many
-  via: records
-- from: EndUserAccountsPage
-  to: EndUserAccountDto
-  type: has_many
-  via: records
+  via: hours
 - from: BookingInDto
   to: WeekWorkSchedule
   type: has_one
@@ -414,26 +335,42 @@ relationships:
   to: AvailabilityIntervals
   type: has_one
   via: availabilityIntervals
-- from: EmailSendResponse
-  to: EmailSendError
-  type: has_one
-  via: processingError
-- from: WorkHoursResponse
-  to: WorkHoursResponseItem
-  type: has_many
-  via: items
-- from: GroupBookingOutDto
+- from: BookingOutDto
   to: WeekWorkSchedule
   type: has_one
   via: workHours
-- from: GroupBookingOutDto
+- from: BookingOutDto
   to: AvailabilityIntervals
   type: has_one
   via: availabilityIntervals
-- from: EndUserSettingsDto
+- from: BookingUpdateDto
   to: WeekWorkSchedule
   type: has_one
   via: workHours
+- from: BookingUpdateDto
+  to: AvailabilityIntervals
+  type: has_one
+  via: availabilityIntervals
+- from: DayWorkSchedule
+  to: WorkingInterval
+  type: has_many
+  via: workingIntervals
+- from: BookingPage
+  to: BookingOutDto
+  type: has_many
+  via: records
+- from: WeekWorkSchedule
+  to: DayWorkSchedule
+  type: has_many
+  via: daySchedules
+- from: AvailabilityIntervals
+  to: AvailabilityInterval
+  type: has_many
+  via: intervals
+- from: CalendarsPage
+  to: Calendar
+  type: has_many
+  via: records
 - from: Event
   to: Calendar
   type: belongs_to
@@ -466,198 +403,10 @@ relationships:
   to: EmailAttachment
   type: has_many
   via: attachments
-- from: WeekWorkSchedule
-  to: DayWorkSchedule
-  type: has_many
-  via: daySchedules
-- from: TaskUpdateResponse
-  to: Task
-  type: has_one
-  via: record
-- from: AvailabilityInterval
-  to: WorkingInterval
-  type: has_many
-  via: hours
-- from: BookingUpdateDto
-  to: WeekWorkSchedule
-  type: has_one
-  via: workHours
-- from: BookingUpdateDto
-  to: AvailabilityIntervals
-  type: has_one
-  via: availabilityIntervals
-- from: Task
-  to: TaskLink
-  type: has_many
-  via: links
-- from: TaskListPage
-  to: TaskList
-  type: has_many
-  via: records
-- from: GroupBookingUpdateDto
-  to: WeekWorkSchedule
-  type: has_one
-  via: workHours
-- from: GroupBookingUpdateDto
-  to: AvailabilityIntervals
-  type: has_one
-  via: availabilityIntervals
-- from: CreateMeetingDto
-  to: SelectedMeetingTime
-  type: has_one
-  via: time
-- from: EmailMessage
-  to: EmailAddress
-  type: has_one
-  via: from
-- from: EmailMessage
-  to: EmailAddress
-  type: has_many
-  via: to
-- from: EmailMessage
-  to: EmailAddress
-  type: has_many
-  via: cc
-- from: EmailMessage
-  to: EmailAddress
-  type: has_many
-  via: bcc
-- from: EmailMessage
-  to: EmailAddress
-  type: has_many
-  via: replyTo
-- from: EmailMessage
-  to: EmailAttachment
-  type: has_many
-  via: attachments
-- from: EmailMessage
-  to: EmailHeader
-  type: has_many
-  via: internetHeaders
-- from: ContactsPage
-  to: Contact
-  type: has_many
-  via: records
-- from: SyncTasksPage
-  to: Task
-  type: has_many
-  via: records
-- from: SuggestMeetingTimesRequest
-  to: MeetingAttendee
-  type: has_many
-  via: attendees
-- from: SuggestMeetingTimesRequest
-  to: WeekWorkSchedule
-  type: has_one
-  via: defaultWorkHours
-- from: SuggestMeetingTimesRequest
-  to: AvailabilityIntervals
-  type: has_one
-  via: availabilityIntervals
-- from: ContactOrId
-  to: Contact
-  type: has_one
-  via: record
-- from: OutgoingEmailReply
-  to: EmailAddress
-  type: has_one
-  via: from
-- from: OutgoingEmailReply
-  to: EmailAddress
-  type: has_many
-  via: to
-- from: OutgoingEmailReply
-  to: EmailAddress
-  type: has_many
-  via: cc
-- from: OutgoingEmailReply
-  to: EmailAddress
-  type: has_many
-  via: bcc
-- from: OutgoingEmailReply
-  to: EmailAddress
-  type: has_many
-  via: replyTo
-- from: OutgoingEmailReply
-  to: EmailHeader
-  type: has_many
-  via: xHeaders
-- from: OutgoingEmailReply
-  to: OutgoingEmailAttachment
-  type: has_many
-  via: attachments
-- from: OutgoingEmailReply
-  to: OutEmailTrack
-  type: has_one
-  via: tracking
-- from: OutgoingEmailReply
-  to: FollowUpOutgoing
-  type: has_one
-  via: followUp
-- from: CalendarsPage
-  to: Calendar
-  type: has_many
-  via: records
-- from: EndUserAccountDto
-  to: OrganizationDto
-  type: has_one
-  via: organization
-- from: AvailabilityIntervals
-  to: AvailabilityInterval
-  type: has_many
-  via: intervals
-- from: SeriesInfo
-  to: Recurrence
-  type: has_one
-  via: recurrence
-- from: SeriesInfo
-  to: OccurrenceInfo
-  type: has_many
-  via: modifiedOccurrences
-- from: SeriesInfo
-  to: OccurrenceInfo
-  type: has_many
-  via: deletedOccurrences
-- from: EventOrId
-  to: Event
-  type: has_one
-  via: record
-- from: EventOrId
-  to: OnlineMeetingDetails
-  type: has_one
-  via: onlineMeetingDetails
-- from: BookingAttachedAccountsPage
-  to: BookingAttachedAccountsDto
-  type: has_many
-  via: records
-- from: BookingWorkHours
-  to: WeekWorkSchedule
-  type: has_one
-  via: workHours
-- from: Organizer
+- from: Attendee
   to: EmailAddress
   type: has_one
   via: emailAddress
-- from: FollowupRuleAggregateIn
-  to: FollowupRuleAction
-  type: has_many
-  via: actions
-- from: GroupBookingPage
-  to: GroupBookingOutDto
-  type: has_many
-  via: records
-- from: MeetingInfo
-  to: Attendee
-  type: has_many
-  via: attendees
-- from: MeetingInfo
-  to: OnlineMeetingDetails
-  type: has_one
-  via: onlineMeetingDetails
-- from: BookingAttachGroupsDto
-  to: BookingAttachGroupDto
-  type: has_many
-  via: groups
 - from: OccurrenceInfo
   to: EventDateTime
   type: has_one
@@ -666,50 +415,26 @@ relationships:
   to: EventDateTime
   type: has_one
   via: start
-- from: BookingOutDto
-  to: WeekWorkSchedule
-  type: has_one
-  via: workHours
-- from: BookingOutDto
-  to: AvailabilityIntervals
-  type: has_one
-  via: availabilityIntervals
-- from: BookingPage
-  to: BookingOutDto
-  type: has_many
-  via: records
-- from: EmailMessagesPage
-  to: EmailMessage
-  type: has_many
-  via: records
-- from: EventsPageNext
-  to: Event
-  type: has_many
-  via: records
-- from: DraftSendDetails
-  to: OutEmailTrack
-  type: has_one
-  via: tracking
 - from: DeletedPage
   to: DeletedRecord
   type: has_many
   via: records
-- from: EmailFolderInfoPage
-  to: EmailFolderInfo
-  type: has_many
-  via: records
-- from: Attendee
+- from: Organizer
   to: EmailAddress
   type: has_one
   via: emailAddress
-- from: FreeBusySchedule
-  to: FreeBusyItem
+- from: MeetingInfo
+  to: Attendee
   type: has_many
-  via: items
-- from: FreeBusySchedule
-  to: WeekWorkSchedule
+  via: attendees
+- from: MeetingInfo
+  to: OnlineMeetingDetails
   type: has_one
-  via: workHours
+  via: onlineMeetingDetails
+- from: EventsPage
+  to: Event
+  type: has_many
+  via: records
 - from: Contact
   to: ContactName
   type: has_one
@@ -742,14 +467,26 @@ relationships:
   to: ContactPhoto
   type: has_one
   via: photo
-- from: EventsPage
-  to: Event
+- from: ContactOrId
+  to: Contact
+  type: has_one
+  via: record
+- from: ContactsPage
+  to: Contact
   type: has_many
   via: records
-- from: SubscriptionsPage
-  to: SubscriptionResponse
-  type: has_many
-  via: records
+- from: EmailDraft
+  to: EmailMessage
+  type: has_one
+  via: message
+- from: EmailDraft
+  to: ScheduledDraft
+  type: has_one
+  via: scheduled
+- from: DraftSendDetails
+  to: OutEmailTrack
+  type: has_one
+  via: tracking
 - from: OutgoingEmail
   to: EmailAddress
   type: has_one
@@ -786,3 +523,271 @@ relationships:
   to: FollowUpOutgoing
   type: has_one
   via: followUp
+- from: EmailMessage
+  to: EmailAddress
+  type: has_one
+  via: from
+- from: EmailMessage
+  to: EmailAddress
+  type: has_many
+  via: to
+- from: EmailMessage
+  to: EmailAddress
+  type: has_many
+  via: cc
+- from: EmailMessage
+  to: EmailAddress
+  type: has_many
+  via: bcc
+- from: EmailMessage
+  to: EmailAddress
+  type: has_many
+  via: replyTo
+- from: EmailMessage
+  to: EmailAttachment
+  type: has_many
+  via: attachments
+- from: EmailMessage
+  to: EmailHeader
+  type: has_many
+  via: internetHeaders
+- from: EmailMessagesPageNext
+  to: EmailMessage
+  type: has_many
+  via: records
+- from: EmailFolderInfoPage
+  to: EmailFolderInfo
+  type: has_many
+  via: records
+- from: EmailDeletedPage
+  to: DeletedEmailMessage
+  type: has_many
+  via: records
+- from: EmailMessagesPage
+  to: EmailMessage
+  type: has_many
+  via: records
+- from: EmailTrackingPageNext
+  to: TrackingData
+  type: has_many
+  via: records
+- from: EmailTrackingEventPageNext
+  to: EmailTrackingEvent
+  type: has_many
+  via: records
+- from: RewriteHtml
+  to: OutEmailTrack
+  type: has_one
+  via: tracking
+- from: EventsPageNext
+  to: Event
+  type: has_many
+  via: records
+- from: SeriesInfo
+  to: Recurrence
+  type: has_one
+  via: recurrence
+- from: SeriesInfo
+  to: OccurrenceInfo
+  type: has_many
+  via: modifiedOccurrences
+- from: SeriesInfo
+  to: OccurrenceInfo
+  type: has_many
+  via: deletedOccurrences
+- from: EventOrId
+  to: Event
+  type: has_one
+  via: record
+- from: EventOrId
+  to: OnlineMeetingDetails
+  type: has_one
+  via: onlineMeetingDetails
+- from: FollowupRuleAggregateIn
+  to: FollowupRuleAction
+  type: has_many
+  via: actions
+- from: FollowupRuleAggregateOut
+  to: FollowupRuleAction
+  type: has_many
+  via: actions
+- from: WorkHoursResponseItem
+  to: WeekWorkSchedule
+  type: has_one
+  via: workHours
+- from: FreeBusySchedule
+  to: FreeBusyItem
+  type: has_many
+  via: items
+- from: FreeBusySchedule
+  to: WeekWorkSchedule
+  type: has_one
+  via: workHours
+- from: FreeBusySchedulePage
+  to: FreeBusySchedule
+  type: has_many
+  via: records
+- from: SuggestMeetingTimesResponse
+  to: TimeInterval
+  type: has_many
+  via: items
+- from: SuggestMeetingTimesResponse
+  to: MeetingAttendee
+  type: has_many
+  via: attendees
+- from: SuggestMeetingTimesRequest
+  to: MeetingAttendee
+  type: has_many
+  via: attendees
+- from: SuggestMeetingTimesRequest
+  to: WeekWorkSchedule
+  type: has_one
+  via: defaultWorkHours
+- from: SuggestMeetingTimesRequest
+  to: AvailabilityIntervals
+  type: has_one
+  via: availabilityIntervals
+- from: MeetingAttendee
+  to: WeekWorkSchedule
+  type: has_one
+  via: workHours
+- from: MeetingAttendee
+  to: TimeInterval
+  type: has_many
+  via: busyIntervals
+- from: MeetingAttendee
+  to: TimeInterval
+  type: has_many
+  via: freeIntervals
+- from: WorkHoursResponse
+  to: WorkHoursResponseItem
+  type: has_many
+  via: items
+- from: GroupBookingOutDto
+  to: WeekWorkSchedule
+  type: has_one
+  via: workHours
+- from: GroupBookingOutDto
+  to: AvailabilityIntervals
+  type: has_one
+  via: availabilityIntervals
+- from: GroupBookingInDto
+  to: WeekWorkSchedule
+  type: has_one
+  via: workHours
+- from: GroupBookingInDto
+  to: AvailabilityIntervals
+  type: has_one
+  via: availabilityIntervals
+- from: BookingAttachGroupsDto
+  to: BookingAttachGroupDto
+  type: has_many
+  via: groups
+- from: BookingAttachedGroupsPage
+  to: BookingAttachedDto
+  type: has_many
+  via: records
+- from: GroupBookingUpdateDto
+  to: WeekWorkSchedule
+  type: has_one
+  via: workHours
+- from: GroupBookingUpdateDto
+  to: AvailabilityIntervals
+  type: has_one
+  via: availabilityIntervals
+- from: BookingDetachGroupsDto
+  to: BookingDetachGroupDto
+  type: has_many
+  via: groups
+- from: GroupBookingPage
+  to: GroupBookingOutDto
+  type: has_many
+  via: records
+- from: BookingAttachedAccountsPage
+  to: BookingAttachedAccountsDto
+  type: has_many
+  via: records
+- from: EmailSendResponse
+  to: EmailSendError
+  type: has_one
+  via: processingError
+- from: OutgoingEmailReply
+  to: EmailAddress
+  type: has_one
+  via: from
+- from: OutgoingEmailReply
+  to: EmailAddress
+  type: has_many
+  via: to
+- from: OutgoingEmailReply
+  to: EmailAddress
+  type: has_many
+  via: cc
+- from: OutgoingEmailReply
+  to: EmailAddress
+  type: has_many
+  via: bcc
+- from: OutgoingEmailReply
+  to: EmailAddress
+  type: has_many
+  via: replyTo
+- from: OutgoingEmailReply
+  to: EmailHeader
+  type: has_many
+  via: xHeaders
+- from: OutgoingEmailReply
+  to: OutgoingEmailAttachment
+  type: has_many
+  via: attachments
+- from: OutgoingEmailReply
+  to: OutEmailTrack
+  type: has_one
+  via: tracking
+- from: OutgoingEmailReply
+  to: FollowUpOutgoing
+  type: has_one
+  via: followUp
+- from: TaskListPage
+  to: TaskList
+  type: has_many
+  via: records
+- from: TaskCreateResponse
+  to: Task
+  type: has_one
+  via: record
+- from: TasksPage
+  to: Task
+  type: has_many
+  via: records
+- from: Task
+  to: TaskLink
+  type: has_many
+  via: links
+- from: TaskUpdateResponse
+  to: Task
+  type: has_one
+  via: record
+- from: SyncTasksPage
+  to: Task
+  type: has_many
+  via: records
+- from: EndUserDto
+  to: EndUserAccountDto
+  type: has_many
+  via: accounts
+- from: EndUserAccountsPage
+  to: EndUserAccountDto
+  type: has_many
+  via: records
+- from: EndUserSettingsDto
+  to: WeekWorkSchedule
+  type: has_one
+  via: workHours
+- from: EndUserAccountDto
+  to: OrganizationDto
+  type: has_one
+  via: organization
+- from: SubscriptionsPage
+  to: SubscriptionResponse
+  type: has_many
+  via: records

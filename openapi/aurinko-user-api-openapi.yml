@@ -270,54 +270,13 @@ paths:
       - lang: cURL
         source: "curl -X POST --cookie \"<END_USER_COOKIE>\" \\\n    -H 'X-Aurinko-ClientId: <CLIENT_ID>' \\\n    https://api.aurinko.io/v1/user/logout"
 components:
-  responses:
-    UnauthorizedError:
-      description: Access token is missing or invalid
   schemas:
-    DayOfWeek:
+    AccountType:
       type: string
       enum:
-      - monday
-      - tuesday
-      - wednesday
-      - thursday
-      - friday
-      - saturday
-      - sunday
-    UserAccountType:
-      type: string
-      enum:
-      - primary
-      - secondary
-      description: Type of user account. Required if `userId` is provided.
-    EndUserDto:
-      type: object
-      properties:
-        id:
-          type: string
-        appId:
-          type: integer
-          format: int64
-        email:
-          type: string
-        name:
-          type: string
-        authOrgId:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        lastActivity:
-          type: string
-          format: date-time
-        trustedIdentity:
-          type: boolean
-        externalIdType:
-          $ref: '#/components/schemas/EndUserExtIdType'
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/EndUserAccountDto'
+      - daemon
+      - personal
+      - managed
     TokenStatus:
       type: string
       enum:
@@ -325,6 +284,17 @@ components:
       - invalid
       - dead
       description: "* active - means the token is active and ready for use\n* invalid - means that Aurinko failed to access provider API with authentication data.\n   Basically it indicates that Aurinko has received a 401 http status from provider and marked this token as non-active.\n* dead - this is a special variant of \"invalid\" status that can occur only with OAuth 2.0 accounts.\n   It means that Aurinko failed to refresh OAuth access token and received \"invalid_grant\" error which indicates\n   that the access/refresh tokens pair cannot be used anymore and is basically dead.\n   The difference between invalid and dead is that with invalid tokens Aurinko will still try to\n   access provider API and with dead Aurinko won't even attempt:\n   trying to use dead token, Aurinko will just return 401 without making calls to the provider.\n"
+    EndUserAccountsPage:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+        length:
+          type: integer
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndUserAccountDto'
     Scope:
       type: string
       enum:
@@ -340,41 +310,59 @@ components:
       - Tasks.Read
       - Tasks.ReadWrite
       description: Space separated list of scopes
-    EndUserAccountsPage:
-      type: object
-      properties:
-        nextPageToken:
-          type: string
-        length:
-          type: integer
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/EndUserAccountDto'
-    EndUserExtIdType:
+    DayOfWeek:
       type: string
       enum:
-      - exchangeIdentity
-    DayWorkSchedule:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+      - saturday
+      - sunday
+    OkResponse:
       type: object
       properties:
-        dayOfWeek:
-          $ref: '#/components/schemas/DayOfWeek'
-        workingIntervals:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkingInterval'
-    WorkingInterval:
-      type: object
-      properties:
-        start:
+        status:
           type: string
-          pattern: ^\d{2}:\d{2}:\d{2}$
-          example: 09:00:00
-        end:
-          type: string
-          pattern: ^\d{2}:\d{2}:\d{2}$
-          example: '17:00:00'
+          enum:
+          - Ok
+    ServiceType:
+      type: string
+      enum:
+      - Google
+      - GoogleBot
+      - Office365
+      - EWS
+      - IMAP
+      - Salesforce
+      - Salesflare
+      - Repfabric
+      - MsTeamsBot
+      - Slack
+      - SlackBot
+      - SugarCRM
+      - HighLevel
+      - Hubspot
+      - Zoom
+      - ZoomBot
+      - Webex
+      - WebexBot
+      - Pipedrive
+      - EclipseERP
+      - AutoQuotes
+      - Teamwork
+      - NetSuite
+      - MCTrade
+      - SpecPath
+      - Zoho
+      - Clientify
+      - QuickBooks
+      - ActiveCampaign
+      - Creatio
+      - ConstantContact
+      - Fishbowl
+      - iCloud
     WeekWorkSchedule:
       type: object
       properties:
@@ -384,80 +372,6 @@ components:
             $ref: '#/components/schemas/DayWorkSchedule'
         timezone:
           type: string
-    EndUserSettingsDto:
-      type: object
-      properties:
-        workHours:
-          $ref: '#/components/schemas/WeekWorkSchedule'
-    AccountType:
-      type: string
-      enum:
-      - daemon
-      - personal
-      - managed
-    ServiceProvider:
-      type: string
-      enum:
-      - Office365
-      - Google
-      - Zoho
-      - IMAP
-      - EWS
-      - Yahoo
-      - AOL
-      - iCloud
-      - BigPond
-      - Fastmail
-      - Repfabric
-      - Salesforce
-      - Salesflare
-      - SugarCRM
-      - HighLevel
-      - Hubspot
-      - Pipedrive
-      - AutoQuotes
-      - SpecPath
-      - Clientify
-      - Teamwork
-      - EclipseERP
-      - NetSuite
-      - Fishbowl
-      - Slack
-      - Zoom
-      - Webex
-      - MCTrade
-      - Creatio
-      - QuickBooks
-      - ActiveCampaign
-      - ConstantContact
-      - Yoxel
-    OkResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - Ok
-    NativeScope:
-      type: string
-      description: Native scope from provider's API.
-    OrganizationDto:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-        serviceProvider:
-          $ref: '#/components/schemas/ServiceProvider'
-        xid:
-          type: string
-        domain:
-          type: string
-        name:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
     EndUserAccountDto:
       type: object
       properties:
@@ -525,42 +439,128 @@ components:
           type: boolean
         templatesCount:
           type: integer
-    ServiceType:
+    EndUserSettingsDto:
+      type: object
+      properties:
+        workHours:
+          $ref: '#/components/schemas/WeekWorkSchedule'
+    DayWorkSchedule:
+      type: object
+      properties:
+        dayOfWeek:
+          $ref: '#/components/schemas/DayOfWeek'
+        workingIntervals:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingInterval'
+    WorkingInterval:
+      type: object
+      properties:
+        start:
+          type: string
+          pattern: ^\d{2}:\d{2}:\d{2}$
+          example: 09:00:00
+        end:
+          type: string
+          pattern: ^\d{2}:\d{2}:\d{2}$
+          example: '17:00:00'
+    ServiceProvider:
       type: string
       enum:
-      - Google
-      - GoogleBot
       - Office365
-      - EWS
+      - Google
+      - Zoho
       - IMAP
+      - EWS
+      - Yahoo
+      - AOL
+      - iCloud
+      - BigPond
+      - Fastmail
+      - Repfabric
       - Salesforce
       - Salesflare
-      - Repfabric
-      - MsTeamsBot
-      - Slack
-      - SlackBot
       - SugarCRM
       - HighLevel
       - Hubspot
-      - Zoom
-      - ZoomBot
-      - Webex
-      - WebexBot
       - Pipedrive
-      - EclipseERP
       - AutoQuotes
-      - Teamwork
-      - NetSuite
-      - MCTrade
       - SpecPath
-      - Zoho
       - Clientify
+      - Teamwork
+      - EclipseERP
+      - NetSuite
+      - Fishbowl
+      - Slack
+      - Zoom
+      - Webex
+      - MCTrade
+      - Creatio
       - QuickBooks
       - ActiveCampaign
-      - Creatio
       - ConstantContact
-      - Fishbowl
-      - iCloud
+      - Yoxel
+    NativeScope:
+      type: string
+      description: Native scope from provider's API.
+    OrganizationDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        serviceProvider:
+          $ref: '#/components/schemas/ServiceProvider'
+        xid:
+          type: string
+        domain:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    EndUserDto:
+      type: object
+      properties:
+        id:
+          type: string
+        appId:
+          type: integer
+          format: int64
+        email:
+          type: string
+        name:
+          type: string
+        authOrgId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        lastActivity:
+          type: string
+          format: date-time
+        trustedIdentity:
+          type: boolean
+        externalIdType:
+          $ref: '#/components/schemas/EndUserExtIdType'
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndUserAccountDto'
+    EndUserExtIdType:
+      type: string
+      enum:
+      - exchangeIdentity
+    UserAccountType:
+      type: string
+      enum:
+      - primary
+      - secondary
+      description: Type of user account. Required if `userId` is provided.
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
   securitySchemes:
     AppAuth:
       type: http

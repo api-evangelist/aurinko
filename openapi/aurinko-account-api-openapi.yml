@@ -146,10 +146,22 @@ paths:
       - lang: cURL
         source: "curl -X DELETE -H 'Authorization: Bearer <access token>' \\\n    https://api.aurinko.io/v1/account/token"
 components:
-  responses:
-    UnauthorizedError:
-      description: Access token is missing or invalid
   schemas:
+    Scope:
+      type: string
+      enum:
+      - Calendar.Read
+      - Calendar.ReadWrite
+      - Mail.Read
+      - Mail.ReadWrite
+      - Mail.Send
+      - Mail.Drafts
+      - Mail.All
+      - Contacts.Read
+      - Contacts.ReadWrite
+      - Tasks.Read
+      - Tasks.ReadWrite
+      description: Space separated list of scopes
     ServiceType:
       type: string
       enum:
@@ -186,22 +198,15 @@ components:
       - ConstantContact
       - Fishbowl
       - iCloud
+    NativeScope:
+      type: string
+      description: Native scope from provider's API.
     AccountType:
       type: string
       enum:
       - daemon
       - personal
       - managed
-    TokenStatus:
-      type: string
-      enum:
-      - active
-      - invalid
-      - dead
-      description: "* active - means the token is active and ready for use\n* invalid - means that Aurinko failed to access provider API with authentication data.\n   Basically it indicates that Aurinko has received a 401 http status from provider and marked this token as non-active.\n* dead - this is a special variant of \"invalid\" status that can occur only with OAuth 2.0 accounts.\n   It means that Aurinko failed to refresh OAuth access token and received \"invalid_grant\" error which indicates\n   that the access/refresh tokens pair cannot be used anymore and is basically dead.\n   The difference between invalid and dead is that with invalid tokens Aurinko will still try to\n   access provider API and with dead Aurinko won't even attempt:\n   trying to use dead token, Aurinko will just return 401 without making calls to the provider.\n"
-    NativeScope:
-      type: string
-      description: Native scope from provider's API.
     ApiAccountOutDto:
       type: object
       properties:
@@ -265,21 +270,16 @@ components:
           format: date-time
         userId:
           type: string
-    Scope:
+    TokenStatus:
       type: string
       enum:
-      - Calendar.Read
-      - Calendar.ReadWrite
-      - Mail.Read
-      - Mail.ReadWrite
-      - Mail.Send
-      - Mail.Drafts
-      - Mail.All
-      - Contacts.Read
-      - Contacts.ReadWrite
-      - Tasks.Read
-      - Tasks.ReadWrite
-      description: Space separated list of scopes
+      - active
+      - invalid
+      - dead
+      description: "* active - means the token is active and ready for use\n* invalid - means that Aurinko failed to access provider API with authentication data.\n   Basically it indicates that Aurinko has received a 401 http status from provider and marked this token as non-active.\n* dead - this is a special variant of \"invalid\" status that can occur only with OAuth 2.0 accounts.\n   It means that Aurinko failed to refresh OAuth access token and received \"invalid_grant\" error which indicates\n   that the access/refresh tokens pair cannot be used anymore and is basically dead.\n   The difference between invalid and dead is that with invalid tokens Aurinko will still try to\n   access provider API and with dead Aurinko won't even attempt:\n   trying to use dead token, Aurinko will just return 401 without making calls to the provider.\n"
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
   securitySchemes:
     AppAuth:
       type: http

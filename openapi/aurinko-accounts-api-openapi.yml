@@ -257,19 +257,67 @@ paths:
           type: integer
 components:
   schemas:
-    AccountsPage:
-      type: object
-      properties:
-        offset:
-          type: integer
-        totalSize:
-          type: integer
-        done:
-          type: boolean
-        records:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiAccountOutDto'
+    Scope:
+      type: string
+      enum:
+      - Calendar.Read
+      - Calendar.ReadWrite
+      - Mail.Read
+      - Mail.ReadWrite
+      - Mail.Send
+      - Mail.Drafts
+      - Mail.All
+      - Contacts.Read
+      - Contacts.ReadWrite
+      - Tasks.Read
+      - Tasks.ReadWrite
+      description: Space separated list of scopes
+    ServiceType:
+      type: string
+      enum:
+      - Google
+      - GoogleBot
+      - Office365
+      - EWS
+      - IMAP
+      - Salesforce
+      - Salesflare
+      - Repfabric
+      - MsTeamsBot
+      - Slack
+      - SlackBot
+      - SugarCRM
+      - HighLevel
+      - Hubspot
+      - Zoom
+      - ZoomBot
+      - Webex
+      - WebexBot
+      - Pipedrive
+      - EclipseERP
+      - AutoQuotes
+      - Teamwork
+      - NetSuite
+      - MCTrade
+      - SpecPath
+      - Zoho
+      - Clientify
+      - QuickBooks
+      - ActiveCampaign
+      - Creatio
+      - ConstantContact
+      - Fishbowl
+      - iCloud
+    ServiceKey:
+      type: string
+      enum:
+      - email
+      - orgId
+      - userId
+      - serverUrl
+      - username
+      - clientOrgId
+      description: Keys that control account re-cycling.
     ApiAccountInDto:
       type: object
       required:
@@ -320,6 +368,59 @@ components:
           type: string
         timezone:
           type: string
+    AccountsPage:
+      type: object
+      properties:
+        offset:
+          type: integer
+        totalSize:
+          type: integer
+        done:
+          type: boolean
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiAccountOutDto'
+    NativeScope:
+      type: string
+      description: Native scope from provider's API.
+    ServiceTypeNonDaemon:
+      type: string
+      enum:
+      - Google
+      - Office365
+      - EWS
+      - IMAP
+      - Salesforce
+      - Salesflare
+      - Repfabric
+      - Slack
+      - SugarCRM
+      - HighLevel
+      - Hubspot
+      - Zoom
+      - Webex
+      - WebexBot
+      - Pipedrive
+      - EclipseERP
+      - AutoQuotes
+      - Teamwork
+      - NetSuite
+      - SpecPath
+      - Zoho
+      - Clientify
+      - QuickBooks
+      - ActiveCampaign
+      - Creatio
+      - ConstantContact
+      - Fishbowl
+      - iCloud
+    AccountType:
+      type: string
+      enum:
+      - daemon
+      - personal
+      - managed
     ApiAccountOutDto:
       type: object
       properties:
@@ -383,54 +484,6 @@ components:
           format: date-time
         userId:
           type: string
-    UserAccountType:
-      type: string
-      enum:
-      - primary
-      - secondary
-      description: Type of user account. Required if `userId` is provided.
-    ServiceType:
-      type: string
-      enum:
-      - Google
-      - GoogleBot
-      - Office365
-      - EWS
-      - IMAP
-      - Salesforce
-      - Salesflare
-      - Repfabric
-      - MsTeamsBot
-      - Slack
-      - SlackBot
-      - SugarCRM
-      - HighLevel
-      - Hubspot
-      - Zoom
-      - ZoomBot
-      - Webex
-      - WebexBot
-      - Pipedrive
-      - EclipseERP
-      - AutoQuotes
-      - Teamwork
-      - NetSuite
-      - MCTrade
-      - SpecPath
-      - Zoho
-      - Clientify
-      - QuickBooks
-      - ActiveCampaign
-      - Creatio
-      - ConstantContact
-      - Fishbowl
-      - iCloud
-    AccountType:
-      type: string
-      enum:
-      - daemon
-      - personal
-      - managed
     TokenStatus:
       type: string
       enum:
@@ -438,40 +491,6 @@ components:
       - invalid
       - dead
       description: "* active - means the token is active and ready for use\n* invalid - means that Aurinko failed to access provider API with authentication data.\n   Basically it indicates that Aurinko has received a 401 http status from provider and marked this token as non-active.\n* dead - this is a special variant of \"invalid\" status that can occur only with OAuth 2.0 accounts.\n   It means that Aurinko failed to refresh OAuth access token and received \"invalid_grant\" error which indicates\n   that the access/refresh tokens pair cannot be used anymore and is basically dead.\n   The difference between invalid and dead is that with invalid tokens Aurinko will still try to\n   access provider API and with dead Aurinko won't even attempt:\n   trying to use dead token, Aurinko will just return 401 without making calls to the provider.\n"
-    NativeScope:
-      type: string
-      description: Native scope from provider's API.
-    ServiceTypeNonDaemon:
-      type: string
-      enum:
-      - Google
-      - Office365
-      - EWS
-      - IMAP
-      - Salesforce
-      - Salesflare
-      - Repfabric
-      - Slack
-      - SugarCRM
-      - HighLevel
-      - Hubspot
-      - Zoom
-      - Webex
-      - WebexBot
-      - Pipedrive
-      - EclipseERP
-      - AutoQuotes
-      - Teamwork
-      - NetSuite
-      - SpecPath
-      - Zoho
-      - Clientify
-      - QuickBooks
-      - ActiveCampaign
-      - Creatio
-      - ConstantContact
-      - Fishbowl
-      - iCloud
     AccountSaveResult:
       type: object
       properties:
@@ -484,31 +503,12 @@ components:
           type: string
         userSession:
           type: string
-    Scope:
+    UserAccountType:
       type: string
       enum:
-      - Calendar.Read
-      - Calendar.ReadWrite
-      - Mail.Read
-      - Mail.ReadWrite
-      - Mail.Send
-      - Mail.Drafts
-      - Mail.All
-      - Contacts.Read
-      - Contacts.ReadWrite
-      - Tasks.Read
-      - Tasks.ReadWrite
-      description: Space separated list of scopes
-    ServiceKey:
-      type: string
-      enum:
-      - email
-      - orgId
-      - userId
-      - serverUrl
-      - username
-      - clientOrgId
-      description: Keys that control account re-cycling.
+      - primary
+      - secondary
+      description: Type of user account. Required if `userId` is provided.
   responses:
     UnauthorizedError2:
       description: Authentication information is missing or invalid
