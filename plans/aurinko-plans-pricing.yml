@@ -34,3 +34,46 @@ plans:
   description: Volume, Tiered, Custom pricing depending on your use case and specific needs.
 docs: https://www.aurinko.io/pricing/
 note: 4 extracted row(s) were dropped because their quote was not on the page.
+x-canonical:
+  generated: '2026-10-23'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - subscription
+  units: []
+  plans:
+  - name: Unified API
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: BrightSync
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Unified API (FAQ)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Email / CRM (FAQ)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Full Platform (FAQ)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Custom
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []

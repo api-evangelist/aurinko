@@ -19,6 +19,13 @@ tags:
 - Email
 - Calendar
 - Contacts
+- Task
+tags_raw:
+- Company
+- Integration
+- Email
+- Calendar
+- Contacts
 - Tasks
 maintainers:
 - FN: Kin Lane
@@ -109,6 +116,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
@@ -148,6 +157,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Authentication
+  tags_raw:
   - Auth
   properties:
   - type: OpenAPI
@@ -222,6 +233,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Calendar
+  tags_raw:
   - Calendars
   properties:
   - type: OpenAPI
@@ -380,6 +393,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Email Tracking
+  tags_raw:
   - EmailTracking
   properties:
   - type: OpenAPI
@@ -405,6 +420,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
@@ -503,6 +520,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Managed Accounts
+  tags_raw:
   - Managed accounts
   properties:
   - type: OpenAPI
@@ -528,6 +547,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Message
+  tags_raw:
   - Messages
   properties:
   - type: OpenAPI
@@ -596,6 +617,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Task
+  tags_raw:
   - Tasks
   properties:
   - type: OpenAPI
@@ -758,6 +781,8 @@ apis:
   humanURL: https://apirefs.aurinko.io/
   baseURL: https://api.aurinko.io
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
